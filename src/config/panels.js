@@ -1,0 +1,23 @@
+export const PANELS = {
+  map: { name: 'Global Map', priority: 1, draggable: false },
+  politics: { name: 'World / Geopolitical', priority: 1, draggable: true },
+  tech: { name: 'Technology / AI', priority: 1, draggable: true },
+  finance: { name: 'Financial', priority: 1, draggable: true },
+  gov: { name: 'Government / Policy', priority: 2, draggable: true },
+  heatmap: { name: 'Sector Heatmap', priority: 1, draggable: true },
+  markets: { name: 'Markets', priority: 1, draggable: true },
+  monitors: { name: 'My Monitors', priority: 1, draggable: true },
+  commodities: { name: 'Commodities / VIX', priority: 2, draggable: true },
+  polymarket: { name: 'Polymarket', priority: 2, draggable: true },
+  congress: { name: 'Congress Trades', priority: 3, draggable: true },
+  whales: { name: 'Whale Watch', priority: 3, draggable: true },
+  mainchar: { name: 'Main Character', priority: 2, draggable: true },
+  printer: { name: 'Money Printer', priority: 2, draggable: true },
+  contracts: { name: 'Gov Contracts', priority: 3, draggable: true },
+  ai: { name: 'AI Arms Race', priority: 3, draggable: true },
+  layoffs: { name: 'Layoffs Tracker', priority: 3, draggable: true },
+  venezuela: { name: 'Venezuela Situation', priority: 2, draggable: true },
+  greenland: { name: 'Greenland Situation', priority: 2, draggable: true },
+  tbpn: { name: 'TBPN Live', priority: 1, draggable: false },
+  intel: { name: 'Intel Feed', priority: 2, draggable: true }
+}

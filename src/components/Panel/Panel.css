@@ -1,0 +1,95 @@
+.panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.panel.wide {
+    grid-column: span 2;
+}
+
+.panel:hover {
+    border-color: var(--accent);
+}
+
+.panel.collapsed .panel-content {
+    display: none;
+}
+
+.panel-header {
+    padding: 0.75rem 1rem;
+    background: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+}
+
+.panel-header:hover {
+    background: var(--bg-panel-hover);
+}
+
+.panel-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.panel-toggle {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.panel-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.panel-count {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.panel-content {
+    padding: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.panel-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .panel.wide {
+        grid-column: span 1;
+    }
+}
