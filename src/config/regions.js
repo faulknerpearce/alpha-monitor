@@ -13,10 +13,10 @@ export const HOTSPOTS = {}
 // Intelligence Hotspots - Major world capitals and strategic locations
 export const INTEL_HOTSPOTS = [
   {
-    id: 'dc', name: 'DC', subtext: 'Pentagon Pizza Index', lat: 38.9, lon: -77.0,
-    keywords: ['pentagon', 'white house', 'washington', 'us military', 'cia', 'nsa', 'trump'],
-    description: 'US national security hub. Pentagon, CIA, NSA, State Dept. Monitor for late-night activity spikes.',
-    agencies: ['Pentagon', 'CIA', 'NSA', 'State Dept'],
+    id: 'dc', name: 'DC', subtext: 'US National Security Hub', lat: 38.9, lon: -77.0,
+    keywords: ['pentagon', 'white house', 'washington', 'd.c.', 'us military', 'cia', 'nsa', 'trump', 'biden', 'us', 'america', 'united states', 'federal', 'government', 'congress', 'senate', 'house of representatives'],
+    description: 'US national security and political center. Monitor for domestic and international developments affecting American interests.',
+    agencies: ['Pentagon', 'CIA', 'NSA', 'State Dept', 'White House', 'Congress'],
     status: 'Active monitoring'
   },
   {

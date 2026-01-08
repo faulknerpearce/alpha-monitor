@@ -32,15 +32,15 @@ const GlobalMap = () => {
 
   // Layer visibility state
   const [layerVisibility, setLayerVisibility] = useState({
-    hotspots: true,
+    hotspots: false,
     intelHotspots: true,
-    shippingChokepoints: true,
-    conflictZones: true,
-    militaryBases: true,
-    nuclearFacilities: true,
-    underseaCables: true,
-    cyberRegions: true,
-    usCities: true
+    shippingChokepoints: false,
+    conflictZones: false,
+    militaryBases: false,
+    nuclearFacilities: false,
+    underseaCables: false,
+    cyberRegions: false,
+    usCities: false
   })
 
   useEffect(() => {
@@ -114,6 +114,7 @@ const GlobalMap = () => {
         .flatMap(r => r.value)
       
       setAllNews([...flattened, ...googleNews])
+      console.log('All news fetched:', [...flattened, ...googleNews].length, 'items')
     } catch (e) {
       console.error('Error fetching map news:', e)
     }
@@ -132,7 +133,8 @@ const GlobalMap = () => {
         source: item.querySelector('source')?.textContent || 'Google News',
         title: item.querySelector('title')?.textContent || '',
         link: item.querySelector('link')?.textContent || '#',
-        date: item.querySelector('pubDate')?.textContent || ''
+        date: item.querySelector('pubDate')?.textContent || '',
+        summary: item.querySelector('description')?.textContent || ''
       }))
     } catch (e) {
       console.error('Error fetching Google News:', e)
@@ -682,21 +684,16 @@ const GlobalMap = () => {
   }
 
   const handleIntelHotspotClick = (intel) => {
-    // Find relevant news - more flexible matching for DC
+    // Find relevant news
     const newsItems = allNews.filter(item => {
         const text = (item.title + ' ' + (item.summary || '')).toLowerCase()
-        
-        // Special handling for DC - broader keyword matching
-        if (intel.id === 'dc') {
-          const dcKeywords = ['washington', 'dc', 'pentagon', 'white house', 'cia', 'nsa', 'trump', 'biden', 'us', 'america', 'united states', 'federal', 'government', 'congress', 'senate', 'house of representatives']
-          if (dcKeywords.some(k => text.includes(k.toLowerCase()))) return true
-        }
         
         // Standard keyword matching
         if (intel.keywords && intel.keywords.some(k => text.includes(k.toLowerCase()))) return true
         if (text.includes(intel.name.toLowerCase())) return true
         return false
     }).slice(0, 5)
+    console.log(`Intel hotspot ${intel.id} clicked, news items found:`, newsItems.length, newsItems)
     setSelectedHotspot({ ...intel, type: 'intel', news: newsItems })
   }
 

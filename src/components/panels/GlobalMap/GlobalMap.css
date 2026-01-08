@@ -272,6 +272,8 @@
   padding: 1.5rem;
   max-width: 400px;
   min-width: 300px;
+  max-height: calc(100% - 2rem);
+  overflow-y: auto;
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
@@ -451,7 +453,7 @@
 }
 
 .intel-hotspot:hover {
-  transform: scale(1.2);
+  /* Removed scale to prevent shaking */
 }
 
 .intel-hotspot rect {
