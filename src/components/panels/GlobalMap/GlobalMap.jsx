@@ -483,6 +483,10 @@ const GlobalMap = () => {
           g.append('rect')
             .attr('x', -8).attr('y', -8)
             .attr('width', 16).attr('height', 16)
+            .attr('fill', 'none')
+            .attr('stroke', '#00ff00')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '2,2')
           
           g.append('text').text('💻').attr('x', -6).attr('y', 4).attr('font-size', '10px')
       })
