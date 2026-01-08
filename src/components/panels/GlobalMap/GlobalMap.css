@@ -340,6 +340,9 @@
 }
 
 .hotspot-popup-agencies,
+.hotspot-popup-sectors,
+.hotspot-popup-targets,
+.hotspot-popup-parties,
 .hotspot-popup-keywords {
   color: var(--text-secondary);
   font-size: 0.85rem;
@@ -348,7 +351,26 @@
 }
 
 .hotspot-popup-agencies strong,
+.hotspot-popup-sectors strong,
+.hotspot-popup-targets strong,
+.hotspot-popup-parties strong,
 .hotspot-popup-keywords strong {
+  color: var(--text-primary);
+  margin-right: 0.25rem;
+}
+
+.hotspot-popup-category,
+.hotspot-popup-location,
+.hotspot-popup-status {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.hotspot-popup-category strong,
+.hotspot-popup-location strong,
+.hotspot-popup-status strong {
   color: var(--text-primary);
   margin-right: 0.25rem;
 }

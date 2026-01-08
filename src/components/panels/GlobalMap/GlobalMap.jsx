@@ -673,7 +673,7 @@ const GlobalMap = () => {
     // Normalize description field - some use 'desc' instead of 'description'
     const normalizedHotspot = {
       ...hotspot,
-      description: hotspot.description || hotspot.desc,
+      description: hotspot.description || hotspot.desc || `Monitoring situation in ${hotspot.name}.`,
       type: hotspot.type || 'hotspot',
       news: newsItems
     }
@@ -899,7 +899,7 @@ const GlobalMap = () => {
               <div className="hotspot-popup-level elevated">CYBER</div>
             ) : selectedHotspot.type === 'city' ? (
               <div className={`hotspot-popup-level ${selectedHotspot.severity || 'medium'}`}>
-                {(selectedHotspot.severity || 'CITY').toUpperCase()}
+                {selectedHotspot.severity ? selectedHotspot.severity.toUpperCase() : 'CITY'}
               </div>
             ) : (
               <div className="hotspot-popup-level unknown">LOCATION</div>
@@ -927,7 +927,7 @@ const GlobalMap = () => {
             </div>
           )}
           {selectedHotspot.sectors && (
-            <div className="hotspot-popup-agencies">
+            <div className="hotspot-popup-sectors">
               <strong>Sectors:</strong> {selectedHotspot.sectors.join(', ')}
             </div>
           )}
@@ -942,12 +942,12 @@ const GlobalMap = () => {
             </div>
           )}
           {selectedHotspot.targets && (
-            <div className="hotspot-popup-agencies">
+            <div className="hotspot-popup-targets">
               <strong>Targets:</strong> {selectedHotspot.targets.join(', ')}
             </div>
           )}
           {selectedHotspot.parties && (
-            <div className="hotspot-popup-agencies">
+            <div className="hotspot-popup-parties">
               <strong>Parties:</strong> {selectedHotspot.parties.join(', ')}
             </div>
           )}
