@@ -50,6 +50,10 @@ const Dashboard = ({ panelSettings }) => {
   }, [draggedPanel])
 
   const enabledPanels = panelOrder.filter(id => panelSettings[id] !== false)
+  
+  // Separate map from other panels
+  const mapPanel = enabledPanels.find(id => id === 'map')
+  const newsPanels = enabledPanels.filter(id => id !== 'map')
 
   const getPanelContent = (panelId) => {
     switch (panelId) {
@@ -78,8 +82,30 @@ const Dashboard = ({ panelSettings }) => {
 
   return (
     <main className="dashboard">
-      <div className="dashboard-grid">
-        {enabledPanels.map(panelId => {
+      {/* Full-width map at the top */}
+      {mapPanel && (
+        <div className="map-section">
+          <Panel
+            key={mapPanel}
+            id={mapPanel}
+            title={PANELS[mapPanel].name}
+            draggable={PANELS[mapPanel].draggable}
+            isWide={true}
+            onDragStart={() => handleDragStart(mapPanel)}
+            onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
+            onDrop={() => handleDrop(mapPanel)}
+          >
+            <ErrorBoundary>
+              {getPanelContent(mapPanel)}
+            </ErrorBoundary>
+          </Panel>
+        </div>
+      )}
+      
+      {/* News panels grid below */}
+      <div className="news-grid">
+        {newsPanels.map(panelId => {
           const config = PANELS[panelId]
           if (!config) return null
 
@@ -89,7 +115,7 @@ const Dashboard = ({ panelSettings }) => {
               id={panelId}
               title={config.name}
               draggable={config.draggable}
-              isWide={panelId === 'map' || panelId === 'tbpn'}
+              isWide={false}
               onDragStart={() => handleDragStart(panelId)}
               onDragEnd={handleDragEnd}
               onDragOver={handleDragOver}

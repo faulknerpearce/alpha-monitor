@@ -5,15 +5,16 @@
 }
 
 :root {
-    --bg-dark: #0a0e14;
-    --bg-panel: #151922;
-    --bg-panel-hover: #1c2129;
-    --border-color: #2d3748;
-    --text-primary: #e2e8f0;
-    --text-secondary: #a0aec0;
-    --accent: #63b3ed;
-    --accent-hover: #4299e1;
-    --alert: #f56565;
+    --bg-dark: #000000;
+    --bg-panel: #0a0a0a;
+    --bg-panel-hover: #1a1a1a;
+    --border-color: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --accent: #ffffff;
+    --accent-hover: #cccccc;
+    --alert: #ff4444;
+    --warning: #ffaa00;
 }
 
 body {

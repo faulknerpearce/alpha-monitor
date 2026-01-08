@@ -1,26 +1,20 @@
 export const REGIONS = {
-  northAmerica: { name: 'North America', coords: [-100, 40] },
+  northAmerica: { name: 'North America', coords: [-100, 45] },
   southAmerica: { name: 'South America', coords: [-60, -15] },
   europe: { name: 'Europe', coords: [10, 50] },
   middleEast: { name: 'Middle East', coords: [45, 30] },
-  africa: { name: 'Africa', coords: [20, 0] },
+  africa: { name: 'Africa', coords: [20, 5] },
   asia: { name: 'Asia', coords: [100, 35] },
-  oceania: { name: 'Oceania', coords: [135, -25] }
+  oceania: { name: 'Oceania', coords: [155, -25] }
 }
 
-export const HOTSPOTS = {
-  ukraine: { name: 'Ukraine', coords: [31.1656, 48.3794], severity: 'high' },
-  israel: { name: 'Israel/Gaza', coords: [34.8516, 31.0461], severity: 'high' },
-  taiwan: { name: 'Taiwan Strait', coords: [121.5654, 25.0330], severity: 'medium' },
-  venezuela: { name: 'Venezuela', coords: [-66.5897, 6.4238], severity: 'medium' },
-  greenland: { name: 'Greenland', coords: [-42.6043, 71.7069], severity: 'low' }
-}
+export const HOTSPOTS = {}
 
 // Intelligence Hotspots - Major world capitals and strategic locations
 export const INTEL_HOTSPOTS = [
   {
     id: 'dc', name: 'DC', subtext: 'Pentagon Pizza Index', lat: 38.9, lon: -77.0,
-    keywords: ['pentagon', 'white house', 'washington', 'us military', 'cia', 'nsa', 'biden', 'trump'],
+    keywords: ['pentagon', 'white house', 'washington', 'us military', 'cia', 'nsa', 'trump'],
     description: 'US national security hub. Pentagon, CIA, NSA, State Dept. Monitor for late-night activity spikes.',
     agencies: ['Pentagon', 'CIA', 'NSA', 'State Dept'],
     status: 'Active monitoring'
@@ -89,11 +83,11 @@ export const INTEL_HOTSPOTS = [
     status: 'Enhanced readiness'
   },
   {
-    id: 'caracas', name: 'Caracas', subtext: 'Venezuela Crisis', lat: 10.5, lon: -66.9,
-    keywords: ['venezuela', 'maduro', 'caracas', 'guaido', 'venezuelan', 'pdvsa'],
-    description: 'Venezuelan political crisis center. Maduro regime, opposition movements, oil politics.',
+    id: 'caracas', name: 'Caracas', subtext: 'Venezuela Intervention', lat: 10.5, lon: -66.9,
+    keywords: ['venezuela', 'maduro', 'caracas', 'venezuelan', 'pdvsa', 'us intervention'],
+    description: 'Site of recent US military operation capturing Maduro. Interim government, oil redirection, international condemnation.',
     agencies: ['SEBIN', 'DGCIM', 'GNB'],
-    status: 'Political instability'
+    status: 'US-controlled transition'
   },
   {
     id: 'nuuk', name: 'Nuuk', subtext: 'Arctic Dispute', lat: 64.18, lon: -51.7,
@@ -230,62 +224,61 @@ export const US_CITIES = [
   }
 ]
 
-// US Breaking News Hotspots - Major ongoing stories
 export const US_HOTSPOTS = [
   {
-    id: 'mn-daycare-fraud',
-    name: 'Minnesota Daycare Fraud',
-    location: 'Minneapolis, MN',
-    lat: 44.9778,
-    lon: -93.2650,
+    id: 'venezuela-intervention',
+    name: 'Venezuela US Intervention',
+    location: 'Washington DC / Caracas',
+    lat: 38.9072,
+    lon: -77.0369,
     level: 'high',
-    category: 'Federal Investigation',
-    description: 'Massive $250M+ fraud scheme involving Feeding Our Future nonprofit. Largest pandemic-era fraud case. Multiple convictions and ongoing trials.',
-    keywords: ['minnesota', 'daycare', 'fraud', 'feeding our future', 'minneapolis', 'pandemic fraud', 'child nutrition', 'somali'],
-    startDate: '2022',
-    status: 'Active Investigation',
-    icon: '⚠'
+    category: 'Foreign Policy Crisis',
+    description: 'US military operation captured Maduro; oil redirection, international condemnation, potential for further strikes.',
+    keywords: ['venezuela', 'maduro', 'trump', 'us intervention', 'oil', 'caracas'],
+    startDate: '2026-01',
+    status: 'Ongoing Crisis',
+    icon: '🚨'
   },
   {
-    id: 'la-wildfires',
-    name: 'California Wildfires',
+    id: 'la-wildfires-recovery',
+    name: 'LA Wildfires One-Year Recovery',
     location: 'Los Angeles, CA',
     lat: 34.0522,
     lon: -118.2437,
-    level: 'high',
-    category: 'Natural Disaster',
-    description: 'Ongoing wildfire emergency in Los Angeles area. Multiple fires, evacuations, and widespread destruction.',
-    keywords: ['california', 'wildfire', 'los angeles', 'fire', 'evacuation', 'palisades', 'eaton', 'altadena'],
+    level: 'elevated',
+    category: 'Disaster Recovery',
+    description: 'One year after devastating 2025 wildfires; ongoing rebuilding, insurance disputes, community efforts.',
+    keywords: ['california', 'wildfire', 'los angeles', 'recovery', 'palisades', 'eaton', 'altadena'],
     startDate: '2025',
-    status: 'Active Emergency',
+    status: 'Long-term Recovery',
     icon: '🔥'
   },
   {
-    id: 'border-crisis',
-    name: 'Border Enforcement',
+    id: 'border-enforcement',
+    name: 'Enhanced Border Enforcement',
     location: 'El Paso, TX',
     lat: 31.7619,
     lon: -106.4850,
-    level: 'elevated',
-    category: 'Immigration',
-    description: 'Ongoing migration and border enforcement actions. Policy changes, deportations, and humanitarian concerns.',
-    keywords: ['border', 'immigration', 'migrant', 'el paso', 'texas', 'cbp', 'deportation', 'ice'],
-    startDate: '2024',
-    status: 'Ongoing',
+    level: 'high',
+    category: 'Immigration Policy',
+    description: 'Record-low crossings under new policies; expanded travel bans, deportations, biometric screening.',
+    keywords: ['border', 'immigration', 'travel ban', 'deportation', 'cbp', 'ice'],
+    startDate: '2025',
+    status: 'Intensified Enforcement',
     icon: '🚨'
   },
   {
     id: 'ai-regulation',
-    name: 'AI & Tech Policy',
+    name: 'AI Regulation Conflicts',
     location: 'San Francisco, CA',
     lat: 37.7749,
     lon: -122.4194,
-    level: 'medium',
-    category: 'Technology',
-    description: 'Major tech companies facing regulatory scrutiny. AI safety debates, antitrust actions, and policy formation.',
-    keywords: ['openai', 'anthropic', 'google ai', 'ai regulation', 'artificial intelligence', 'tech regulation', 'deepseek'],
-    startDate: '2024',
-    status: 'Developing',
+    level: 'high',
+    category: 'Technology Policy',
+    description: 'New state AI laws effective amid federal challenges; debates over safety, transparency, companion chatbots.',
+    keywords: ['ai regulation', 'artificial intelligence', 'california', 'tech policy', 'frontier ai'],
+    startDate: '2026',
+    status: 'Regulatory Battle',
     icon: '🤖'
   }
 ]
@@ -294,11 +287,11 @@ export const SHIPPING_CHOKEPOINTS = [
   {
     id: 'suez',
     name: 'Suez Canal',
-    lat: 30.0,
-    lon: 32.5,
+    lat: 30.45,
+    lon: 32.35,
     keywords: ['suez', 'red sea', 'houthi', 'canal'],
-    desc: 'Critical waterway connecting Mediterranean to Red Sea. ~12% of global trade. Currently threatened by Houthi attacks.',
-    traffic: '~50 ships/day',
+    desc: 'Critical waterway. ~12% of global trade. Traffic remains ~60% below pre-crisis levels despite end to Houthi attacks.',
+    traffic: '~20-30 ships/day (reduced)',
     region: 'Egypt'
   },
   {
@@ -355,16 +348,11 @@ export const CONFLICT_ZONES = [
       labelPos: { lat: 48.0, lon: 37.5 },
       startDate: 'Feb 24, 2022',
       parties: ['Russia', 'Ukraine', 'NATO (support)'],
-      casualties: '500,000+ (est.)',
-      displaced: '6.5M+ refugees',
-      description: 'Full-scale Russian invasion of Ukraine. Active frontlines in Donetsk, Luhansk, Zaporizhzhia, and Kherson oblasts. Heavy artillery, drone warfare, and trench combat.',
-      keyEvents: [
-          'Battle of Bakhmut',
-          'Kursk incursion',
-          'Black Sea drone strikes',
-          'Infrastructure attacks'
-      ],
-      keywords: ['ukraine', 'russia', 'zelensky', 'putin', 'donbas', 'crimea', 'bakhmut', 'kursk']
+      casualties: 'High ongoing',
+      displaced: 'Millions',
+      description: 'Ongoing Russian invasion with advances in east; heavy strikes on infrastructure.',
+      keyEvents: ['Pokrovsk battles', 'Drone warfare', 'Energy attacks'],
+      keywords: ['ukraine', 'russia', 'zelensky', 'putin', 'donbas', 'crimea']
   },
   {
       id: 'gaza',
@@ -375,17 +363,12 @@ export const CONFLICT_ZONES = [
       ],
       labelPos: { lat: 31.4, lon: 34.4 },
       startDate: 'Oct 7, 2023',
-      parties: ['Israel (IDF)', 'Hamas', 'Palestinian Islamic Jihad'],
-      casualties: '45,000+ (Gaza), 1,200+ (Israel)',
-      displaced: '2M+ internally displaced',
-      description: 'Israeli military operation in Gaza following Oct 7 Hamas attacks. Urban warfare, humanitarian crisis, regional escalation with Hezbollah and Houthis.',
-      keyEvents: [
-          'Oct 7 attacks',
-          'Ground invasion',
-          'Rafah operation',
-          'Hostage negotiations'
-      ],
-      keywords: ['gaza', 'israel', 'hamas', 'idf', 'netanyahu', 'hostage', 'rafah', 'hezbollah']
+      parties: ['Israel (IDF)', 'Hamas'],
+      casualties: '73,000+',
+      displaced: 'Near total population',
+      description: 'Ceasefire with ongoing violations; Israeli control expansion, aid restrictions, humanitarian crisis.',
+      keyEvents: ['Ceasefire Oct 2025', 'Violations', 'Aid blocks'],
+      keywords: ['gaza', 'israel', 'hamas', 'idf', 'netanyahu', 'ceasefire']
   },
   {
       id: 'sudan',
@@ -398,15 +381,10 @@ export const CONFLICT_ZONES = [
       labelPos: { lat: 15.0, lon: 32.5 },
       startDate: 'Apr 15, 2023',
       parties: ['Sudanese Armed Forces (SAF)', 'Rapid Support Forces (RSF)'],
-      casualties: '15,000+ killed',
-      displaced: '10M+ displaced',
-      description: 'Power struggle between SAF and RSF paramilitary. Fighting centered around Khartoum, Darfur. Major humanitarian catastrophe with famine conditions.',
-      keyEvents: [
-          'Khartoum battle',
-          'Darfur massacres',
-          'El Fasher siege',
-          'Famine declared'
-      ],
+      casualties: 'Tens of thousands',
+      displaced: '10M+',
+      description: 'Escalating violence in Darfur/Kordofan; famine, drone strikes on civilians.',
+      keyEvents: ['El Fasher siege', 'Famine persistence'],
       keywords: ['sudan', 'khartoum', 'rsf', 'darfur', 'burhan', 'hemedti']
   },
   {
@@ -418,16 +396,11 @@ export const CONFLICT_ZONES = [
       ],
       labelPos: { lat: 21.0, lon: 96.5 },
       startDate: 'Feb 1, 2021',
-      parties: ['Military Junta (SAC)', 'Ethnic Armed Organizations', 'People\'s Defense Forces'],
-      casualties: '50,000+ (est.)',
-      displaced: '3M+ internally displaced',
-      description: 'Armed resistance following 2021 military coup. Multiple ethnic armies and pro-democracy forces fighting junta. Recent rebel advances in border regions.',
-      keyEvents: [
-          'Operation 1027',
-          'Lashio capture',
-          'Myawaddy offensive',
-          'Junta conscription'
-      ],
+      parties: ['Military Junta', 'Ethnic Armed Organizations', 'Resistance Forces'],
+      casualties: '90,000+',
+      displaced: '3.5M+',
+      description: 'Junta elections amid ongoing fighting; resistance controls significant territory.',
+      keyEvents: ['Phased elections 2025-2026', 'Territorial gains'],
       keywords: ['myanmar', 'burma', 'junta', 'arakan', 'karen', 'kachin']
   },
   {
@@ -439,17 +412,12 @@ export const CONFLICT_ZONES = [
       ],
       labelPos: { lat: 24.5, lon: 120.0 },
       startDate: 'Ongoing tensions',
-      parties: ['China (PLA)', 'Taiwan (ROC)', 'United States (deterrence)'],
-      casualties: 'N/A - no active combat',
+      parties: ['China (PLA)', 'Taiwan (ROC)', 'United States'],
+      casualties: 'N/A',
       displaced: 'N/A',
-      description: 'Heightened tensions over Taiwan sovereignty. Regular PLA exercises, airspace incursions, naval activity. Risk of flashpoint escalation.',
-      keyEvents: [
-          'PLA exercises',
-          'ADIZ incursions',
-          'US arms sales',
-          'Diplomatic tensions'
-      ],
-      keywords: ['taiwan', 'china', 'strait', 'pla', 'tsai', 'invasion']
+      description: 'Heightened PLA activity; risk of escalation.',
+      keyEvents: ['Exercises', 'Incursions'],
+      keywords: ['taiwan', 'china', 'strait', 'pla', 'invasion']
   }
 ]
 

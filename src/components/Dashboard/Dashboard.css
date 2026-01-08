@@ -2,9 +2,16 @@
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-.dashboard-grid {
+.map-section {
+    width: 100%;
+}
+
+.news-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem;
@@ -21,9 +28,10 @@
 @media (max-width: 768px) {
     .dashboard {
         padding: 1rem;
+        gap: 1rem;
     }
     
-    .dashboard-grid {
+    .news-grid {
         grid-template-columns: 1fr;
     }
 }

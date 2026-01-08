@@ -1,10 +1,11 @@
 .panel {
     background: var(--bg-panel);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
     transition: all 0.2s;
     cursor: default;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .panel.wide {
@@ -13,6 +14,7 @@
 
 .panel:hover {
     border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
 }
 
 .panel.collapsed .panel-content {
@@ -81,7 +83,7 @@
 
 .panel-content::-webkit-scrollbar-thumb {
     background: var(--border-color);
-    border-radius: 4px;
+    border-radius: 0;
 }
 
 .panel-content::-webkit-scrollbar-thumb:hover {

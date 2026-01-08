@@ -30,6 +30,19 @@ const GlobalMap = () => {
   const [zoomLevel, setZoomLevel] = useState(1)
   const [translation, setTranslation] = useState([0, 0])
 
+  // Layer visibility state
+  const [layerVisibility, setLayerVisibility] = useState({
+    hotspots: true,
+    intelHotspots: true,
+    shippingChokepoints: true,
+    conflictZones: true,
+    militaryBases: true,
+    nuclearFacilities: true,
+    underseaCables: true,
+    cyberRegions: true,
+    usCities: true
+  })
+
   useEffect(() => {
     loadMapData()
     fetchMapNews()
@@ -85,9 +98,45 @@ const GlobalMap = () => {
         .filter(r => r.status === 'fulfilled')
         .flatMap(r => r.value)
       
-      setAllNews(flattened)
+      // Also fetch Google News for specific hotspots
+      const googleNewsResults = await Promise.allSettled([
+        fetchGoogleNews('washington dc politics'),
+        fetchGoogleNews('us politics trump biden'),
+        fetchGoogleNews('pentagon military news'),
+        fetchGoogleNews('venezuela maduro caracas'),
+        fetchGoogleNews('ukraine russia putin'),
+        fetchGoogleNews('israel gaza hamas'),
+        fetchGoogleNews('taiwan china strait')
+      ])
+
+      const googleNews = googleNewsResults
+        .filter(r => r.status === 'fulfilled')
+        .flatMap(r => r.value)
+      
+      setAllNews([...flattened, ...googleNews])
     } catch (e) {
       console.error('Error fetching map news:', e)
+    }
+  }
+
+  const fetchGoogleNews = async (query) => {
+    try {
+      const searchTerms = encodeURIComponent(query)
+      const rssUrl = `https://news.google.com/rss/search?q=${searchTerms}&hl=en-US&gl=US&ceid=US:en`
+      const xmlText = await fetchWithProxy(rssUrl)
+      const parser = new DOMParser()
+      const xml = parser.parseFromString(xmlText, 'text/xml')
+      const items = xml.querySelectorAll('item')
+      
+      return Array.from(items).slice(0, 3).map(item => ({
+        source: item.querySelector('source')?.textContent || 'Google News',
+        title: item.querySelector('title')?.textContent || '',
+        link: item.querySelector('link')?.textContent || '#',
+        date: item.querySelector('pubDate')?.textContent || ''
+      }))
+    } catch (e) {
+      console.error('Error fetching Google News:', e)
+      return []
     }
   }
 
@@ -102,7 +151,7 @@ const GlobalMap = () => {
       console.error('Error in map render effect:', error)
       setError('Failed to render map')
     }
-  }, [worldData, usData, mapView, zoomLevel, translation])
+  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility])
 
   const loadMapData = async () => {
     try {
@@ -259,6 +308,8 @@ const GlobalMap = () => {
         .attr('fill', '#0a2018')
         .attr('stroke', '#0f5040')
         .attr('stroke-width', 0.5)
+        .style('cursor', 'pointer')
+        .on('click', (event, d) => handleCountryClick(d))
         .on('mouseenter', function(event, d) {
           d3.select(this)
             .attr('fill', '#1a4030')
@@ -291,248 +342,282 @@ const GlobalMap = () => {
         })
 
       // Render US cities from config
-      const citiesGroup = svg.append('g').attr('class', 'us-cities')
+      if (layerVisibility.usCities) {
+        const citiesGroup = svg.append('g').attr('class', 'us-cities')
+        
+        US_CITIES.forEach(city => {
+          const projected = projection([city.lon, city.lat])
+          if (!projected) return
+          const [x, y] = projected
+          if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+
+          const group = citiesGroup.append('g')
+            .attr('class', `us-city ${city.type}`)
+            .attr('transform', `translate(${x},${y})`)
+            .style('cursor', 'pointer')
+            .on('click', () => handleHotspotClick({
+              ...city,
+              type: 'city',
+              severity: city.type === 'capital' ? 'high' : city.type === 'military' ? 'elevated' : 'medium'
+            }))
+
+          group.append('circle')
+            .attr('class', 'us-city-dot')
+            .attr('r', city.type === 'capital' ? 6 : city.type === 'major' ? 5 : city.type === 'military' ? 5 : 4)
+            .attr('fill', city.type === 'capital' ? '#ffcc00' : city.type === 'military' ? '#ff6600' : '#00aaff')
+
+          group.append('text')
+            .attr('class', 'us-city-label')
+            .attr('x', 8)
+            .attr('y', 4)
+            .text(city.name)
+        })
+      }
+    }
+
+    // Add hotspots (global hotspots for global view, US hotspots for US view)
+    if (layerVisibility.hotspots) {
+      const hotspots = mapView === 'global' ? Object.values(HOTSPOTS) : US_HOTSPOTS
+
+      const hotspotsGroup = svg.append('g').attr('class', 'hotspots')
       
-      US_CITIES.forEach(city => {
-        const projected = projection([city.lon, city.lat])
+      hotspots.forEach(hotspot => {
+        const coords = mapView === 'global' ? hotspot.coords : [hotspot.lon, hotspot.lat]
+        const projected = projection(coords)
         if (!projected) return
         const [x, y] = projected
         if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
 
-        const group = citiesGroup.append('g')
-          .attr('class', `us-city ${city.type}`)
+        const severity = hotspot.severity || hotspot.level // Hotspots use 'severity', US_HOTSPOTS use 'level'
+        const group = hotspotsGroup.append('g')
+          .attr('class', `hotspot ${severity}`)
           .attr('transform', `translate(${x},${y})`)
           .style('cursor', 'pointer')
-          .on('click', () => handleHotspotClick({
-            ...city,
-            type: 'city',
-            severity: city.type === 'capital' ? 'high' : city.type === 'military' ? 'elevated' : 'medium'
-          }))
+          .on('click', () => handleHotspotClick(hotspot))
 
+        // Pulsing ring
         group.append('circle')
-          .attr('class', 'us-city-dot')
-          .attr('r', city.type === 'capital' ? 6 : city.type === 'major' ? 5 : city.type === 'military' ? 5 : 4)
-          .attr('fill', city.type === 'capital' ? '#ffcc00' : city.type === 'military' ? '#ff6600' : '#00aaff')
+          .attr('r', 8)
+          .attr('fill', 'none')
+          .attr('stroke', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
+          .attr('stroke-width', 2)
+          .attr('opacity', 0.8)
 
+        // Inner dot
+        group.append('circle')
+          .attr('r', 3)
+          .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
+
+        // Label
         group.append('text')
-          .attr('class', 'us-city-label')
-          .attr('x', 8)
+          .attr('x', 12)
           .attr('y', 4)
-          .text(city.name)
+          .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
+          .attr('font-size', '10px')
+          .attr('font-weight', '600')
+          .text(hotspot.name)
       })
     }
-
-    // Add hotspots (global hotspots for global view, US hotspots for US view)
-    const hotspots = mapView === 'global' ? Object.values(HOTSPOTS) : US_HOTSPOTS
-
-    const hotspotsGroup = svg.append('g').attr('class', 'hotspots')
-    
-    hotspots.forEach(hotspot => {
-      const coords = mapView === 'global' ? hotspot.coords : [hotspot.lon, hotspot.lat]
-      const projected = projection(coords)
-      if (!projected) return
-      const [x, y] = projected
-      if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-
-      const severity = hotspot.severity || hotspot.level // Hotspots use 'severity', US_HOTSPOTS use 'level'
-      const group = hotspotsGroup.append('g')
-        .attr('class', `hotspot ${severity}`)
-        .attr('transform', `translate(${x},${y})`)
-        .style('cursor', 'pointer')
-        .on('click', () => handleHotspotClick(hotspot))
-
-      // Pulsing ring
-      group.append('circle')
-        .attr('r', 8)
-        .attr('fill', 'none')
-        .attr('stroke', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
-        .attr('stroke-width', 2)
-        .attr('opacity', 0.8)
-
-      // Inner dot
-      group.append('circle')
-        .attr('r', 3)
-        .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
-
-      // Label
-      group.append('text')
-        .attr('x', 12)
-        .attr('y', 4)
-        .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
-        .attr('font-size', '10px')
-        .attr('font-weight', '600')
-        .text(hotspot.name)
-    })
 
     // Add additional layers (Global Only)
     if (mapView === 'global') {
       // Shipping Chokepoints
-      const chokeGroup = svg.append('g').attr('class', 'chokepoints')
-      SHIPPING_CHOKEPOINTS.forEach(point => {
-        const projected = projection([point.lon, point.lat])
-        if (!projected) return
-        const [x, y] = projected
-        if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-        const g = chokeGroup.append('g')
-          .attr('transform', `translate(${x},${y})`)
-          .style('cursor', 'pointer')
-          .on('click', () => handleHotspotClick({...point, type: 'chokepoint'}))
-        
-        g.append('rect')
-          .attr('x', -6).attr('y', -6)
-          .attr('width', 12).attr('height', 12)
-          .attr('fill', 'none')
-          .attr('stroke', point.status === 'alert' ? '#ffaa00' : '#00aaff')
-          .attr('stroke-width', 2)
-
-        g.append('text').text('⚓').attr('x', -4).attr('y', 4).attr('font-size', '10px')
-      })
-
-      // Conflict Zones
-      const conflictGroup = svg.append('g').attr('class', 'conflict-zones')
-      CONFLICT_ZONES.forEach(zone => {
-         const projected = projection([zone.labelPos.lon, zone.labelPos.lat])
-         if (!projected) return
-         const [x, y] = projected
-         if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-         const g = conflictGroup.append('g')
-            .attr('transform', `translate(${x},${y})`)
-            .style('cursor', 'pointer')
-            .on('click', () => handleHotspotClick({...zone, type: 'conflict'}))
-         
-         g.append('circle')
-            .attr('r', 10)
-            .attr('fill', 'rgba(255, 50, 50, 0.2)')
-            .attr('stroke', '#ff3333')
-            .attr('stroke-dasharray', '2,2')
-
-         g.append('text').text('⚔️').attr('x', -5).attr('y', 4).attr('font-size', '10px')
-      })
-
-      // Military Bases
-      const baseGroup = svg.append('g').attr('class', 'military-bases')
-      MILITARY_BASES.forEach(base => {
-          const projected = projection([base.lon, base.lat])
+      if (layerVisibility.shippingChokepoints) {
+        const chokeGroup = svg.append('g').attr('class', 'chokepoints')
+        SHIPPING_CHOKEPOINTS.forEach(point => {
+          const projected = projection([point.lon, point.lat])
           if (!projected) return
           const [x, y] = projected
           if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-          const g = baseGroup.append('g')
+          const g = chokeGroup.append('g')
             .attr('transform', `translate(${x},${y})`)
             .style('cursor', 'pointer')
-            .on('click', () => handleHotspotClick({...base, type: 'base'}))
+            .on('click', () => handleHotspotClick({...point, type: 'chokepoint'}))
           
-          g.append('path')
-            .attr('d', 'M0,-6 L5,4 L-5,4 Z') // Triangle
-            .attr('fill', '#ff6600')
-            .attr('stroke', '#ffcc00')
-      })
+          g.append('rect')
+            .attr('x', -6).attr('y', -6)
+            .attr('width', 12).attr('height', 12)
+            .attr('fill', '#00aaff')
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 1)
+        })
+      }
 
-       // Nuclear Facilities
-       const nucGroup = svg.append('g').attr('class', 'nuclear-facilities')
-       NUCLEAR_FACILITIES.forEach(nuc => {
-           const projected = projection([nuc.lon, nuc.lat])
+      // Conflict Zones
+      if (layerVisibility.conflictZones) {
+        const conflictGroup = svg.append('g').attr('class', 'conflict-zones')
+        CONFLICT_ZONES.forEach(zone => {
+           const projected = projection([zone.labelPos.lon, zone.labelPos.lat])
            if (!projected) return
            const [x, y] = projected
            if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-           const g = nucGroup.append('g')
-             .attr('transform', `translate(${x},${y})`)
-             .style('cursor', 'pointer')
-             .on('click', () => handleHotspotClick({...nuc, type: 'nuclear'}))
+           const g = conflictGroup.append('g')
+              .attr('transform', `translate(${x},${y})`)
+              .style('cursor', 'pointer')
+              .on('click', () => handleHotspotClick({...zone, type: 'conflict'}))
            
-           g.append('circle').attr('r', 4).attr('fill', '#ffff00').attr('stroke', '#000')
-           g.append('text').text('☢️').attr('x', -5).attr('y', 4).attr('font-size', '10px')
-       })
+           g.append('circle')
+              .attr('r', 10)
+              .attr('fill', 'rgba(255, 50, 50, 0.2)')
+              .attr('stroke', '#ff3333')
+              .attr('stroke-dasharray', '2,2')
+
+           // X symbol for conflict (larger)
+           g.append('path')
+              .attr('d', 'M-6,-6 L6,6 M6,-6 L-6,6')
+              .attr('stroke', '#ff3333')
+              .attr('stroke-width', 2)
+              .attr('fill', 'none')
+        })
+      }
+
+      // Military Bases
+      if (layerVisibility.militaryBases) {
+        const baseGroup = svg.append('g').attr('class', 'military-bases')
+        MILITARY_BASES.forEach(base => {
+            const projected = projection([base.lon, base.lat])
+            if (!projected) return
+            const [x, y] = projected
+            if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+            const g = baseGroup.append('g')
+              .attr('transform', `translate(${x},${y})`)
+              .style('cursor', 'pointer')
+              .on('click', () => handleHotspotClick({...base, type: 'base'}))
+            
+            g.append('circle')
+              .attr('r', 6)
+              .attr('fill', '#888888')
+              .attr('stroke', '#666666')
+        })
+      }
+
+       // Nuclear Facilities
+       if (layerVisibility.nuclearFacilities) {
+         const nucGroup = svg.append('g').attr('class', 'nuclear-facilities')
+         NUCLEAR_FACILITIES.forEach(nuc => {
+             const projected = projection([nuc.lon, nuc.lat])
+             if (!projected) return
+             const [x, y] = projected
+             if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+             const g = nucGroup.append('g')
+               .attr('transform', `translate(${x},${y})`)
+               .style('cursor', 'pointer')
+               .on('click', () => handleHotspotClick({...nuc, type: 'nuclear'}))
+             
+             g.append('circle').attr('r', 4).attr('fill', '#ffff00').attr('stroke', '#000')
+             
+             // Radiation symbol (three blades, larger)
+             g.append('path')
+               .attr('d', 'M0,-7.5 L1.5,-3 L-1.5,-3 Z M-4.5,0 L-1.5,-1.5 L-1.5,1.5 Z M4.5,0 L1.5,-1.5 L1.5,1.5 Z')
+               .attr('fill', '#000')
+               .attr('stroke', 'none')
+         })
+       }
 
       // Undersea Cables
-      const cablesGroup = svg.append('g').attr('class', 'cables')
-      UNDERSEA_CABLES.forEach(cable => {
-        const line = d3.line()
-          .x(d => projection(d)[0])
-          .y(d => projection(d)[1])
-          .curve(d3.curveBasis) // Smooth curves for cables
+      if (layerVisibility.underseaCables) {
+        const cablesGroup = svg.append('g').attr('class', 'cables')
+        UNDERSEA_CABLES.forEach(cable => {
+          const line = d3.line()
+            .x(d => projection(d)[0])
+            .y(d => projection(d)[1])
+            .curve(d3.curveBasis) // Smooth curves for cables
 
-        const pathCoords = cable.points
-        // Check if projection is successful for all points to avoid errors
-        const valid = pathCoords.every(p => {
-          const [x, y] = projection(p) || [null, null]
-          return x !== null && y !== null
+          const pathCoords = cable.points
+          // Check if projection is successful for all points to avoid errors
+          const valid = pathCoords.every(p => {
+            const [x, y] = projection(p) || [null, null]
+            return x !== null && y !== null
+          })
+          
+          if (valid) {
+            cablesGroup.append('path')
+              .datum(pathCoords)
+              .attr('d', line)
+              .attr('class', cable.major ? 'major' : '')
+              .attr('fill', 'none')
+              // Tooltip or interaction could be added here
+          }
         })
-        
-        if (valid) {
-          cablesGroup.append('path')
-            .datum(pathCoords)
-            .attr('d', line)
-            .attr('class', cable.major ? 'major' : '')
-            .attr('fill', 'none')
-            // Tooltip or interaction could be added here
-        }
-      })
+      }
 
       // Cyber Regions
-      const cyberGroup = svg.append('g').attr('class', 'cyber-regions')
-      CYBER_REGIONS.forEach(reg => {
-          const projected = projection([reg.lon, reg.lat])
-          if (!projected) return
-          const [x, y] = projected
-          if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
-          const g = cyberGroup.append('g')
-            .attr('transform', `translate(${x},${y})`)
-            .style('cursor', 'pointer')
-            .on('click', () => handleHotspotClick({...reg, type: 'cyber'}))
+      if (layerVisibility.cyberRegions) {
+        const cyberGroup = svg.append('g').attr('class', 'cyber-regions')
+        CYBER_REGIONS.forEach(reg => {
+            const projected = projection([reg.lon, reg.lat])
+            if (!projected) return
+            const [x, y] = projected
+            if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+            const g = cyberGroup.append('g')
+              .attr('transform', `translate(${x},${y})`)
+              .style('cursor', 'pointer')
+              .on('click', () => handleHotspotClick({...reg, type: 'cyber'}))
 
-          g.append('rect')
-            .attr('x', -8).attr('y', -8)
-            .attr('width', 16).attr('height', 16)
-            .attr('fill', 'none')
-            .attr('stroke', '#00ff00')
-            .attr('stroke-width', 1)
-            .attr('stroke-dasharray', '2,2')
-          
-          g.append('text').text('💻').attr('x', -6).attr('y', 4).attr('font-size', '10px')
-      })
+            g.append('rect')
+              .attr('x', -8).attr('y', -8)
+              .attr('width', 16).attr('height', 16)
+              .attr('fill', 'none')
+              .attr('stroke', '#00ff00')
+              .attr('stroke-width', 1)
+              .attr('stroke-dasharray', '2,2')
+            
+            // Circuit symbol (simple lines, larger)
+            g.append('path')
+              .attr('d', 'M-6,-3 L6,-3 M-6,3 L6,3 M-3,-6 L-3,6 M3,-6 L3,6')
+              .attr('stroke', '#00ff00')
+              .attr('stroke-width', 1.5)
+              .attr('fill', 'none')
+        })
+      }
 
-      // Intelligence Hotspots
+    }
+
+    // Intelligence Hotspots (show on both global and US maps)
+    if (layerVisibility.intelHotspots) {
       const intelGroup = svg.append('g').attr('class', 'intel-hotspots')
       
       INTEL_HOTSPOTS.forEach(intel => {
+        // Skip DC in US view since it's already rendered as a city
+        if (mapView === 'us' && intel.id === 'dc') return
+        
         const projected = projection([intel.lon, intel.lat])
         if (!projected) return
         const [x, y] = projected
         if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
 
+        // Determine severity for intel hotspots
+        let severity = 'medium' // default
+        if (intel.id === 'dc') severity = 'high' // DC is a major intelligence hub
+        else if (intel.status && intel.status.includes('High')) severity = 'high'
+        else if (intel.status && intel.status.includes('Elevated')) severity = 'elevated'
+        
         const group = intelGroup.append('g')
-          .attr('class', 'intel-hotspot')
+          .attr('class', `intel-hotspot ${severity}`)
           .attr('transform', `translate(${x},${y})`)
           .style('cursor', 'pointer')
-          .on('click', () => handleIntelHotspotClick(intel))
+          .on('click', () => handleIntelHotspotClick({...intel, severity}))
 
-        // Square marker for intelligence locations
-        group.append('rect')
-          .attr('x', -4)
-          .attr('y', -4)
-          .attr('width', 8)
-          .attr('height', 8)
+        // Pulsing ring (like regular hotspots)
+        group.append('circle')
+          .attr('r', 8)
           .attr('fill', 'none')
-          .attr('stroke', '#00ddff')
-          .attr('stroke-width', 1.5)
-          .attr('opacity', 0.9)
-
-        // Inner square
-        group.append('rect')
-          .attr('x', -2)
-          .attr('y', -2)
-          .attr('width', 4)
-          .attr('height', 4)
-          .attr('fill', '#00ddff')
+          .attr('stroke', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
+          .attr('stroke-width', 2)
           .attr('opacity', 0.8)
+
+        // Inner dot (like regular hotspots)
+        group.append('circle')
+          .attr('r', 3)
+          .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
 
         // Label
         group.append('text')
-          .attr('x', 8)
+          .attr('x', 12)
           .attr('y', 4)
-          .attr('fill', '#00ddff')
-          .attr('font-size', '9px')
-          .attr('font-weight', '500')
+          .attr('fill', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
+          .attr('font-size', '10px')
+          .attr('font-weight', '600')
           .text(intel.name)
       })
     }
@@ -567,6 +652,13 @@ const GlobalMap = () => {
     setTranslation([0, 0])
   }
 
+  const toggleLayer = (layer) => {
+    setLayerVisibility(prev => ({
+      ...prev,
+      [layer]: !prev[layer]
+    }))
+  }
+
   const handleHotspotClick = (hotspot) => {
     // Find relevant news
     const newsItems = allNews.filter(item => {
@@ -582,14 +674,40 @@ const GlobalMap = () => {
   }
 
   const handleIntelHotspotClick = (intel) => {
-    // Find relevant news
+    // Find relevant news - more flexible matching for DC
     const newsItems = allNews.filter(item => {
         const text = (item.title + ' ' + (item.summary || '')).toLowerCase()
+        
+        // Special handling for DC - broader keyword matching
+        if (intel.id === 'dc') {
+          const dcKeywords = ['washington', 'dc', 'pentagon', 'white house', 'cia', 'nsa', 'trump', 'biden', 'us', 'america', 'united states', 'federal', 'government', 'congress', 'senate', 'house of representatives']
+          if (dcKeywords.some(k => text.includes(k.toLowerCase()))) return true
+        }
+        
+        // Standard keyword matching
         if (intel.keywords && intel.keywords.some(k => text.includes(k.toLowerCase()))) return true
         if (text.includes(intel.name.toLowerCase())) return true
         return false
     }).slice(0, 5)
     setSelectedHotspot({ ...intel, type: 'intel', news: newsItems })
+  }
+
+  const handleCountryClick = (countryFeature) => {
+    // Get country name from properties
+    const countryName = countryFeature.properties?.NAME || countryFeature.properties?.name || 'Unknown Country'
+    
+    // Find relevant news for this country
+    const newsItems = allNews.filter(item => {
+      const text = (item.title + ' ' + (item.summary || '')).toLowerCase()
+      return text.includes(countryName.toLowerCase())
+    }).slice(0, 5)
+
+    setSelectedHotspot({ 
+      name: countryName, 
+      type: 'country', 
+      news: newsItems,
+      location: countryName
+    })
   }
 
   const closePopup = () => {
@@ -608,7 +726,7 @@ const GlobalMap = () => {
   if (error) {
     return (
       <div className="global-map-error">
-        <div className="error-icon">⚠️</div>
+        <div className="error-icon">!</div>
         <div>{error}</div>
         <button onClick={loadMapData} style={{marginTop: '10px', padding: '5px 10px', cursor: 'pointer'}}>
           Retry
@@ -636,7 +754,7 @@ const GlobalMap = () => {
 
   return (
     <div className="global-map-container" ref={containerRef}>
-      <div className="map-controls">
+      <div className="map-controls map-controls-right">
         <div className="map-view-toggle">
           <button 
             className={mapView === 'global' ? 'active' : ''}
@@ -658,9 +776,82 @@ const GlobalMap = () => {
           <button onClick={handleZoomReset} title="Reset">RST</button>
         </div>
       </div>
+      <div className="map-controls map-controls-left">
+        <div className="map-layer-toggles">
+          <div className="layer-toggle-group">
+            <button 
+              className={`layer-toggle ${layerVisibility.hotspots ? 'active' : ''}`}
+              onClick={() => toggleLayer('hotspots')}
+              title="Toggle Hotspots"
+            >
+              HOT
+            </button>
+            <button 
+              className={`layer-toggle ${layerVisibility.intelHotspots ? 'active' : ''}`}
+              onClick={() => toggleLayer('intelHotspots')}
+              title="Toggle Intelligence Hotspots"
+            >
+              INTEL
+            </button>
+            {mapView === 'us' && (
+              <button 
+                className={`layer-toggle ${layerVisibility.usCities ? 'active' : ''}`}
+                onClick={() => toggleLayer('usCities')}
+                title="Toggle US Cities"
+              >
+                CITIES
+              </button>
+            )}
+          </div>
+          {mapView === 'global' && (
+            <div className="layer-toggle-group">
+              <button 
+                className={`layer-toggle ${layerVisibility.shippingChokepoints ? 'active' : ''}`}
+                onClick={() => toggleLayer('shippingChokepoints')}
+                title="Toggle Shipping Chokepoints"
+              >
+                SHIP
+              </button>
+              <button 
+                className={`layer-toggle ${layerVisibility.conflictZones ? 'active' : ''}`}
+                onClick={() => toggleLayer('conflictZones')}
+                title="Toggle Conflict Zones"
+              >
+                WAR
+              </button>
+              <button 
+                className={`layer-toggle ${layerVisibility.militaryBases ? 'active' : ''}`}
+                onClick={() => toggleLayer('militaryBases')}
+                title="Toggle Military Bases"
+              >
+                BASE
+              </button>
+              <button 
+                className={`layer-toggle ${layerVisibility.nuclearFacilities ? 'active' : ''}`}
+                onClick={() => toggleLayer('nuclearFacilities')}
+                title="Toggle Nuclear Facilities"
+              >
+                NUKE
+              </button>
+              <button 
+                className={`layer-toggle ${layerVisibility.underseaCables ? 'active' : ''}`}
+                onClick={() => toggleLayer('underseaCables')}
+                title="Toggle Undersea Cables"
+              >
+                CABLE
+              </button>
+              <button 
+                className={`layer-toggle ${layerVisibility.cyberRegions ? 'active' : ''}`}
+                onClick={() => toggleLayer('cyberRegions')}
+                title="Toggle Cyber Regions"
+              >
+                CYBER
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
       <div className="map-labels">
-        <div className="map-label top-left">SITUATION MAP</div>
-        <div className="map-label top-right">OPEN SOURCE</div>
         <div className="map-label bottom-left">
           <span className="legend-item"><span className="legend-dot high"></span>HIGH</span>
           <span className="legend-item"><span className="legend-dot elevated"></span>ELEVATED</span>
@@ -679,11 +870,17 @@ const GlobalMap = () => {
               )}
             </div>
             {selectedHotspot.type === 'hotspot' ? (
-              <div className={`hotspot-popup-level ${selectedHotspot.severity || selectedHotspot.level}`}>
-                {(selectedHotspot.severity || selectedHotspot.level).toUpperCase()}
+              <div className={`hotspot-popup-level ${selectedHotspot.severity || selectedHotspot.level || 'unknown'}`}>
+                {(selectedHotspot.severity || selectedHotspot.level || 'unknown').toUpperCase()}
+              </div>
+            ) : selectedHotspot.type === 'country' ? (
+              <div className="hotspot-popup-level country">COUNTRY</div>
+            ) : selectedHotspot.type === 'intel' ? (
+              <div className={`hotspot-popup-level ${selectedHotspot.severity || 'unknown'}`}>
+                {(selectedHotspot.severity || 'unknown').toUpperCase()}
               </div>
             ) : (
-              <div className="hotspot-popup-level intel">INTEL</div>
+              <div className="hotspot-popup-level unknown">UNKNOWN</div>
             )}
           </div>
           {selectedHotspot.category && (
@@ -721,12 +918,15 @@ const GlobalMap = () => {
               <strong>Keywords:</strong> {selectedHotspot.keywords.join(', ')}
             </div>
           )}
-          <div className="hotspot-popup-coords">
-            {selectedHotspot.coords 
-              ? `${selectedHotspot.coords[0].toFixed(4)}, ${selectedHotspot.coords[1].toFixed(4)}`
-              : `${selectedHotspot.lon.toFixed(4)}, ${selectedHotspot.lat.toFixed(4)}`
-            }
-          </div>
+          {((selectedHotspot.coords && selectedHotspot.coords[0] !== undefined) || 
+            (selectedHotspot.lon !== undefined && selectedHotspot.lat !== undefined)) && (
+            <div className="hotspot-popup-coords">
+              {selectedHotspot.coords 
+                ? `${selectedHotspot.coords[0].toFixed(4)}, ${selectedHotspot.coords[1].toFixed(4)}`
+                : `${selectedHotspot.lon.toFixed(4)}, ${selectedHotspot.lat.toFixed(4)}`
+              }
+            </div>
+          )}
           <button className="hotspot-popup-close" onClick={closePopup}>×</button>
         </div>
       )}
