@@ -369,7 +369,7 @@ const GlobalMap = () => {
       // Shipping Chokepoints
       const chokeGroup = svg.append('g').attr('class', 'chokepoints')
       SHIPPING_CHOKEPOINTS.forEach(point => {
-        const projected = projection(point.coords)
+        const projected = projection([point.lon, point.lat])
         if (!projected) return
         const [x, y] = projected
         if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
@@ -391,7 +391,7 @@ const GlobalMap = () => {
       // Conflict Zones
       const conflictGroup = svg.append('g').attr('class', 'conflict-zones')
       CONFLICT_ZONES.forEach(zone => {
-         const projected = projection(zone.coords)
+         const projected = projection([zone.labelPos.lon, zone.labelPos.lat])
          if (!projected) return
          const [x, y] = projected
          if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
@@ -412,7 +412,7 @@ const GlobalMap = () => {
       // Military Bases
       const baseGroup = svg.append('g').attr('class', 'military-bases')
       MILITARY_BASES.forEach(base => {
-          const projected = projection(base.coords)
+          const projected = projection([base.lon, base.lat])
           if (!projected) return
           const [x, y] = projected
           if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
@@ -430,7 +430,7 @@ const GlobalMap = () => {
        // Nuclear Facilities
        const nucGroup = svg.append('g').attr('class', 'nuclear-facilities')
        NUCLEAR_FACILITIES.forEach(nuc => {
-           const projected = projection(nuc.coords)
+           const projected = projection([nuc.lon, nuc.lat])
            if (!projected) return
            const [x, y] = projected
            if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
@@ -471,7 +471,7 @@ const GlobalMap = () => {
       // Cyber Regions
       const cyberGroup = svg.append('g').attr('class', 'cyber-regions')
       CYBER_REGIONS.forEach(reg => {
-          const projected = projection(reg.coords)
+          const projected = projection([reg.lon, reg.lat])
           if (!projected) return
           const [x, y] = projected
           if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
