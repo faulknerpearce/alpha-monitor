@@ -670,7 +670,15 @@ const GlobalMap = () => {
       return false
     }).slice(0, 5)
 
-    setSelectedHotspot({ ...hotspot, type: 'hotspot', news: newsItems })
+    // Normalize description field - some use 'desc' instead of 'description'
+    const normalizedHotspot = {
+      ...hotspot,
+      description: hotspot.description || hotspot.desc,
+      type: hotspot.type || 'hotspot',
+      news: newsItems
+    }
+
+    setSelectedHotspot(normalizedHotspot)
   }
 
   const handleIntelHotspotClick = (intel) => {
@@ -879,8 +887,22 @@ const GlobalMap = () => {
               <div className={`hotspot-popup-level ${selectedHotspot.severity || 'unknown'}`}>
                 {(selectedHotspot.severity || 'unknown').toUpperCase()}
               </div>
+            ) : selectedHotspot.type === 'chokepoint' ? (
+              <div className="hotspot-popup-level elevated">SHIPPING</div>
+            ) : selectedHotspot.type === 'conflict' ? (
+              <div className="hotspot-popup-level high">CONFLICT</div>
+            ) : selectedHotspot.type === 'base' ? (
+              <div className="hotspot-popup-level medium">MILITARY BASE</div>
+            ) : selectedHotspot.type === 'nuclear' ? (
+              <div className="hotspot-popup-level high">NUCLEAR</div>
+            ) : selectedHotspot.type === 'cyber' ? (
+              <div className="hotspot-popup-level elevated">CYBER</div>
+            ) : selectedHotspot.type === 'city' ? (
+              <div className={`hotspot-popup-level ${selectedHotspot.severity || 'medium'}`}>
+                {(selectedHotspot.severity || 'CITY').toUpperCase()}
+              </div>
             ) : (
-              <div className="hotspot-popup-level unknown">UNKNOWN</div>
+              <div className="hotspot-popup-level unknown">LOCATION</div>
             )}
           </div>
           {selectedHotspot.category && (
@@ -892,6 +914,61 @@ const GlobalMap = () => {
           {selectedHotspot.agencies && (
             <div className="hotspot-popup-agencies">
               <strong>Agencies:</strong> {selectedHotspot.agencies.join(', ')}
+            </div>
+          )}
+          {selectedHotspot.region && (
+            <div className="hotspot-popup-location">
+              <strong>Region:</strong> {selectedHotspot.region}
+            </div>
+          )}
+          {selectedHotspot.traffic && (
+            <div className="hotspot-popup-status">
+              <strong>Traffic:</strong> {selectedHotspot.traffic}
+            </div>
+          )}
+          {selectedHotspot.sectors && (
+            <div className="hotspot-popup-agencies">
+              <strong>Sectors:</strong> {selectedHotspot.sectors.join(', ')}
+            </div>
+          )}
+          {selectedHotspot.group && (
+            <div className="hotspot-popup-category">
+              <strong>Group:</strong> {selectedHotspot.group} {selectedHotspot.aka && `(${selectedHotspot.aka})`}
+            </div>
+          )}
+          {selectedHotspot.sponsor && (
+            <div className="hotspot-popup-status">
+              <strong>Sponsor:</strong> {selectedHotspot.sponsor}
+            </div>
+          )}
+          {selectedHotspot.targets && (
+            <div className="hotspot-popup-agencies">
+              <strong>Targets:</strong> {selectedHotspot.targets.join(', ')}
+            </div>
+          )}
+          {selectedHotspot.parties && (
+            <div className="hotspot-popup-agencies">
+              <strong>Parties:</strong> {selectedHotspot.parties.join(', ')}
+            </div>
+          )}
+          {selectedHotspot.intensity && (
+            <div className="hotspot-popup-status">
+              <strong>Intensity:</strong> {selectedHotspot.intensity.toUpperCase()}
+            </div>
+          )}
+          {selectedHotspot.casualties && (
+            <div className="hotspot-popup-status">
+              <strong>Casualties:</strong> {selectedHotspot.casualties}
+            </div>
+          )}
+          {selectedHotspot.displaced && (
+            <div className="hotspot-popup-status">
+              <strong>Displaced:</strong> {selectedHotspot.displaced}
+            </div>
+          )}
+          {selectedHotspot.population && (
+            <div className="hotspot-popup-status">
+              <strong>Population:</strong> {selectedHotspot.population}
             </div>
           )}
           <div className="hotspot-popup-desc">
