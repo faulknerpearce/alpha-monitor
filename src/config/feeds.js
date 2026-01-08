@@ -43,7 +43,6 @@ export const NEWS_FEEDS = {
     { name: 'Bellingcat', url: 'https://www.bellingcat.com/feed/', type: 'osint', topics: ['investigation', 'osint'] },
     // Government/Official
     { name: 'DoD News', url: 'https://www.defense.gov/DesktopModules/ArticleCS/RSS.ashx?max=10&ContentType=1&Site=945', type: 'govt', topics: ['military', 'official'] },
-    { name: 'State Dept', url: 'https://www.state.gov/rss-feed/press-releases/feed/', type: 'govt', topics: ['diplomacy', 'official'] },
     // Cyber/Security
     { name: 'CISA Alerts', url: 'https://www.cisa.gov/uscert/ncas/alerts.xml', type: 'cyber', topics: ['cyber', 'security'] },
     { name: 'Krebs Security', url: 'https://krebsonsecurity.com/feed/', type: 'cyber', topics: ['cyber', 'security'] }
