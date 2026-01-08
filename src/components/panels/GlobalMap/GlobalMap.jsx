@@ -899,7 +899,7 @@ const GlobalMap = () => {
               <div className="hotspot-popup-level elevated">CYBER</div>
             ) : selectedHotspot.type === 'city' ? (
               <div className={`hotspot-popup-level ${selectedHotspot.severity || 'medium'}`}>
-                {selectedHotspot.severity ? selectedHotspot.severity.toUpperCase() : 'CITY'}
+                {selectedHotspot.severity && typeof selectedHotspot.severity === 'string' ? selectedHotspot.severity.toUpperCase() : 'CITY'}
               </div>
             ) : (
               <div className="hotspot-popup-level unknown">LOCATION</div>
@@ -953,7 +953,7 @@ const GlobalMap = () => {
           )}
           {selectedHotspot.intensity && (
             <div className="hotspot-popup-status">
-              <strong>Intensity:</strong> {selectedHotspot.intensity.toUpperCase()}
+              <strong>Intensity:</strong> {typeof selectedHotspot.intensity === 'string' ? selectedHotspot.intensity.toUpperCase() : selectedHotspot.intensity}
             </div>
           )}
           {selectedHotspot.casualties && (
