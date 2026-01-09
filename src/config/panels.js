@@ -24,8 +24,3 @@ export const CATEGORIES = [
   { id: 'social', name: 'Social', icon: '' },
   { id: 'data', name: 'Data', icon: '' },
 ]
-
-
-
-
-
