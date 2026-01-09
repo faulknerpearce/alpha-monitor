@@ -38,7 +38,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error-icon {
@@ -216,7 +218,7 @@
   bottom: 0.5rem;
   right: 0.5rem;
   border-top-left-radius: 4px;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
 }
 
@@ -254,6 +256,7 @@
     r: 8;
     opacity: 0.8;
   }
+
   100% {
     r: 20;
     opacity: 0;
@@ -384,7 +387,7 @@
 }
 
 .hotspot-popup-coords {
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-secondary);
   margin-bottom: 1rem;
@@ -539,12 +542,21 @@
 }
 
 @keyframes pulse-opacity {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes rotate-dash {
-  to { stroke-dashoffset: -20; }
+  to {
+    stroke-dashoffset: -20;
+  }
 }
 
 /* Cables & Cyber */
@@ -552,7 +564,7 @@
   fill: none;
   stroke: #0088cc;
   stroke-width: 1.5;
-  stroke-dasharray: 4,4;
+  stroke-dasharray: 4, 4;
   opacity: 0.6;
 }
 
@@ -572,12 +584,20 @@
   fill: none;
   stroke: #00ff00;
   stroke-width: 1;
-  stroke-dasharray: 2,2;
+  stroke-dasharray: 2, 2;
   animation: pulse-cyber 2s infinite;
 }
 
 @keyframes pulse-cyber {
-  0% { stroke-opacity: 1; }
-  50% { stroke-opacity: 0.3; }
-  100% { stroke-opacity: 1; }
+  0% {
+    stroke-opacity: 1;
+  }
+
+  50% {
+    stroke-opacity: 0.3;
+  }
+
+  100% {
+    stroke-opacity: 1;
+  }
 }

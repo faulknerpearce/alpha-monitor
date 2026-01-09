@@ -1,0 +1,122 @@
+.startups-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.startups-summary {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(16, 185, 129, 0.05);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+.summary-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.stat-label {
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.stat-value.green {
+    color: #10b981;
+}
+
+.deals-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.deal-item {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+}
+
+.deal-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.deal-item:last-child {
+    border-bottom: none;
+}
+
+.deal-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.deal-company {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.deal-round {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.35rem;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.deal-sector {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.35rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border-radius: 3px;
+}
+
+.deal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.deal-title {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.deal-title:hover {
+    color: #818cf8;
+}
+
+.deal-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.deal-amount {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #10b981;
+    font-family: var(--font-mono);
+}
+
+.deal-time {
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+}
