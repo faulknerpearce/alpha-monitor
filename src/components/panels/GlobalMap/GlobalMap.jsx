@@ -1,19 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
-import axios from 'axios'
 import {
-  HOTSPOTS, INTEL_HOTSPOTS, US_CITIES, US_HOTSPOTS,
-  SHIPPING_CHOKEPOINTS, CONFLICT_ZONES, MILITARY_BASES,
+  US_CITIES, SHIPPING_CHOKEPOINTS, MILITARY_BASES,
   NUCLEAR_FACILITIES, UNDERSEA_CABLES, CYBER_REGIONS
 } from '../../../config/regions.js'
 import { NEWS_FEEDS } from '../../../config/feeds.js'
+import { fetchWithProxy, parseRSS } from '../../../utils/fetchUtils.js'
+import { useDynamicRegions } from '../../../hooks/useDynamicRegions.js'
 import './GlobalMap.css'
-
-const CORS_PROXIES = [
-  'https://corsproxy.io/?',
-  'https://api.allorigins.win/raw?url='
-]
 
 const GlobalMap = () => {
   const svgRef = useRef(null)
@@ -25,6 +20,9 @@ const GlobalMap = () => {
   const [usData, setUsData] = useState(null)
   const [selectedHotspot, setSelectedHotspot] = useState(null)
   const [allNews, setAllNews] = useState([])
+
+  // Use dynamic regions hook
+  const { hotspots, intelHotspots, usHotspots, conflictZones, lastUpdated } = useDynamicRegions()
 
   // Zoom state
   const [zoomLevel, setZoomLevel] = useState(1)
@@ -46,6 +44,9 @@ const GlobalMap = () => {
   useEffect(() => {
     loadMapData()
     fetchMapNews()
+    // Refetch news every 5 minutes
+    const newsInterval = setInterval(fetchMapNews, 5 * 60 * 1000)
+    return () => clearInterval(newsInterval)
   }, [])
 
   // Update layer visibility based on map view
@@ -56,18 +57,6 @@ const GlobalMap = () => {
       usCities: mapView === 'us'
     }))
   }, [mapView])
-
-  const fetchWithProxy = async (url) => {
-    for (const proxy of CORS_PROXIES) {
-      try {
-        const response = await axios.get(proxy + encodeURIComponent(url))
-        return response.data
-      } catch (e) {
-        continue
-      }
-    }
-    throw new Error('All proxies failed')
-  }
 
   const fetchMapNews = async () => {
     try {
@@ -81,22 +70,12 @@ const GlobalMap = () => {
       const results = await Promise.allSettled(feedsToFetch.map(async (feed) => {
         try {
           const xmlText = await fetchWithProxy(feed.url)
-          const parser = new DOMParser()
-          const xml = parser.parseFromString(xmlText, 'text/xml')
-
-          let items = xml.querySelectorAll('item')
-          if (items.length === 0) items = xml.querySelectorAll('entry')
-
-          return Array.from(items).slice(0, 5).map(item => {
-            const title = item.querySelector('title')?.textContent || ''
-            const link = item.querySelector('link')?.textContent || item.querySelector('link')?.getAttribute('href') || '#'
-            return {
-              source: feed.name,
-              title,
-              link,
-              date: item.querySelector('pubDate')?.textContent || ''
-            }
-          })
+          const items = parseRSS(xmlText)
+          
+          return items.slice(0, 5).map(item => ({
+            ...item,
+            source: feed.name
+          }))
         } catch (e) {
           console.error(`Failed to fetch ${feed.name}`, e)
           return []
@@ -134,16 +113,11 @@ const GlobalMap = () => {
       const searchTerms = encodeURIComponent(query)
       const rssUrl = `https://news.google.com/rss/search?q=${searchTerms}&hl=en-US&gl=US&ceid=US:en`
       const xmlText = await fetchWithProxy(rssUrl)
-      const parser = new DOMParser()
-      const xml = parser.parseFromString(xmlText, 'text/xml')
-      const items = xml.querySelectorAll('item')
+      const items = parseRSS(xmlText)
 
-      return Array.from(items).slice(0, 3).map(item => ({
-        source: item.querySelector('source')?.textContent || 'Google News',
-        title: item.querySelector('title')?.textContent || '',
-        link: item.querySelector('link')?.textContent || '#',
-        date: item.querySelector('pubDate')?.textContent || '',
-        summary: item.querySelector('description')?.textContent || ''
+      return items.slice(0, 3).map(item => ({
+        ...item,
+        source: item.source || 'Google News'
       }))
     } catch (e) {
       console.error('Error fetching Google News:', e)
@@ -162,7 +136,7 @@ const GlobalMap = () => {
       console.error('Error in map render effect:', error)
       setError('Failed to render map')
     }
-  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility])
+  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility, hotspots, intelHotspots, usHotspots, conflictZones])
 
   const loadMapData = async () => {
     try {
@@ -411,11 +385,11 @@ const GlobalMap = () => {
 
       // Add hotspots (global hotspots for global view, US hotspots for US view)
       if (layerVisibility.hotspots) {
-        const hotspots = mapView === 'global' ? Object.values(HOTSPOTS) : US_HOTSPOTS
+        const hotspotsData = mapView === 'global' ? Object.values(hotspots) : usHotspots
 
         const hotspotsGroup = svg.append('g').attr('class', 'hotspots')
 
-        hotspots.forEach(hotspot => {
+        hotspotsData.forEach(hotspot => {
           const coords = [hotspot.lon, hotspot.lat]
           const projected = projection(coords)
           if (!projected) return
@@ -481,7 +455,7 @@ const GlobalMap = () => {
         // Conflict Zones
         if (layerVisibility.conflictZones) {
           const conflictGroup = svg.append('g').attr('class', 'conflict-zones')
-          CONFLICT_ZONES.forEach(zone => {
+          conflictZones.forEach(zone => {
             const projected = projection([zone.labelPos.lon, zone.labelPos.lat])
             if (!projected) return
             const [x, y] = projected
@@ -612,7 +586,7 @@ const GlobalMap = () => {
       if (layerVisibility.intelHotspots) {
         const intelGroup = svg.append('g').attr('class', 'intel-hotspots')
 
-        INTEL_HOTSPOTS.forEach(intel => {
+        intelHotspots.forEach(intel => {
           // Skip DC in US view since it's already rendered as a city
           if (mapView === 'us' && intel.id === 'dc') return
 
@@ -896,7 +870,12 @@ const GlobalMap = () => {
           <span className="legend-item"><span className="legend-dot elevated"></span>ELEVATED</span>
           <span className="legend-item"><span className="legend-dot medium"></span>MEDIUM</span>
         </div>
-        <div className="map-label bottom-right">{new Date().toISOString().slice(0, 16).replace('T', ' ')}Z</div>
+        <div className="map-label bottom-right">
+          <div>{new Date().toISOString().slice(0, 16).replace('T', ' ')}Z</div>
+          <div style={{ fontSize: '9px', opacity: 0.7 }}>
+            Updated: {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </div>
       </div>
       <svg ref={svgRef}></svg>
       {selectedHotspot && (
