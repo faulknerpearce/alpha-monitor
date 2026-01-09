@@ -1,11 +1,12 @@
 .panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-color);
-    border-radius: 0;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     cursor: default;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .panel.wide {
@@ -13,8 +14,9 @@
 }
 
 .panel:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .panel.collapsed .panel-content {
@@ -22,15 +24,16 @@
 }
 
 .panel-header {
-    padding: 0.75rem 1rem;
-    background: var(--bg-dark);
-    border-bottom: 1px solid var(--border-color);
+    padding: 0.6rem 0.9rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     cursor: pointer;
     user-select: none;
+    transition: background 0.2s ease;
 }
 
 .panel-header:hover {
-    background: var(--bg-panel-hover);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .panel-header-left {
@@ -41,8 +44,14 @@
 
 .drag-handle {
     cursor: grab;
-    color: var(--text-secondary);
-    font-size: 1rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.panel:hover .drag-handle {
+    opacity: 0.8;
 }
 
 .drag-handle:active {
@@ -50,48 +59,65 @@
 }
 
 .panel-toggle {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
+    color: var(--text-dim);
+    font-size: 0.6rem;
+    transition: transform 0.2s ease;
+}
+
+.panel.collapsed .panel-toggle {
+    transform: rotate(-90deg);
 }
 
 .panel-title {
-    font-size: 0.875rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 
 .panel-count {
-    color: var(--text-secondary);
-    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-size: 0.65rem;
 }
 
 .panel-content {
-    padding: 1rem;
-    max-height: 500px;
+    padding: 0;
+    max-height: 450px;
     overflow-y: auto;
 }
 
-.panel-content::-webkit-scrollbar {
-    width: 8px;
+/* Animation for panel appearance */
+.panel {
+    animation: panelFadeIn 0.4s ease-out;
 }
 
-.panel-content::-webkit-scrollbar-track {
-    background: var(--bg-dark);
-}
+@keyframes panelFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
 
-.panel-content::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 0;
-}
-
-.panel-content::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
     .panel.wide {
         grid-column: span 1;
+    }
+
+    .panel {
+        border-radius: 6px;
+    }
+
+    .panel-header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .panel-title {
+        font-size: 0.65rem;
     }
 }
