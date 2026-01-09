@@ -230,10 +230,10 @@ const GlobalMap = () => {
     // Create projection
     let projection
     if (mapView === 'global') {
-      projection = d3.geoEquirectangular()
+      projection = d3.geoNaturalEarth1()
         .scale((width / (2 * Math.PI)) * zoomLevel)
         .translate([width / 2 + translation[0], height / 2 + translation[1]])
-        .center([0, 0])
+        .center([180, 0])
     } else {
       projection = d3.geoAlbersUsa()
         .scale(width * zoomLevel * 1.2)
@@ -442,6 +442,14 @@ const GlobalMap = () => {
             .attr('fill', '#00aaff')
             .attr('stroke', '#ffffff')
             .attr('stroke-width', 1)
+
+          g.append('text')
+            .attr('x', 0)
+            .attr('y', 20)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#00aaff')
+            .attr('font-size', '10px')
+            .text(point.name)
         })
       }
 
@@ -520,11 +528,6 @@ const GlobalMap = () => {
       if (layerVisibility.underseaCables) {
         const cablesGroup = svg.append('g').attr('class', 'cables')
         UNDERSEA_CABLES.forEach(cable => {
-          const line = d3.line()
-            .x(d => projection(d)[0])
-            .y(d => projection(d)[1])
-            .curve(d3.curveBasis) // Smooth curves for cables
-
           const pathCoords = cable.points
           // Check if projection is successful for all points to avoid errors
           const valid = pathCoords.every(p => {
@@ -533,9 +536,14 @@ const GlobalMap = () => {
           })
           
           if (valid) {
+            // Create GeoJSON LineString for great circle path
+            const lineString = {
+              type: 'LineString',
+              coordinates: pathCoords
+            }
             cablesGroup.append('path')
-              .datum(pathCoords)
-              .attr('d', line)
+              .datum(lineString)
+              .attr('d', path)
               .attr('class', cable.major ? 'major' : '')
               .attr('fill', 'none')
               // Tooltip or interaction could be added here

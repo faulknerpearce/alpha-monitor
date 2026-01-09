@@ -13,88 +13,137 @@ export const HOTSPOTS = {}
 // Intelligence Hotspots - Major world capitals and strategic locations
 export const INTEL_HOTSPOTS = [
   {
-    id: 'dc', name: 'DC', subtext: 'US National Security Hub', lat: 38.9, lon: -77.0,
+    id: 'dc', name: 'DC', subtext: 'US National Security Hub', lat: 38.9072, lon: -77.0369,
     keywords: ['pentagon', 'white house', 'washington', 'd.c.', 'us military', 'cia', 'nsa', 'trump', 'biden', 'us', 'america', 'united states', 'federal', 'government', 'congress', 'senate', 'house of representatives'],
     description: 'US national security and political center. Monitor for domestic and international developments affecting American interests.',
     agencies: ['Pentagon', 'CIA', 'NSA', 'State Dept', 'White House', 'Congress'],
     status: 'Active monitoring'
   },
   {
-    id: 'moscow', name: 'Moscow', subtext: 'Kremlin Activity', lat: 55.75, lon: 37.6,
+    id: 'moscow', name: 'Moscow', subtext: 'Kremlin Activity', lat: 55.7558, lon: 37.6173,
     keywords: ['russia', 'putin', 'kremlin', 'moscow', 'russian'],
     description: 'Russian political and military command center. FSB, GRU, Presidential Administration.',
     agencies: ['FSB', 'GRU', 'SVR', 'Kremlin'],
     status: 'High activity'
   },
   {
-    id: 'beijing', name: 'Beijing', subtext: 'PLA/MSS Activity', lat: 39.9, lon: 116.4,
+    id: 'beijing', name: 'Beijing', subtext: 'PLA/MSS Activity', lat: 39.9042, lon: 116.4074,
     keywords: ['china', 'beijing', 'chinese', 'xi jinping', 'taiwan strait', 'pla'],
     description: 'Chinese Communist Party headquarters. PLA command, MSS intelligence operations.',
     agencies: ['PLA', 'MSS', 'CCP Politburo'],
     status: 'Elevated posture'
   },
   {
-    id: 'kyiv', name: 'Kyiv', subtext: 'Conflict Zone', lat: 50.45, lon: 30.5,
+    id: 'kyiv', name: 'Kyiv', subtext: 'Conflict Zone', lat: 50.4501, lon: 30.5234,
     keywords: ['ukraine', 'kyiv', 'zelensky', 'ukrainian', 'donbas', 'crimea'],
     description: 'Ukrainian capital under wartime conditions. Government, military coordination center.',
     agencies: ['SBU', 'GUR', 'Armed Forces'],
     status: 'Active conflict'
   },
   {
-    id: 'taipei', name: 'Taipei', subtext: 'Strait Watch', lat: 25.03, lon: 121.5,
+    id: 'taipei', name: 'Taipei', subtext: 'Strait Watch', lat: 25.0330, lon: 121.5654,
     keywords: ['taiwan', 'taipei', 'taiwanese', 'strait'],
     description: 'Taiwan government and military HQ. ADIZ violations and PLA exercises tracked.',
     agencies: ['NSB', 'MND', 'AIT'],
     status: 'Heightened alert'
   },
   {
-    id: 'tehran', name: 'Tehran', subtext: 'IRGC Activity', lat: 35.7, lon: 51.4,
+    id: 'tehran', name: 'Tehran', subtext: 'IRGC Activity', lat: 35.6892, lon: 51.3890,
     keywords: ['iran', 'tehran', 'iranian', 'irgc', 'hezbollah', 'nuclear'],
     description: 'Iranian regime center. IRGC Quds Force, nuclear program oversight, proxy coordination.',
     agencies: ['IRGC', 'MOIS', 'AEOI'],
     status: 'Proxy operations active'
   },
   {
-    id: 'telaviv', name: 'Tel Aviv', subtext: 'Mossad/IDF', lat: 32.07, lon: 34.78,
+    id: 'telaviv', name: 'Tel Aviv', subtext: 'Mossad/IDF', lat: 32.0853, lon: 34.7818,
     keywords: ['israel', 'israeli', 'gaza', 'hamas', 'idf', 'netanyahu', 'mossad'],
     description: 'Israeli security apparatus. IDF operations, Mossad intel, Shin Bet domestic security.',
     agencies: ['Mossad', 'IDF', 'Shin Bet', 'Aman'],
     status: 'Active operations'
   },
   {
-    id: 'pyongyang', name: 'Pyongyang', subtext: 'DPRK Watch', lat: 39.03, lon: 125.75,
+    id: 'pyongyang', name: 'Pyongyang', subtext: 'DPRK Watch', lat: 39.0392, lon: 125.7625,
     keywords: ['north korea', 'kim jong', 'pyongyang', 'dprk', 'korean missile'],
     description: 'North Korean leadership compound. Nuclear/missile program, regime stability indicators.',
     agencies: ['RGB', 'KPA', 'SSD'],
     status: 'Missile tests ongoing'
   },
   {
-    id: 'london', name: 'London', subtext: 'GCHQ/MI6', lat: 51.5, lon: -0.12,
+    id: 'london', name: 'London', subtext: 'GCHQ/MI6', lat: 51.5074, lon: -0.1278,
     keywords: ['uk', 'britain', 'british', 'mi6', 'gchq', 'london'],
     description: 'UK intelligence community hub. Five Eyes partner, SIGINT, foreign intelligence.',
     agencies: ['MI6', 'GCHQ', 'MI5'],
     status: 'Normal operations'
   },
   {
-    id: 'brussels', name: 'Brussels', subtext: 'NATO HQ', lat: 50.85, lon: 4.35,
+    id: 'brussels', name: 'Brussels', subtext: 'NATO HQ', lat: 50.8503, lon: 4.3517,
     keywords: ['nato', 'eu', 'european union', 'brussels'],
     description: 'NATO headquarters and EU institutions. Alliance coordination, Article 5 readiness.',
     agencies: ['NATO', 'EU Commission', 'EEAS'],
     status: 'Enhanced readiness'
   },
   {
-    id: 'caracas', name: 'Caracas', subtext: 'Venezuela Intervention', lat: 10.5, lon: -66.9,
+    id: 'caracas', name: 'Caracas', subtext: 'Venezuela Transition', lat: 10.4806, lon: -66.9036,
     keywords: ['venezuela', 'maduro', 'caracas', 'venezuelan', 'pdvsa', 'us intervention'],
-    description: 'Site of recent US military operation capturing Maduro. Interim government, oil redirection, international condemnation.',
-    agencies: ['SEBIN', 'DGCIM', 'GNB'],
-    status: 'US-controlled transition'
+    description: 'Site of recent US military operation capturing Maduro. Interim administration, oil sector reforms, international responses.',
+    agencies: ['SEBIN', 'DGCIM', 'GNB', 'US Oversight'],
+    status: 'US-influenced transition'
   },
   {
-    id: 'nuuk', name: 'Nuuk', subtext: 'Arctic Dispute', lat: 64.18, lon: -51.7,
-    keywords: ['greenland', 'denmark', 'arctic', 'nuuk', 'thule', 'rare earth'],
-    description: 'Arctic strategic territory. US military presence, rare earth minerals, sovereignty questions.',
+    id: 'nuuk', name: 'Nuuk', subtext: 'Arctic Tensions', lat: 64.1750, lon: -51.7388,
+    keywords: ['greenland', 'denmark', 'arctic', 'nuuk', 'thule', 'pituffik', 'rare earth'],
+    description: 'Arctic strategic territory with US military presence at Pituffik Space Base. Renewed US interest in control, rare earth minerals, sovereignty disputes.',
     agencies: ['Danish Defence', 'US Space Force', 'Arctic Council'],
-    status: 'Diplomatic tensions'
+    status: 'Heightened diplomatic tensions'
+  },
+  {
+    id: 'seoul', name: 'Seoul', subtext: 'Korean Peninsula Watch', lat: 37.5665, lon: 126.9780,
+    keywords: ['south korea', 'seoul', 'korean', 'rok', 'usfk', 'missile defense'],
+    description: 'South Korean capital and military command center. US-ROK alliance, deterrence against DPRK threats.',
+    agencies: ['ROK Ministry of National Defense', 'USFK', 'NSC'],
+    status: 'Alliance vigilance'
+  },
+  {
+    id: 'newdelhi', name: 'New Delhi', subtext: 'Indo-Pacific Strategy', lat: 28.6139, lon: 77.2090,
+    keywords: ['india', 'new delhi', 'modi', 'indian', 'quad', 'indo-pacific'],
+    description: 'Indian political and military hub. Growing strategic partnerships, border tensions monitoring.',
+    agencies: ['RAW', 'Indian Armed Forces', 'MEA'],
+    status: 'Strategic realignment'
+  },
+  {
+    id: 'riyadh', name: 'Riyadh', subtext: 'Gulf Security Hub', lat: 24.7136, lon: 46.6753,
+    keywords: ['saudi arabia', 'riyadh', 'mbs', 'gulf', 'oil', 'yemen'],
+    description: 'Saudi Arabian command center. Regional security, energy policy, alliances with US.',
+    agencies: ['GID', 'Saudi Armed Forces', 'MOD'],
+    status: 'Regional stabilization'
+  },
+  {
+    id: 'ankara', name: 'Ankara', subtext: 'NATO Southern Flank', lat: 39.9334, lon: 32.8597,
+    keywords: ['turkey', 'ankara', 'erdogan', 'turkish', 'nato', 'syria'],
+    description: 'Turkish government and military headquarters. NATO member dynamics, regional operations.',
+    agencies: ['MIT', 'Turkish Armed Forces', 'Presidency'],
+    status: 'Alliance coordination'
+  },
+  {
+    id: 'tokyo', name: 'Tokyo', subtext: 'US-Japan Alliance', lat: 35.6762, lon: 139.6503,
+    keywords: ['japan', 'tokyo', 'japanese', 'usfj', 'east china sea'],
+    description: 'Japanese political and defense center. US alliance, regional deterrence.',
+    agencies: ['PSIA', 'JSDF', 'MOD'],
+    status: 'Enhanced deterrence'
+  },
+  {
+    id: 'singapore', name: 'Singapore', subtext: 'Malacca Strait Oversight', lat: 1.3521, lon: 103.8198,
+    keywords: ['singapore', 'malacca', 'strait', 'maritime', 'asean'],
+    description: 'Key maritime hub monitoring critical chokepoint. Regional security and trade flows.',
+    agencies: ['ISD', 'RSAF', 'RSN'],
+    status: 'Maritime vigilance'
+  },
+  {
+    id: 'canberra', name: 'Canberra', subtext: 'AUKUS/Five Eyes Hub', lat: -35.2809, lon: 149.1300,
+    keywords: ['australia', 'canberra', 'australian', 'aukus', 'five eyes', 'indo-pacific', 'pine gap'],
+    description: 'Australian political and defense headquarters. Key node in AUKUS trilateral partnership, Five Eyes intelligence sharing, and Indo-Pacific deterrence operations.',
+    agencies: ['ASD', 'ASIO', 'ADF', 'ONI'],
+    status: 'Enhanced alliance integration'
   }
 ]
 
@@ -287,263 +336,332 @@ export const SHIPPING_CHOKEPOINTS = [
   {
     id: 'suez',
     name: 'Suez Canal',
-    lat: 30.45,
-    lon: 32.35,
-    keywords: ['suez', 'red sea', 'houthi', 'canal'],
-    desc: 'Critical waterway. ~12% of global trade. Traffic remains ~60% below pre-crisis levels despite end to Houthi attacks.',
-    traffic: '~20-30 ships/day (reduced)',
+    lat: 30.5833,
+    lon: 32.3167,
+    keywords: ['suez', 'red sea', 'houthi', 'canal', 'bab el-mandeb'],
+    desc: 'Critical waterway handling ~12% of global trade. Traffic remains ~60% below pre-crisis levels in early 2026, despite cessation of Houthi attacks over 100 days ago; many vessels continue Cape of Good Hope routing.',
+    traffic: '~20-30 ships/day (significantly reduced)',
     region: 'Egypt'
   },
   {
     id: 'panama',
     name: 'Panama Canal',
-    lat: 9.1,
-    lon: -79.7,
-    keywords: ['panama canal', 'panama'],
-    desc: 'Links Atlantic and Pacific oceans. ~5% of global trade. Facing drought-related capacity restrictions.',
-    traffic: '~40 ships/day',
+    lat: 9.0800,
+    lon: -79.6800,
+    keywords: ['panama canal', 'panama', 'drought'],
+    desc: 'Links Atlantic and Pacific oceans, ~5% of global trade. Post-drought recovery ongoing; daily transits increasing but still below pre-drought capacity of ~38 ships/day.',
+    traffic: '~27-32 ships/day (recovering)',
     region: 'Panama'
   },
   {
     id: 'hormuz',
     name: 'Strait of Hormuz',
-    lat: 26.5,
-    lon: 56.3,
-    keywords: ['hormuz', 'strait of hormuz', 'persian gulf'],
-    desc: 'Only sea route from Persian Gulf to open ocean. ~21% of global oil passes through daily.',
-    traffic: '~20 tankers/day',
+    lat: 26.5833,
+    lon: 56.4667,
+    keywords: ['hormuz', 'strait of hormuz', 'persian gulf', 'oil tanker'],
+    desc: 'Primary sea route from Persian Gulf; ~20-21% of global petroleum liquids. Traffic stable despite regional tensions.',
+    traffic: '~40-45 tankers/day (normal operations)',
     region: 'Iran/Oman'
   },
   {
     id: 'malacca',
     name: 'Malacca Strait',
-    lat: 2.5,
-    lon: 101.5,
-    keywords: ['malacca', 'singapore strait'],
-    desc: 'Main shipping route between Indian and Pacific oceans. ~25% of global trade including ~25% of oil.',
-    traffic: '~80 ships/day',
-    region: 'Malaysia/Singapore'
+    lat: 3.0000,
+    lon: 101.0000,
+    keywords: ['malacca', 'singapore strait', 'indo-pacific'],
+    desc: 'Key link between Indian and Pacific oceans; ~25-30% of global trade and significant oil/LNG volumes. High traffic with growing congestion risks.',
+    traffic: '~90-100 ships/day (high volume)',
+    region: 'Malaysia/Singapore/Indonesia'
   },
   {
     id: 'bosphorus',
-    name: 'Bosphorus Strait',
-    lat: 41.1,
-    lon: 29.0,
-    keywords: ['bosphorus', 'black sea', 'turkish strait'],
-    desc: 'Only route between Black Sea and Mediterranean. Critical for Russian/Ukrainian grain exports.',
-    traffic: '~45 ships/day',
+    name: 'Bosphorus/Turkish Straits',
+    lat: 41.0167,
+    lon: 29.0333,
+    keywords: ['bosphorus', 'turkish strait', 'black sea', 'grain export'],
+    desc: 'Sole access between Black Sea and Mediterranean. Vital for Russian and Ukrainian grain/oil exports; traffic impacted by ongoing regional conflict.',
+    traffic: '~40-45 ships/day (variable due to tensions)',
     region: 'Turkey'
+  },
+  {
+    id: 'babelmandeb',
+    name: 'Bab el-Mandeb Strait',
+    lat: 12.6667,
+    lon: 43.5000,
+    keywords: ['bab el-mandeb', 'red sea', 'yemen', 'houthi'],
+    desc: 'Gateway to Red Sea and Suez Canal; ~8-10% of global seaborne oil and LNG. Traffic gradually recovering but remains vulnerable to regional security risks.',
+    traffic: '~30-40 ships/day (partial recovery)',
+    region: 'Yemen/Djibouti/Eritrea'
+  },
+  {
+    id: 'danish',
+    name: 'Danish Straits',
+    lat: 55.6000,
+    lon: 12.6000,
+    keywords: ['danish straits', 'baltic sea', 'oresund', 'great belt'],
+    desc: 'Primary access to Baltic Sea; important for Russian energy exports and Northern European trade. High annual volume with strategic NATO significance.',
+    traffic: '~70-75 thousand ships/year (~200/day)',
+    region: 'Denmark/Sweden'
   }
 ]
 
 export const CONFLICT_ZONES = [
   {
-      id: 'ukraine',
-      name: 'Ukraine Conflict',
-      intensity: 'high',
-      coords: [
-          [37.5, 47.0], [38.5, 47.5], [39.0, 48.5], [38.0, 49.5],
-          [37.0, 49.0], [36.0, 48.5], [35.5, 47.5], [36.5, 47.0]
-      ],
-      labelPos: { lat: 48.0, lon: 37.5 },
-      startDate: 'Feb 24, 2022',
-      parties: ['Russia', 'Ukraine', 'NATO (support)'],
-      casualties: 'High ongoing',
-      displaced: 'Millions',
-      description: 'Ongoing Russian invasion with advances in east; heavy strikes on infrastructure.',
-      keyEvents: ['Pokrovsk battles', 'Drone warfare', 'Energy attacks'],
-      keywords: ['ukraine', 'russia', 'zelensky', 'putin', 'donbas', 'crimea']
+    id: 'ukraine',
+    name: 'Ukraine Conflict',
+    intensity: 'high',
+    coords: [
+      [37.5, 47.0], [38.5, 47.5], [39.0, 48.5], [38.0, 49.5],
+      [37.0, 49.0], [36.0, 48.5], [35.5, 47.5], [36.5, 47.0]
+    ],
+    labelPos: { lat: 48.0, lon: 37.5 },
+    startDate: 'Feb 24, 2022',
+    parties: ['Russia', 'Ukraine', 'NATO/Western support'],
+    casualties: 'Hundreds of thousands ongoing',
+    displaced: 'Millions internally; millions refugees',
+    description: 'Full-scale Russian invasion continues with positional warfare in the east, heavy infrastructure strikes, and drone/missile exchanges. Negotiations for security guarantees and potential ceasefire ongoing amid high casualties.',
+    keyEvents: ['Pokrovsk direction advances', 'Energy infrastructure attacks', 'Peacekeeping proposals'],
+    keywords: ['ukraine', 'russia', 'zelensky', 'putin', 'donbas', 'crimea', 'kharkiv']
   },
   {
-      id: 'gaza',
-      name: 'Gaza Conflict',
-      intensity: 'high',
-      coords: [
-          [34.2, 31.6], [34.6, 31.6], [34.6, 31.2], [34.2, 31.2]
-      ],
-      labelPos: { lat: 31.4, lon: 34.4 },
-      startDate: 'Oct 7, 2023',
-      parties: ['Israel (IDF)', 'Hamas'],
-      casualties: '73,000+',
-      displaced: 'Near total population',
-      description: 'Ceasefire with ongoing violations; Israeli control expansion, aid restrictions, humanitarian crisis.',
-      keyEvents: ['Ceasefire Oct 2025', 'Violations', 'Aid blocks'],
-      keywords: ['gaza', 'israel', 'hamas', 'idf', 'netanyahu', 'ceasefire']
+    id: 'gaza',
+    name: 'Gaza Conflict',
+    intensity: 'medium',
+    coords: [
+      [34.2, 31.6], [34.6, 31.6], [34.6, 31.2], [34.2, 31.2]
+    ],
+    labelPos: { lat: 31.4, lon: 34.4 },
+    startDate: 'Oct 7, 2023',
+    parties: ['Israel (IDF)', 'Hamas'],
+    casualties: 'Over 70,000 Palestinian; thousands Israeli (cumulative)',
+    displaced: 'Majority of population',
+    description: 'Fragile US-brokered ceasefire in effect since October 2025 (phase one). IDF controls ~50-60% of territory; ongoing violations, aid restrictions, humanitarian crisis persist.',
+    keyEvents: ['October 2025 ceasefire', 'Hostage releases', 'Yellow Line enforcement'],
+    keywords: ['gaza', 'israel', 'hamas', 'idf', 'netanyahu', 'ceasefire', 'yellow line']
   },
   {
-      id: 'sudan',
-      name: 'Sudan Civil War',
-      intensity: 'medium',
-      coords: [
-          [32.0, 16.0], [34.0, 16.5], [35.0, 15.0], [33.5, 13.5],
-          [31.5, 14.0], [31.0, 15.5]
-      ],
-      labelPos: { lat: 15.0, lon: 32.5 },
-      startDate: 'Apr 15, 2023',
-      parties: ['Sudanese Armed Forces (SAF)', 'Rapid Support Forces (RSF)'],
-      casualties: 'Tens of thousands',
-      displaced: '10M+',
-      description: 'Escalating violence in Darfur/Kordofan; famine, drone strikes on civilians.',
-      keyEvents: ['El Fasher siege', 'Famine persistence'],
-      keywords: ['sudan', 'khartoum', 'rsf', 'darfur', 'burhan', 'hemedti']
+    id: 'sudan',
+    name: 'Sudan Civil War',
+    intensity: 'high',
+    coords: [
+      [32.0, 16.0], [34.0, 16.5], [35.0, 15.0], [33.5, 13.5],
+      [31.5, 14.0], [31.0, 15.5]
+    ],
+    labelPos: { lat: 15.0, lon: 32.5 },
+    startDate: 'Apr 15, 2023',
+    parties: ['Sudanese Armed Forces (SAF)', 'Rapid Support Forces (RSF)'],
+    casualties: 'Tens of thousands',
+    displaced: '11M+ (world\'s largest crisis)',
+    description: 'Escalating RSF advances in Darfur and Kordofan; sieges on cities, famine conditions, ethnic targeting in contested areas.',
+    keyEvents: ['Fall of El Fasher', 'Heglig oil field capture', 'Famine spread'],
+    keywords: ['sudan', 'khartoum', 'rsf', 'saf', 'darfur', 'burhan', 'hemedti']
   },
   {
-      id: 'myanmar',
-      name: 'Myanmar Civil War',
-      intensity: 'medium',
-      coords: [
-          [96.0, 22.0], [98.0, 23.0], [98.5, 21.0], [97.0, 19.5], [95.5, 20.5]
-      ],
-      labelPos: { lat: 21.0, lon: 96.5 },
-      startDate: 'Feb 1, 2021',
-      parties: ['Military Junta', 'Ethnic Armed Organizations', 'Resistance Forces'],
-      casualties: '90,000+',
-      displaced: '3.5M+',
-      description: 'Junta elections amid ongoing fighting; resistance controls significant territory.',
-      keyEvents: ['Phased elections 2025-2026', 'Territorial gains'],
-      keywords: ['myanmar', 'burma', 'junta', 'arakan', 'karen', 'kachin']
+    id: 'myanmar',
+    name: 'Myanmar Civil War',
+    intensity: 'high',
+    coords: [
+      [96.0, 22.0], [98.0, 23.0], [98.5, 21.0], [97.0, 19.5], [95.5, 20.5]
+    ],
+    labelPos: { lat: 21.0, lon: 96.5 },
+    startDate: 'Feb 1, 2021',
+    parties: ['Military Junta', 'Ethnic Armed Organizations', 'People\'s Defense Forces'],
+    casualties: 'Over 100,000',
+    displaced: '3.5M+',
+    description: 'Junta conducting controversial phased elections amid ongoing resistance offensives; pro-military party dominating controlled areas while opposition controls significant territory.',
+    keyEvents: ['2025-2026 phased elections', 'Resistance territorial gains'],
+    keywords: ['myanmar', 'burma', 'junta', 'arakan', 'karen', 'kachin', 'election']
   },
   {
-      id: 'taiwan_strait',
-      name: 'Taiwan Strait',
-      intensity: 'watch',
-      coords: [
-          [119.0, 26.0], [121.5, 26.0], [121.5, 22.5], [119.0, 22.5]
-      ],
-      labelPos: { lat: 24.5, lon: 120.0 },
-      startDate: 'Ongoing tensions',
-      parties: ['China (PLA)', 'Taiwan (ROC)', 'United States'],
-      casualties: 'N/A',
-      displaced: 'N/A',
-      description: 'Heightened PLA activity; risk of escalation.',
-      keyEvents: ['Exercises', 'Incursions'],
-      keywords: ['taiwan', 'china', 'strait', 'pla', 'invasion']
+    id: 'taiwan_strait',
+    name: 'Taiwan Strait Tensions',
+    intensity: 'elevated',
+    coords: [
+      [119.0, 26.0], [121.5, 26.0], [121.5, 22.5], [119.0, 22.5]
+    ],
+    labelPos: { lat: 24.5, lon: 120.0 },
+    startDate: 'Ongoing',
+    parties: ['China (PLA)', 'Taiwan', 'United States'],
+    casualties: 'Low (incursions)',
+    displaced: 'N/A',
+    description: 'Increased PLA blockade simulation exercises and ADIZ incursions; heightened risk of escalation amid regional deterrence.',
+    keyEvents: ['Justice Mission 2025 exercises', 'ADIZ violations'],
+    keywords: ['taiwan', 'china', 'strait', 'pla', 'adiz', 'blockade']
+  },
+  {
+    id: 'sahel',
+    name: 'Sahel Jihadist Insurgencies',
+    intensity: 'high',
+    coords: [
+      [-4.0, 15.0], [0.0, 15.0], [0.0, 12.0], [-4.0, 12.0]
+    ],
+    labelPos: { lat: 14.0, lon: -2.0 },
+    startDate: '2012 (escalated 2020s)',
+    parties: ['JNIM (al-Qaeda affiliate)', 'Islamic State Sahel', 'Governments of Mali/Burkina Faso/Niger'],
+    casualties: 'Tens of thousands annual',
+    displaced: 'Millions',
+    description: 'Escalating insurgencies with JNIM and IS-Sahel controlling/contesting large rural areas; sieges on towns, record terrorism deaths.',
+    keyEvents: ['JNIM territorial expansion', 'IS-Sahel attacks'],
+    keywords: ['sahel', 'mali', 'burkina faso', 'niger', 'jnim', 'islamic state', 'jihadist']
+  },
+  {
+    id: 'yemen_south',
+    name: 'Yemen Southern Conflict',
+    intensity: 'medium',
+    coords: [
+      [43.0, 13.0], [54.0, 13.0], [54.0, 17.0], [43.0, 17.0]
+    ],
+    labelPos: { lat: 15.0, lon: 48.0 },
+    startDate: 'Dec 2025 escalation',
+    parties: ['Yemeni Government/Saudi-backed', 'Southern Transitional Council (STC/UAE-aligned)'],
+    casualties: 'Hundreds recent',
+    displaced: 'Thousands',
+    description: 'Saudi-backed offensive against UAE-supported separatists; government forces retaking southern territories amid rift in anti-Houthi coalition.',
+    keyEvents: ['STC offensive reversal', 'Aden recapture'],
+    keywords: ['yemen', 'south yemen', 'stc', 'aden', 'saudi', 'uae', 'separatist']
   }
 ]
 
 export const MILITARY_BASES = [
-  { id: 'ramstein', name: 'Ramstein AB', lat: 49.44, lon: 7.6, type: 'us-nato' },
-  { id: 'diego_garcia', name: 'Diego Garcia', lat: -7.32, lon: 72.42, type: 'us-nato' },
-  { id: 'guam', name: 'Andersen AFB', lat: 13.58, lon: 144.92, type: 'us-nato' },
-  { id: 'okinawa', name: 'Kadena AB', lat: 26.35, lon: 127.77, type: 'us-nato' },
-  { id: 'yokosuka', name: 'Yokosuka', lat: 35.28, lon: 139.67, type: 'us-nato' },
-  { id: 'bahrain', name: 'NSA Bahrain', lat: 26.23, lon: 50.65, type: 'us-nato' },
-  { id: 'qatar', name: 'Al Udeid', lat: 25.12, lon: 51.31, type: 'us-nato' },
-  { id: 'djibouti', name: 'Camp Lemonnier', lat: 11.55, lon: 43.15, type: 'us-nato' },
-  { id: 'incirlik', name: 'Incirlik AB', lat: 37.0, lon: 35.43, type: 'us-nato' },
-  { id: 'rota', name: 'NS Rota', lat: 36.62, lon: -6.35, type: 'us-nato' },
-  { id: 'djibouti_cn', name: 'PLA Djibouti', lat: 11.59, lon: 43.05, type: 'china' },
-  { id: 'woody_island', name: 'Woody Island', lat: 16.83, lon: 112.33, type: 'china' },
-  { id: 'fiery_cross', name: 'Fiery Cross', lat: 9.55, lon: 112.89, type: 'china' },
-  { id: 'mischief_reef', name: 'Mischief Reef', lat: 9.90, lon: 115.53, type: 'china' },
-  { id: 'ream', name: 'Ream (Cambodia)', lat: 10.52, lon: 103.63, type: 'china' },
-  { id: 'kaliningrad', name: 'Kaliningrad', lat: 54.71, lon: 20.51, type: 'russia' },
-  { id: 'sevastopol', name: 'Sevastopol', lat: 44.62, lon: 33.53, type: 'russia' },
-  { id: 'tartus', name: 'Tartus (Syria)', lat: 34.89, lon: 35.87, type: 'russia' },
-  { id: 'hmeimim', name: 'Hmeimim AB', lat: 35.41, lon: 35.95, type: 'russia' },
-  { id: 'cam_ranh', name: 'Cam Ranh', lat: 11.99, lon: 109.22, type: 'russia' }
+  { id: 'ramstein', name: 'Ramstein AB', lat: 49.4371, lon: 7.6021, type: 'us-nato' },
+  { id: 'pituffik', name: 'Pituffik Space Base', lat: 76.5333, lon: -68.7500, type: 'us-nato' },
+  { id: 'diego_garcia', name: 'Diego Garcia', lat: -7.3133, lon: 72.4111, type: 'us-nato' },
+  { id: 'guam', name: 'Andersen AFB', lat: 13.5833, lon: 144.9333, type: 'us-nato' },
+  { id: 'okinawa', name: 'Kadena AB', lat: 26.3517, lon: 127.7694, type: 'us-nato' },
+  { id: 'yokosuka', name: 'Yokosuka Naval Base', lat: 35.2833, lon: 139.6667, type: 'us-nato' },
+  { id: 'camp_humphreys', name: 'Camp Humphreys', lat: 36.9667, lon: 127.0333, type: 'us-nato' },
+  { id: 'bahrain', name: 'NSA Bahrain', lat: 26.2333, lon: 50.6167, type: 'us-nato' },
+  { id: 'al_udeid', name: 'Al Udeid AB', lat: 25.1167, lon: 51.3167, type: 'us-nato' },
+  { id: 'camp_lemonnier', name: 'Camp Lemonnier', lat: 11.5500, lon: 43.1500, type: 'us-nato' },
+  { id: 'incirlik', name: 'Incirlik AB', lat: 37.0000, lon: 35.4333, type: 'us-nato' },
+  { id: 'rota', name: 'NS Rota', lat: 36.6167, lon: -6.3500, type: 'us-nato' },
+  { id: 'stirling', name: 'HMAS Stirling (SRF-West)', lat: -32.2333, lon: 115.6833, type: 'us-nato' },
+  { id: 'djibouti_cn', name: 'PLA Djibouti Base', lat: 11.5833, lon: 43.0667, type: 'china' },
+  { id: 'ream', name: 'Ream Naval Base', lat: 10.5167, lon: 103.6333, type: 'china' },
+  { id: 'woody_island', name: 'Woody Island', lat: 16.8333, lon: 112.3333, type: 'china' },
+  { id: 'fiery_cross', name: 'Fiery Cross Reef', lat: 9.5500, lon: 112.8833, type: 'china' },
+  { id: 'mischief_reef', name: 'Mischief Reef', lat: 9.9000, lon: 115.5333, type: 'china' },
+  { id: 'kaliningrad', name: 'Kaliningrad Oblast', lat: 54.7100, lon: 20.5100, type: 'russia' },
+  { id: 'sevastopol', name: 'Sevastopol', lat: 44.6167, lon: 33.5333, type: 'russia' },
+  { id: 'tartus', name: 'Tartus Naval Base', lat: 34.8833, lon: 35.8667, type: 'russia' },
+  { id: 'hmeimim', name: 'Hmeimim AB', lat: 35.4000, lon: 35.9500, type: 'russia' },
+  { id: 'cam_ranh', name: 'Cam Ranh Bay', lat: 11.9833, lon: 109.2167, type: 'russia' }
 ]
 
 export const NUCLEAR_FACILITIES = [
-  { id: 'zaporizhzhia', name: 'Zaporizhzhia NPP', lat: 47.51, lon: 34.58, type: 'plant', status: 'contested' },
-  { id: 'fukushima', name: 'Fukushima', lat: 37.42, lon: 141.03, type: 'plant', status: 'decommissioning' },
-  { id: 'flamanville', name: 'Flamanville', lat: 49.54, lon: -1.88, type: 'plant', status: 'active' },
-  { id: 'bruce', name: 'Bruce Power', lat: 44.33, lon: -81.60, type: 'plant', status: 'active' },
-  { id: 'natanz', name: 'Natanz', lat: 33.72, lon: 51.73, type: 'enrichment', status: 'active' },
-  { id: 'fordow', name: 'Fordow', lat: 34.88, lon: 51.0, type: 'enrichment', status: 'active' },
-  { id: 'yongbyon', name: 'Yongbyon', lat: 39.80, lon: 125.75, type: 'weapons', status: 'active' },
-  { id: 'dimona', name: 'Dimona', lat: 31.0, lon: 35.15, type: 'weapons', status: 'active' },
-  { id: 'los_alamos', name: 'Los Alamos', lat: 35.88, lon: -106.30, type: 'weapons', status: 'active' },
-  { id: 'sellafield', name: 'Sellafield', lat: 54.42, lon: -3.50, type: 'reprocessing', status: 'active' },
-  { id: 'la_hague', name: 'La Hague', lat: 49.68, lon: -1.88, type: 'reprocessing', status: 'active' }
+  { id: 'zaporizhzhia', name: 'Zaporizhzhia NPP', lat: 47.5083, lon: 34.5833, type: 'plant', status: 'Russian-occupied, cold shutdown' },
+  { id: 'fukushima', name: 'Fukushima Daiichi', lat: 37.4211, lon: 141.0333, type: 'plant', status: 'decommissioning' },
+  { id: 'flamanville', name: 'Flamanville NPP', lat: 49.5333, lon: -1.8833, type: 'plant', status: 'active/construction' },
+  { id: 'bruce', name: 'Bruce NPP', lat: 44.3333, lon: -81.6000, type: 'plant', status: 'active' },
+  { id: 'natanz', name: 'Natanz Enrichment', lat: 33.7167, lon: 51.7333, type: 'enrichment', status: 'damaged 2025' },
+  { id: 'fordow', name: 'Fordow Enrichment', lat: 34.8833, lon: 50.9833, type: 'enrichment', status: 'damaged 2025' },
+  { id: 'yongbyon', name: 'Yongbyon Complex', lat: 39.8000, lon: 125.7500, type: 'weapons', status: 'active/expanding' },
+  { id: 'dimona', name: 'Dimona (Shimon Peres) Reactor', lat: 31.0000, lon: 35.1500, type: 'weapons', status: 'active' },
+  { id: 'los_alamos', name: 'Los Alamos National Lab', lat: 35.8833, lon: -106.3000, type: 'weapons', status: 'active' },
+  { id: 'pantex', name: 'Pantex Plant', lat: 35.3167, lon: -101.5667, type: 'weapons', status: 'active' },
+  { id: 'sellafield', name: 'Sellafield', lat: 54.4167, lon: -3.5000, type: 'reprocessing', status: 'active' },
+  { id: 'la_hague', name: 'La Hague', lat: 49.6833, lon: -1.8833, type: 'reprocessing', status: 'active' }
 ]
 
 export const UNDERSEA_CABLES = [
   {
-      id: 'transatlantic_1',
-      name: 'Transatlantic (TAT-14)',
-      major: true,
-      points: [[-74.0, 40.7], [-30.0, 45.0], [-9.0, 52.0]]
+    id: 'marea',
+    name: 'MAREA',
+    major: true,
+    // Virginia Beach, US to Bilbao, Spain (direct transatlantic)
+    points: [[-76.0, 36.9], [-45.0, 42.0], [-3.0, 43.4]]
   },
   {
-      id: 'transpacific_1',
-      name: 'Transpacific (Unity)',
-      major: true,
-      points: [[-122.4, 37.8], [-155.0, 25.0], [139.7, 35.7]]
+    id: 'ellalink',
+    name: 'EllaLink',
+    major: true,
+    // Fortaleza, Brazil to Sines, Portugal (direct transatlantic)
+    points: [[-38.5, -3.7], [-25.0, 15.0], [-9.0, 38.0]]
   },
   {
-      id: 'sea_me_we_5',
-      name: 'SEA-ME-WE 5',
-      major: true,
-      points: [[103.8, 1.3], [80.0, 10.0], [55.0, 25.0], [35.0, 30.0], [12.0, 37.0], [-5.0, 36.0]]
+    id: 'jupiter',
+    name: 'JUPITER',
+    major: true,
+    // LA to Japan to Philippines (Pacific route - using extended coords to go westward)
+    points: [[-118.4, 33.7], [-150.0, 28.0], [-180.0, 25.0], [-200.0, 28.0], [-220.2, 35.1], [-237.04, 14.11]]
   },
   {
-      id: 'aae1',
-      name: 'Asia-Africa-Europe 1',
-      major: true,
-      points: [[121.0, 25.0], [103.8, 1.3], [73.0, 15.0], [44.0, 12.0], [35.0, 30.0], [28.0, 41.0]]
+    id: 'bifrost',
+    name: 'Bifrost',
+    major: true,
+    // LA to Singapore via Pacific (through Guam - using extended coords to go westward)
+    points: [[-118.2, 34.0], [-150.0, 25.0], [-180.0, 15.0], [-215.25, 13.4], [-240.0, 10.0], [-256.2, 1.3]]
   },
   {
-      id: 'curie',
-      name: 'Curie (Google)',
-      major: false,
-      points: [[-122.4, 37.8], [-80.0, 0.0], [-70.0, -33.0]]
+    id: 'sea_me_we_5',
+    name: 'SEA-ME-WE 5',
+    major: true,
+    // Singapore to France via Indian Ocean, Red Sea, Mediterranean
+    points: [[103.8, 1.3], [80.5, 6.0], [65.0, 16.0], [50.0, 12.5], [43.5, 12.5], [38.0, 24.0], [32.5, 30.0], [30.0, 35.0], [15.0, 37.5], [5.4, 43.1]]
   },
   {
-      id: 'marea',
-      name: 'MAREA (Microsoft)',
-      major: true,
-      points: [[-73.8, 39.4], [-9.0, 37.0]]
+    id: '2africa',
+    name: '2Africa (Core)',
+    major: true,
+    // Circumnavigates Africa - west coast down, around Cape, up east coast
+    points: [[-9.0, 38.7], [-17.5, 14.7], [-5.0, 5.0], [8.0, -5.0], [12.0, -18.0], [18.4, -33.9], [32.0, -28.0], [40.0, -15.0], [43.0, 11.5], [50.0, 26.0], [32.5, 31.5]]
+  },
+  {
+    id: 'curie',
+    name: 'Curie (Google)',
+    major: false,
+    // LA to Chile via Panama (Pacific coastal route)
+    points: [[-118.2, 33.9], [-110.0, 23.0], [-95.0, 15.0], [-85.0, 9.0], [-82.0, 5.0], [-81.0, -5.0], [-78.0, -15.0], [-71.61, -33.05]]
   }
 ]
 
 export const CYBER_REGIONS = [
   {
-      id: 'cyber_russia',
-      name: 'RU',
-      fullName: 'Russia',
-      lat: 55.75,
-      lon: 45.0,
-      group: 'APT28/29',
-      aka: 'Fancy Bear / Cozy Bear',
-      sponsor: 'GRU / FSB',
-      desc: 'State-sponsored groups linked to Russian intelligence. Known for election interference, government espionage, and critical infrastructure attacks.',
-      targets: ['Government', 'Defense', 'Energy', 'Elections', 'Media']
+    id: 'cyber_russia',
+    name: 'RU',
+    fullName: 'Russia',
+    lat: 55.7558,
+    lon: 37.6173,
+    group: 'APT28 / APT29',
+    aka: 'Fancy Bear / Cozy Bear',
+    sponsor: 'GRU / SVR',
+    desc: 'State-sponsored groups linked to Russian intelligence. Active in espionage, disinformation, and disruptive operations supporting geopolitical objectives, including Ukraine-related activities.',
+    targets: ['Government', 'Defense', 'Critical Infrastructure', 'Elections', 'Ukraine/NATO Allies']
   },
   {
-      id: 'cyber_china',
-      name: 'CN',
-      fullName: 'China',
-      lat: 35.0,
-      lon: 105.0,
-      group: 'APT41',
-      aka: 'Double Dragon / Winnti',
-      sponsor: 'MSS',
-      desc: 'Hybrid espionage and financially motivated group. Conducts state-sponsored intelligence and supply chain attacks.',
-      targets: ['Tech', 'Telecom', 'Healthcare', 'Gaming', 'Supply Chain']
+    id: 'cyber_china',
+    name: 'CN',
+    fullName: 'China',
+    lat: 39.9042,
+    lon: 116.4074,
+    group: 'APT41 / Salt Typhoon / Volt Typhoon',
+    aka: 'Winnti / Operator Panda',
+    sponsor: 'MSS / PLA',
+    desc: 'Prolific state-sponsored actors conducting global espionage, supply chain compromises, and pre-positioning in critical infrastructure. Surge in telecom and infrastructure targeting observed in 2025.',
+    targets: ['Telecom', 'Critical Infrastructure', 'Tech', 'Government', 'Aerospace']
   },
   {
-      id: 'cyber_nk',
-      name: 'NK',
-      fullName: 'North Korea',
-      lat: 39.0,
-      lon: 127.0,
-      group: 'Lazarus',
-      aka: 'Hidden Cobra / APT38',
-      sponsor: 'RGB',
-      desc: 'Financially motivated attacks to fund regime. Known for cryptocurrency theft, SWIFT banking attacks, and ransomware.',
-      targets: ['Crypto', 'Banks', 'Defense', 'Media', 'Critical Infra']
+    id: 'cyber_nk',
+    name: 'NK',
+    fullName: 'North Korea',
+    lat: 39.0392,
+    lon: 125.7625,
+    group: 'Lazarus / Kimsuky',
+    aka: 'Famous Chollima / Velvet Chollima / APT43',
+    sponsor: 'Reconnaissance General Bureau (RGB)',
+    desc: 'Hybrid operations blending espionage with financially motivated attacks, including record cryptocurrency thefts and ransomware to fund regime. Increasing use of AI and collaboration with other actors.',
+    targets: ['Cryptocurrency', 'Finance', 'Defense', 'Supply Chain', 'Think Tanks']
   },
   {
-      id: 'cyber_iran',
-      name: 'IR',
-      fullName: 'Iran',
-      lat: 32.0,
-      lon: 53.0,
-      group: 'APT33/35',
-      aka: 'Charming Kitten / Elfin',
-      sponsor: 'IRGC',
-      desc: 'Focus on regional adversaries and dissidents. Known for destructive wiper malware and spear-phishing campaigns.',
-      targets: ['Energy', 'Aviation', 'Government', 'Dissidents', 'Israel']
+    id: 'cyber_iran',
+    name: 'IR',
+    fullName: 'Iran',
+    lat: 35.6892,
+    lon: 51.3890,
+    group: 'MuddyWater / Charming Kitten',
+    aka: 'APT33/35 / UNC1549',
+    sponsor: 'IRGC / MOIS',
+    desc: 'Adaptive operations focusing on regional adversaries, disruptive wiper attacks, and espionage. Increased sophistication and targeting of aerospace, defense, and critical sectors amid geopolitical tensions.',
+    targets: ['Israel', 'Energy', 'Aerospace', 'Government', 'Dissidents']
   }
 ]
