@@ -5,12 +5,20 @@ import { PANELS } from '@config/panels'
 import { NEWS_FEEDS } from '@config/feeds'
 import GlobalMap from '@components/panels/GlobalMap/GlobalMap'
 import NewsPanel from '@components/panels/NewsPanel/NewsPanel'
-import MarketsPanel from '@components/panels/MarketsPanel/MarketsPanel'
-import HeatmapPanel from '@components/panels/HeatmapPanel/HeatmapPanel'
+import StartupsPanel from '@components/panels/StartupsPanel/StartupsPanel'
+import VCPanel from '@components/panels/VCPanel/VCPanel'
+import BlockchainPanel from '@components/panels/BlockchainPanel/BlockchainPanel'
+import WarWatchPanel from '@components/panels/WarWatchPanel/WarWatchPanel'
+import GoodNewsPanel from '@components/panels/GoodNewsPanel/GoodNewsPanel'
+import AIRacePanel from '@components/panels/AIRacePanel/AIRacePanel'
+import LayoffsPanel from '@components/panels/LayoffsPanel/LayoffsPanel'
+import CategoryTabs from '@components/CategoryTabs/CategoryTabs'
+import TickerStrip from '@components/TickerStrip/TickerStrip'
 import './Dashboard.css'
 
 const Dashboard = ({ panelSettings }) => {
   const [draggedPanel, setDraggedPanel] = useState(null)
+  const [activeCategory, setActiveCategory] = useState('all')
   const [panelOrder, setPanelOrder] = useState(() => {
     try {
       const saved = localStorage.getItem('situationMonitorPanelOrder')
@@ -40,20 +48,28 @@ const Dashboard = ({ panelSettings }) => {
       const newOrder = [...prev]
       const draggedIndex = newOrder.indexOf(draggedPanel)
       const targetIndex = newOrder.indexOf(targetPanelId)
-      
+
       newOrder.splice(draggedIndex, 1)
       newOrder.splice(targetIndex, 0, draggedPanel)
-      
+
       localStorage.setItem('situationMonitorPanelOrder', JSON.stringify(newOrder))
       return newOrder
     })
   }, [draggedPanel])
 
   const enabledPanels = panelOrder.filter(id => panelSettings[id] !== false)
-  
-  // Separate map from other panels
+
+  // Separate map from other panels, exclude markets/heatmap (now in ticker strip)
   const mapPanel = enabledPanels.find(id => id === 'map')
-  const newsPanels = enabledPanels.filter(id => id !== 'map')
+
+  // Filter panels by active category
+  const filteredPanels = enabledPanels.filter(id => {
+    if (id === 'map' || id === 'markets' || id === 'heatmap') return false
+    const panelConfig = PANELS[id]
+    if (!panelConfig) return false
+    if (activeCategory === 'all') return true
+    return panelConfig.category === activeCategory
+  })
 
   const getPanelContent = (panelId) => {
     switch (panelId) {
@@ -67,10 +83,20 @@ const Dashboard = ({ panelSettings }) => {
         return <NewsPanel feeds={NEWS_FEEDS.finance} title="Financial" />
       case 'gov':
         return <NewsPanel feeds={NEWS_FEEDS.gov} title="Government / Policy" />
-      case 'markets':
-        return <MarketsPanel />
-      case 'heatmap':
-        return <HeatmapPanel />
+      case 'startups':
+        return <StartupsPanel />
+      case 'vc':
+        return <VCPanel />
+      case 'blockchain':
+        return <BlockchainPanel />
+      case 'warwatch':
+        return <WarWatchPanel />
+      case 'goodnews':
+        return <GoodNewsPanel />
+      case 'ai':
+        return <AIRacePanel />
+      case 'layoffs':
+        return <LayoffsPanel />
       default:
         return (
           <div className="panel-placeholder">
@@ -102,10 +128,23 @@ const Dashboard = ({ panelSettings }) => {
           </Panel>
         </div>
       )}
-      
-      {/* News panels grid below */}
+
+      {/* Ticker strip for markets and sectors */}
+      <div className="ticker-section">
+        <ErrorBoundary>
+          <TickerStrip />
+        </ErrorBoundary>
+      </div>
+
+      {/* Category Tabs */}
+      <CategoryTabs
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
+
+      {/* Filtered panels grid */}
       <div className="news-grid">
-        {newsPanels.map(panelId => {
+        {filteredPanels.map(panelId => {
           const config = PANELS[panelId]
           if (!config) return null
 
@@ -133,3 +172,4 @@ const Dashboard = ({ panelSettings }) => {
 }
 
 export default Dashboard
+

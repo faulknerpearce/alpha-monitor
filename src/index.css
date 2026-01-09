@@ -5,25 +5,115 @@
 }
 
 :root {
+    /* Core colors */
     --bg-dark: #000000;
-    --bg-panel: #0a0a0a;
-    --bg-panel-hover: #1a1a1a;
-    --border-color: #333333;
+    --bg-panel: rgba(10, 10, 10, 0.6);
+    --bg-panel-hover: rgba(20, 20, 20, 0.8);
+    --border-color: rgba(255, 255, 255, 0.08);
+
+    /* Text */
     --text-primary: #ffffff;
-    --text-secondary: #888888;
+    --text-secondary: #9ca3af;
+    --text-dim: #6b7280;
+
+    /* Fonts */
+    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+
+    /* Accent colors */
     --accent: #ffffff;
-    --accent-hover: #cccccc;
-    --alert: #ff4444;
-    --warning: #ffaa00;
+    --accent-hover: #e5e5e5;
+
+    /* Status colors */
+    --green: #10b981;
+    --green-dim: rgba(16, 185, 129, 0.15);
+    --red: #ef4444;
+    --red-dim: rgba(239, 68, 68, 0.15);
+    --yellow: #f59e0b;
+    --yellow-dim: rgba(245, 158, 11, 0.15);
+
+    /* Glassmorphism & Depth */
+    --glass-bg: rgba(10, 10, 10, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: 12px;
+    --panel-border: 1px solid rgba(255, 255, 255, 0.05);
+    --panel-border-top: 1px solid rgba(255, 255, 255, 0.1);
+    --panel-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--font-main);
     background: var(--bg-dark);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.5;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* Cinematic Background Glow */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(30, 58, 138, 0.08), transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.05), transparent 30%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+::selection {
+    background: rgba(99, 102, 241, 0.4);
+    color: #ffffff;
 }
 
 #root {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Global Micro-Interactions */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-enter {
+    animation: slideIn 0.3s ease-out forwards;
 }

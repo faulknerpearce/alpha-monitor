@@ -1,0 +1,205 @@
+/* Ticker Container - wraps both rows */
+.ticker-container {
+    width: 100%;
+    background: linear-gradient(180deg,
+            rgba(10, 10, 10, 0.95) 0%,
+            rgba(5, 5, 5, 0.98) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ticker-container.ticker-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+}
+
+.ticker-loading-text {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Individual Ticker Strip Row */
+.ticker-strip {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Crypto strip has slightly different background */
+.ticker-strip.crypto-strip {
+    background: rgba(245, 158, 11, 0.03);
+    border-top: 1px solid rgba(245, 158, 11, 0.1);
+}
+
+/* Fade edges */
+.ticker-strip::before,
+.ticker-strip::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.ticker-strip::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(10, 10, 10, 1) 0%, transparent 100%);
+}
+
+.ticker-strip::after {
+    right: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(10, 10, 10, 1) 100%);
+}
+
+/* Ticker Track - scrolling container */
+.ticker-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0.5rem 0;
+    animation: ticker-scroll 40s linear infinite;
+    width: max-content;
+}
+
+/* Pause on hover */
+.ticker-container.paused .ticker-track {
+    animation-play-state: paused;
+}
+
+/* Normal scroll direction (markets/sectors) - left to right appearance */
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Reverse scroll direction (crypto) - right to left appearance */
+.ticker-track.reverse {
+    animation: ticker-scroll-reverse 35s linear infinite;
+}
+
+@keyframes ticker-scroll-reverse {
+    0% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Ticker Item */
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.ticker-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+/* Type-specific accent colors */
+.ticker-item.index {
+    border-left: 2px solid #6366f1;
+}
+
+.ticker-item.crypto {
+    border-left: 2px solid #f59e0b;
+}
+
+.ticker-item.sector {
+    border-left: 2px solid #8b5cf6;
+}
+
+/* Ticker text */
+.ticker-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ticker-price {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.ticker-change {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.ticker-change.up {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.ticker-change.down {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .ticker-track {
+        gap: 1.5rem;
+        padding: 0.4rem 0;
+    }
+
+    .ticker-track {
+        animation-duration: 30s;
+    }
+
+    .ticker-track.reverse {
+        animation-duration: 25s;
+    }
+
+    .ticker-item {
+        gap: 0.35rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .ticker-name {
+        font-size: 0.6rem;
+    }
+
+    .ticker-price {
+        font-size: 0.65rem;
+    }
+
+    .ticker-change {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.3rem;
+    }
+
+    .ticker-strip::before,
+    .ticker-strip::after {
+        width: 30px;
+    }
+}

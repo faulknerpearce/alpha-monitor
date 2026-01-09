@@ -61,14 +61,14 @@ const NewsPanel = ({ feeds, title }) => {
     const parser = new DOMParser()
     const xml = parser.parseFromString(xmlText, 'text/xml')
     const items = xml.querySelectorAll('item, entry')
-    
+
     return Array.from(items).map(item => {
       const title = item.querySelector('title')?.textContent || ''
-      const link = item.querySelector('link')?.textContent || 
-                   item.querySelector('link')?.getAttribute('href') || ''
+      const link = item.querySelector('link')?.textContent ||
+        item.querySelector('link')?.getAttribute('href') || ''
       const pubDate = item.querySelector('pubDate, published, updated')?.textContent || ''
       const description = item.querySelector('description, summary')?.textContent || ''
-      
+
       return {
         title: title.trim(),
         link: link.trim(),
@@ -130,7 +130,7 @@ const NewsPanel = ({ feeds, title }) => {
       h: 3600,
       m: 60
     }
-    
+
     for (const [unit, secondsInUnit] of Object.entries(intervals)) {
       const interval = Math.floor(seconds / secondsInUnit)
       if (interval >= 1) {
@@ -138,6 +138,20 @@ const NewsPanel = ({ feeds, title }) => {
       }
     }
     return 'now'
+  }
+
+  // Get unique sources count
+  const uniqueSources = [...new Set(news.map(item => item.source))].length
+
+  // Get theme class based on panel type
+  const getThemeClass = () => {
+    const titleLower = title?.toLowerCase() || ''
+    if (titleLower.includes('politic') || titleLower.includes('geopolitic')) return 'theme-blue'
+    if (titleLower.includes('tech') || titleLower.includes('ai')) return 'theme-cyan'
+    if (titleLower.includes('financ')) return 'theme-green'
+    if (titleLower.includes('gov') || titleLower.includes('policy')) return 'theme-purple'
+    if (titleLower.includes('intel')) return 'theme-red'
+    return 'theme-neutral'
   }
 
   if (loading && news.length === 0) {
@@ -149,18 +163,36 @@ const NewsPanel = ({ feeds, title }) => {
   }
 
   return (
-    <div className="news-panel">
-      {news.map((item, idx) => (
-        <div key={idx} className="item">
-          <div className="item-source">{item.source}</div>
-          <a href={item.link} target="_blank" rel="noopener noreferrer" className="item-title">
-            {item.title}
-          </a>
-          <div className="item-time">{getTimeAgo(item.date)}</div>
+    <div className={`news-panel ${getThemeClass()}`}>
+      <div className="news-summary">
+        <div className="summary-stat">
+          <span className="stat-value">{news.length}</span>
+          <span className="stat-label">Articles</span>
         </div>
-      ))}
+        <div className="summary-stat">
+          <span className="stat-value">{uniqueSources}</span>
+          <span className="stat-label">Sources</span>
+        </div>
+        <div className="summary-stat live-indicator">
+          <span className="pulse-dot"></span>
+          <span className="stat-label">LIVE</span>
+        </div>
+      </div>
+
+      <div className="news-list">
+        {news.map((item, idx) => (
+          <div key={idx} className="item">
+            <div className="item-source">{item.source}</div>
+            <a href={item.link} target="_blank" rel="noopener noreferrer" className="item-title">
+              {item.title}
+            </a>
+            <div className="item-time">{getTimeAgo(item.date)}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
 export default NewsPanel
+

@@ -36,7 +36,7 @@ const MarketsPanel = () => {
           const json = await response.json()
           const quote = json.chart.result[0]
           const meta = quote.meta
-          
+
           data[market.symbol] = {
             price: meta.regularMarketPrice,
             change: meta.regularMarketPrice - meta.chartPreviousClose,
