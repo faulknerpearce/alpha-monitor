@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import './BlockchainPanel.css'
-
-const CORS_PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-]
 
 const CRYPTO_FEEDS = [
     { name: 'CoinDesk', url: 'https://www.coindesk.com/arc/outboundfeeds/rss/' },
@@ -30,32 +26,6 @@ const BlockchainPanel = () => {
         const interval = setInterval(fetchCryptoNews, 5 * 60 * 1000)
         return () => clearInterval(interval)
     }, [])
-
-    const fetchWithProxy = async (url) => {
-        for (const proxy of CORS_PROXIES) {
-            try {
-                const response = await fetch(proxy + encodeURIComponent(url), {
-                    signal: AbortSignal.timeout(10000)
-                })
-                if (response.ok) return await response.text()
-            } catch (e) {
-                continue
-            }
-        }
-        throw new Error('All proxies failed')
-    }
-
-    const parseRSS = (xmlText) => {
-        const parser = new DOMParser()
-        const xml = parser.parseFromString(xmlText, 'text/xml')
-        const items = xml.querySelectorAll('item, entry')
-        return Array.from(items).map(item => ({
-            title: item.querySelector('title')?.textContent?.trim() || '',
-            link: item.querySelector('link')?.textContent?.trim() ||
-                item.querySelector('link')?.getAttribute('href') || '',
-            date: new Date(item.querySelector('pubDate, published')?.textContent || Date.now()),
-        })).filter(item => item.title)
-    }
 
     const fetchCryptoNews = async () => {
         try {

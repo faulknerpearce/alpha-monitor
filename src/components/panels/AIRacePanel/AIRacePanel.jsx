@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import './AIRacePanel.css'
-
-const CORS_PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-]
 
 // Key players in the AI race
 const AI_PLAYERS = [
@@ -33,33 +29,6 @@ const AIRacePanel = () => {
         const interval = setInterval(fetchNews, 10 * 60 * 1000)
         return () => clearInterval(interval)
     }, [])
-
-    const fetchWithProxy = async (url) => {
-        for (const proxy of CORS_PROXIES) {
-            try {
-                const response = await fetch(proxy + encodeURIComponent(url), {
-                    signal: AbortSignal.timeout(8000)
-                })
-                if (response.ok) return await response.text()
-            } catch (e) {
-                continue
-            }
-        }
-        throw new Error('All proxies failed')
-    }
-
-    const parseRSS = (xmlText) => {
-        const parser = new DOMParser()
-        const xml = parser.parseFromString(xmlText, 'text/xml')
-        const items = xml.querySelectorAll('item, entry')
-        return Array.from(items).map(item => ({
-            title: item.querySelector('title')?.textContent?.trim() || '',
-            link: item.querySelector('link')?.textContent?.trim() ||
-                item.querySelector('link')?.getAttribute('href') || '',
-            date: new Date(item.querySelector('pubDate, published')?.textContent || Date.now()),
-            source: '' // To be filled
-        })).filter(item => item.title)
-    }
 
     const fetchNews = async () => {
         setLoading(true)

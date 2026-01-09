@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import './NewsPanel.css'
-
-const CORS_PROXIES = [
-  'https://cors-anywhere.herokuapp.com/',
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-  'https://thingproxy.freeboard.io/fetch/',
-  'https://corsproxy.org/?'
-]
 
 const NewsPanel = ({ feeds, title }) => {
   const [news, setNews] = useState([])
@@ -19,65 +12,6 @@ const NewsPanel = ({ feeds, title }) => {
     const interval = setInterval(fetchNews, 5 * 60 * 1000) // Refresh every 5 minutes
     return () => clearInterval(interval)
   }, [feeds])
-
-  const fetchWithProxy = async (url) => {
-    // First try direct fetch for some feeds that might work
-    try {
-      console.log('Trying direct fetch...')
-      const response = await fetch(url, {
-        headers: { 'Accept': 'application/rss+xml, application/xml, text/xml, */*' },
-        signal: AbortSignal.timeout(5000)
-      })
-      if (response.ok) {
-        console.log('Direct fetch succeeded')
-        return await response.text()
-      }
-    } catch (e) {
-      console.log('Direct fetch failed:', e.message)
-    }
-
-    // Fall back to CORS proxies
-    for (let i = 0; i < CORS_PROXIES.length; i++) {
-      try {
-        console.log(`Trying proxy ${i + 1}/${CORS_PROXIES.length}: ${CORS_PROXIES[i]}`)
-        const response = await fetch(CORS_PROXIES[i] + encodeURIComponent(url), {
-          headers: { 'Accept': 'application/rss+xml, application/xml, text/xml, */*' },
-          signal: AbortSignal.timeout(10000) // 10 second timeout
-        })
-        if (response.ok) {
-          console.log(`Proxy ${i + 1} succeeded`)
-          return await response.text()
-        } else {
-          console.log(`Proxy ${i + 1} failed with status: ${response.status}`)
-        }
-      } catch (e) {
-        console.log(`Proxy ${i + 1} failed:`, e.message)
-      }
-    }
-    throw new Error('All proxies failed')
-  }
-
-  const parseRSS = (xmlText) => {
-    const parser = new DOMParser()
-    const xml = parser.parseFromString(xmlText, 'text/xml')
-    const items = xml.querySelectorAll('item, entry')
-
-    return Array.from(items).map(item => {
-      const title = item.querySelector('title')?.textContent || ''
-      const link = item.querySelector('link')?.textContent ||
-        item.querySelector('link')?.getAttribute('href') || ''
-      const pubDate = item.querySelector('pubDate, published, updated')?.textContent || ''
-      const description = item.querySelector('description, summary')?.textContent || ''
-
-      return {
-        title: title.trim(),
-        link: link.trim(),
-        date: new Date(pubDate),
-        description: description.trim(),
-        timestamp: new Date(pubDate).getTime()
-      }
-    }).filter(item => item.title && item.link)
-  }
 
   const fetchNews = async () => {
     try {
