@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { HOTSPOTS, INTEL_HOTSPOTS, US_HOTSPOTS, CONFLICT_ZONES } from '@config/dynamicRegions.js'
 
 /**
@@ -16,15 +16,12 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
   })
   const [loading, setLoading] = useState(false)
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     setLoading(true)
     try {
       // In a real implementation, this would fetch from an API
       // For now, we're using the static data but updating the timestamp
       // to show when data was last "refreshed"
-      
-      // Simulate an API call delay
-      await new Promise(resolve => setTimeout(resolve, 500))
       
       // Update with current data and new timestamp
       setDynamicData({
@@ -41,7 +38,7 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     // Initial load
@@ -51,7 +48,7 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
     const interval = setInterval(refreshData, refreshInterval)
 
     return () => clearInterval(interval)
-  }, [refreshInterval])
+  }, [refreshData, refreshInterval])
 
   return {
     ...dynamicData,

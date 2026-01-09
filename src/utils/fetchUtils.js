@@ -33,7 +33,19 @@ export const fetchWithProxy = async (url, useCache = true) => {
       const response = await axios.get(proxy + encodeURIComponent(url), {
         timeout: 10000 // 10 second timeout
       })
-      const data = typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+      
+      // Handle response data
+      let data
+      if (typeof response.data === 'string') {
+        data = response.data
+      } else {
+        try {
+          data = JSON.stringify(response.data)
+        } catch (jsonError) {
+          console.warn(`Failed to stringify response from ${proxy}:`, jsonError)
+          data = String(response.data)
+        }
+      }
       
       // Cache the result
       if (useCache) {

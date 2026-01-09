@@ -136,7 +136,8 @@ const GlobalMap = () => {
       console.error('Error in map render effect:', error)
       setError('Failed to render map')
     }
-  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility, hotspots, intelHotspots, usHotspots, conflictZones])
+    // Only re-render when essential dependencies change - lastUpdated timestamp handles dynamic data updates
+  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility, lastUpdated])
 
   const loadMapData = async () => {
     try {
