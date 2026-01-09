@@ -208,8 +208,6 @@ export const SHIPPING_CHOKEPOINTS = [
     region: 'Denmark/Sweden'
   }
 ]
-
-
 export const MILITARY_BASES = [
   { id: 'ramstein', name: 'Ramstein AB', lat: 49.4371, lon: 7.6021, type: 'us-nato' },
   { id: 'pituffik', name: 'Pituffik Space Base', lat: 76.5333, lon: -68.7500, type: 'us-nato' },

@@ -71,7 +71,7 @@ const GlobalMap = () => {
         try {
           const xmlText = await fetchWithProxy(feed.url)
           const items = parseRSS(xmlText)
-          
+
           return items.slice(0, 5).map(item => ({
             ...item,
             source: feed.name
@@ -248,12 +248,6 @@ const GlobalMap = () => {
           .attr('width', 60)
           .attr('height', 60)
           .attr('fill', 'url(#smallGrid)')
-
-        grid.append('path')
-          .attr('d', 'M 60 0 L 0 0 0 60')
-          .attr('fill', 'none')
-          .attr('stroke', '#0d3a2d')
-          .attr('stroke-width', 0.8)
 
         // Add additional layers (Global Only)
         // Shipping Chokepoints
