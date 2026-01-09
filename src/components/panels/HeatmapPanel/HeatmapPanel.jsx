@@ -42,7 +42,7 @@ const HeatmapPanel = () => {
           const json = await response.json()
           const quote = json.chart.result[0]
           const meta = quote.meta
-          
+
           data[sector.symbol] = {
             change: ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100
           }
@@ -80,8 +80,8 @@ const HeatmapPanel = () => {
         if (!data) return null
 
         return (
-          <div 
-            key={sector.symbol} 
+          <div
+            key={sector.symbol}
             className={`heatmap-cell ${getColorClass(data.change)}`}
           >
             <div className="sector-name">{sector.name}</div>
