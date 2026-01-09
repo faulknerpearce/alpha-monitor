@@ -48,6 +48,15 @@ const GlobalMap = () => {
     fetchMapNews()
   }, [])
 
+  // Update layer visibility based on map view
+  useEffect(() => {
+    setLayerVisibility(prev => ({
+      ...prev,
+      hotspots: mapView === 'us',
+      usCities: mapView === 'us'
+    }))
+  }, [mapView])
+
   const fetchWithProxy = async (url) => {
     for (const proxy of CORS_PROXIES) {
       try {
@@ -166,11 +175,6 @@ const GlobalMap = () => {
         throw new Error(`Failed to fetch world map: ${worldResponse.status}`)
       }
       const world = await worldResponse.json()
-
-      // Validate world data structure
-      if (!world || !world.objects || !world.objects.countries) {
-        throw new Error('Invalid world map data structure')
-      }
       setWorldData(world)
 
       // Load US map topology data
@@ -179,11 +183,6 @@ const GlobalMap = () => {
         throw new Error(`Failed to fetch US map: ${usResponse.status}`)
       }
       const us = await usResponse.json()
-
-      // Validate US data structure
-      if (!us || !us.objects || !us.objects.states) {
-        throw new Error('Invalid US map data structure')
-      }
       setUsData(us)
 
       setError(null)
@@ -230,10 +229,10 @@ const GlobalMap = () => {
       // Create projection
       let projection
       if (mapView === 'global') {
-        projection = d3.geoEquirectangular()
+        projection = d3.geoNaturalEarth1()
           .scale((width / (2 * Math.PI)) * zoomLevel)
           .translate([width / 2 + translation[0], height / 2 + translation[1]])
-          .center([0, 0])
+          .center([180, 0])
       } else {
         projection = d3.geoAlbersUsa()
           .scale(width * zoomLevel * 1.2)
@@ -281,6 +280,37 @@ const GlobalMap = () => {
           .attr('stroke', '#0d3a2d')
           .attr('stroke-width', 0.8)
 
+        // Add additional layers (Global Only)
+        // Shipping Chokepoints
+        if (layerVisibility.shippingChokepoints) {
+          const chokeGroup = svg.append('g').attr('class', 'chokepoints')
+          SHIPPING_CHOKEPOINTS.forEach(point => {
+            const projected = projection([point.lon, point.lat])
+            if (!projected) return
+            const [x, y] = projected
+            if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+            const g = chokeGroup.append('g')
+              .attr('transform', `translate(${x},${y})`)
+              .style('cursor', 'pointer')
+              .on('click', () => handleHotspotClick({ ...point, type: 'chokepoint' }))
+
+            g.append('rect')
+              .attr('x', -6).attr('y', -6)
+              .attr('width', 12).attr('height', 12)
+              .attr('fill', '#00aaff')
+              .attr('stroke', '#ffffff')
+              .attr('stroke-width', 1)
+
+            g.append('text')
+              .attr('x', 0)
+              .attr('y', 20)
+              .attr('text-anchor', 'middle')
+              .attr('fill', '#00aaff')
+              .attr('font-size', '10px')
+              .text(point.name)
+          })
+        }
+
         svg.append('rect')
           .attr('width', width)
           .attr('height', height)
@@ -320,7 +350,9 @@ const GlobalMap = () => {
           .on('mouseleave', function (event, d) {
             d3.select(this).attr('fill', '#0a2018').attr('stroke', '#0f5040')
           })
-      } else {
+      }
+
+      if (mapView === 'us') {
         // Render US states
         const states = topojson.feature(usData, usData.objects.states)
 
@@ -384,7 +416,7 @@ const GlobalMap = () => {
         const hotspotsGroup = svg.append('g').attr('class', 'hotspots')
 
         hotspots.forEach(hotspot => {
-          const coords = mapView === 'global' ? hotspot.coords : [hotspot.lon, hotspot.lat]
+          const coords = [hotspot.lon, hotspot.lat]
           const projected = projection(coords)
           if (!projected) return
           const [x, y] = projected
@@ -404,6 +436,7 @@ const GlobalMap = () => {
             .attr('stroke', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
             .attr('stroke-width', 2)
             .attr('opacity', 0.8)
+            .attr('class', severity === 'high' ? 'hotspot-pulse' : '')
 
           // Inner dot
           group.append('circle')
@@ -607,6 +640,7 @@ const GlobalMap = () => {
             .attr('stroke', severity === 'high' ? '#ff3333' : severity === 'elevated' ? '#ffcc00' : '#00ff88')
             .attr('stroke-width', 2)
             .attr('opacity', 0.8)
+            .attr('class', severity === 'high' ? 'hotspot-pulse' : '')
 
           // Inner dot (like regular hotspots)
           group.append('circle')
