@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '../../utils/fetchUtils.js'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import './NewsPanel.css'
 
 const NewsPanel = ({ feeds, title }) => {

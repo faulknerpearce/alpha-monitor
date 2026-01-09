@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HOTSPOTS, INTEL_HOTSPOTS, US_HOTSPOTS, CONFLICT_ZONES } from '../config/dynamicRegions.js'
+import { HOTSPOTS, INTEL_HOTSPOTS, US_HOTSPOTS, CONFLICT_ZONES } from '@config/dynamicRegions.js'
 
 /**
  * Hook to manage dynamic regions data with periodic refresh

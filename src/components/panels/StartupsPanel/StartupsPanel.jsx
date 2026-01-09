@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import './StartupsPanel.css'
 
 // Crunchbase-style data - in production this would come from an API
@@ -13,11 +14,6 @@ const MOCK_FUNDING_DATA = [
     { company: 'Notion', amount: 275, round: 'Series C', date: new Date('2023-12-20'), sector: 'Productivity' },
 ]
 
-const CORS_PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-]
-
 const StartupsPanel = () => {
     const [deals, setDeals] = useState([])
     const [loading, setLoading] = useState(true)
@@ -28,32 +24,6 @@ const StartupsPanel = () => {
         const interval = setInterval(fetchStartupNews, 10 * 60 * 1000) // Refresh every 10 minutes
         return () => clearInterval(interval)
     }, [])
-
-    const fetchWithProxy = async (url) => {
-        for (const proxy of CORS_PROXIES) {
-            try {
-                const response = await fetch(proxy + encodeURIComponent(url), {
-                    signal: AbortSignal.timeout(10000)
-                })
-                if (response.ok) return await response.text()
-            } catch (e) {
-                continue
-            }
-        }
-        throw new Error('All proxies failed')
-    }
-
-    const parseRSS = (xmlText) => {
-        const parser = new DOMParser()
-        const xml = parser.parseFromString(xmlText, 'text/xml')
-        const items = xml.querySelectorAll('item, entry')
-        return Array.from(items).map(item => ({
-            title: item.querySelector('title')?.textContent?.trim() || '',
-            link: item.querySelector('link')?.textContent?.trim() ||
-                item.querySelector('link')?.getAttribute('href') || '',
-            date: new Date(item.querySelector('pubDate, published')?.textContent || Date.now()),
-        })).filter(item => item.title)
-    }
 
     const extractFunding = (title) => {
         // Try to extract funding amount from title

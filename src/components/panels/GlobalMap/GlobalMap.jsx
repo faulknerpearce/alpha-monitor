@@ -4,10 +4,10 @@ import * as topojson from 'topojson-client'
 import {
   US_CITIES, SHIPPING_CHOKEPOINTS, MILITARY_BASES,
   NUCLEAR_FACILITIES, UNDERSEA_CABLES, CYBER_REGIONS
-} from '../../../config/regions.js'
-import { NEWS_FEEDS } from '../../../config/feeds.js'
-import { fetchWithProxy, parseRSS } from '../../../utils/fetchUtils.js'
-import { useDynamicRegions } from '../../../hooks/useDynamicRegions.js'
+} from '@config/regions.js'
+import { NEWS_FEEDS } from '@config/feeds.js'
+import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { useDynamicRegions } from '@hooks/useDynamicRegions.js'
 import './GlobalMap.css'
 
 const GlobalMap = () => {
