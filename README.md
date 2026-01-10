@@ -35,17 +35,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) (or the port shown in the terminal if 3000 is in use)
 
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
 
 ## Project Structure
 
