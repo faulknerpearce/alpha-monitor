@@ -1,16 +1,18 @@
-# Alpha Monitor - Situation Room Dashboard
+# Alpha Monitor
+
+![Alpha Monitor — Situation Room Dashboard](public/dashboard.png)
 
 A real-time monitoring dashboard for markets, news, and geopolitical events.
 
 ## Features
 
-- 📰 Real-time news aggregation from multiple sources
-- 📊 Live market data and sector heatmaps
-- 🗺️ Interactive global map with event markers
-- 🎯 Customizable panels and layouts
-- 💾 Persistent settings and preferences
-- 🔄 Drag-and-drop panel reordering
-- 📏 Resizable panels
+-  Real-time news aggregation from multiple sources
+-  Live market data and sector heatmaps
+-  Interactive global map with event markers
+-  Customizable panels and layouts
+-  Persistent settings and preferences
+-  Drag-and-drop panel reordering
+-  Resizable panels
 
 ## Tech Stack
 
