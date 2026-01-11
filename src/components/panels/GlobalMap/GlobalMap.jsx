@@ -455,6 +455,10 @@ const GlobalMap = () => {
             if (!projected) return
             const [x, y] = projected
             if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) return
+
+            const intensity = zone.intensity || 'medium'
+            const color = intensity === 'high' ? '#ff3333' : intensity === 'elevated' ? '#ffcc00' : '#00ff88'
+
             const g = conflictGroup.append('g')
               .attr('transform', `translate(${x},${y})`)
               .style('cursor', 'pointer')
@@ -462,14 +466,14 @@ const GlobalMap = () => {
 
             g.append('circle')
               .attr('r', 10)
-              .attr('fill', 'rgba(255, 50, 50, 0.2)')
-              .attr('stroke', '#ff3333')
+              .attr('fill', `${color}33`) // Add alpha
+              .attr('stroke', color)
               .attr('stroke-dasharray', '2,2')
 
             // X symbol for conflict (larger)
             g.append('path')
               .attr('d', 'M-6,-6 L6,6 M6,-6 L-6,6')
-              .attr('stroke', '#ff3333')
+              .attr('stroke', color)
               .attr('stroke-width', 2)
               .attr('fill', 'none')
           })

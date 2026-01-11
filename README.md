@@ -1,6 +1,6 @@
 # Alpha Monitor
 
-![Alpha Monitor — Situation Room Dashboard](public/dashboard.png)
+![Alpha Monitor](public/dashboard.png)
 
 A real-time monitoring dashboard for markets, news, and geopolitical events.
 
