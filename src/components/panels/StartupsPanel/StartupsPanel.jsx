@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { StartupsFeedService } from '@services/feeds'
 import './StartupsPanel.css'
 
 // Crunchbase-style data - in production this would come from an API
@@ -25,60 +25,14 @@ const StartupsPanel = () => {
         return () => clearInterval(interval)
     }, [])
 
-    const extractFunding = (title) => {
-        // Try to extract funding amount from title
-        const match = title.match(/\$(\d+(?:\.\d+)?)\s*(M|B|million|billion)/i)
-        if (match) {
-            const value = parseFloat(match[1])
-            const multiplier = match[2].toLowerCase().startsWith('b') ? 1000 : 1
-            return value * multiplier
-        }
-        return null
-    }
-
     const fetchStartupNews = async () => {
         try {
             setLoading(true)
-            const newsItems = []
-
-            // Multiple startup news sources
-            const STARTUP_FEEDS = [
-                { name: 'TechCrunch', url: 'https://techcrunch.com/category/startups/feed/' },
-                { name: 'VentureBeat', url: 'https://venturebeat.com/category/deals/feed/' },
-                { name: 'Crunchbase', url: 'https://news.crunchbase.com/feed/' },
-                { name: 'Sifted', url: 'https://sifted.eu/feed' },
-            ]
-
-            for (const feed of STARTUP_FEEDS) {
-                try {
-                    const xmlText = await fetchWithProxy(feed.url)
-                    const items = parseRSS(xmlText)
-                    items.forEach(item => {
-                        const amount = extractFunding(item.title)
-                        // Filter for funding-related stories
-                        if (amount || item.title.toLowerCase().includes('raises') ||
-                            item.title.toLowerCase().includes('funding') ||
-                            item.title.toLowerCase().includes('series') ||
-                            item.title.toLowerCase().includes('valuation') ||
-                            item.title.toLowerCase().includes('investment')) {
-                            newsItems.push({
-                                company: item.title.split(' ')[0],
-                                title: item.title,
-                                link: item.link,
-                                amount: amount,
-                                date: item.date,
-                                source: feed.name
-                            })
-                        }
-                    })
-                } catch (e) {
-                    console.error(`Failed to fetch ${feed.name}:`, e)
-                }
-            }
-
+            const newsItems = await StartupsFeedService.fetchStartupNews(10)
+            
             // If we got news items, use them; otherwise use mock data
             if (newsItems.length > 0) {
-                setDeals(newsItems.slice(0, 10))
+                setDeals(newsItems)
                 const total = newsItems.reduce((sum, d) => sum + (d.amount || 0), 0)
                 setTotalRaised(total)
             } else {
@@ -103,12 +57,7 @@ const StartupsPanel = () => {
         return `$${amount}M`
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => StartupsFeedService.getTimeAgo(date)
 
     if (loading) {
         return <div className="loading-msg">Loading startup funding...</div>

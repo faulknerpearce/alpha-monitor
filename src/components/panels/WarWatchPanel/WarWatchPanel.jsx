@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { WarWatchFeedService } from '@services/feeds'
 import './WarWatchPanel.css'
-
-const WAR_FEEDS = [
-    { name: 'Defense One', url: 'https://www.defenseone.com/rss/all/' },
-    { name: 'War on Rocks', url: 'https://warontherocks.com/feed/' },
-    { name: 'Breaking Defense', url: 'https://breakingdefense.com/feed/' },
-    { name: 'The War Zone', url: 'https://www.thedrive.com/the-war-zone/feed' },
-    { name: 'Janes', url: 'https://www.janes.com/feeds/news' },
-]
 
 // Active conflict zones
 const CONFLICT_ZONES = [
@@ -31,32 +23,18 @@ const WarWatchPanel = () => {
     }, [])
 
     const fetchNews = async () => {
-        setLoading(true)
-        const allItems = []
-
-        for (const feed of WAR_FEEDS) {
-            try {
-                const xmlText = await fetchWithProxy(feed.url)
-                const items = parseRSS(xmlText)
-                items.slice(0, 5).forEach(item => {
-                    allItems.push({ ...item, source: feed.name })
-                })
-            } catch (e) {
-                console.error(`Failed to fetch ${feed.name}:`, e)
-            }
+        try {
+            setLoading(true)
+            const items = await WarWatchFeedService.fetchWarNews(15)
+            setNews(items)
+        } catch (e) {
+            console.error('War news fetch error:', e)
+        } finally {
+            setLoading(false)
         }
-
-        allItems.sort((a, b) => b.date - a.date)
-        setNews(allItems.slice(0, 15))
-        setLoading(false)
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => WarWatchFeedService.getTimeAgo(date)
 
     if (loading && news.length === 0) {
         return <div className="loading-msg">Loading conflict data...</div>

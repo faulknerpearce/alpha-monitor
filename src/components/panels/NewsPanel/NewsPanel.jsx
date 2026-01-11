@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { BaseFeedService } from '@services/feeds'
 import './NewsPanel.css'
 
 const NewsPanel = ({ feeds, title }) => {
@@ -16,63 +16,20 @@ const NewsPanel = ({ feeds, title }) => {
   const fetchNews = async () => {
     try {
       setLoading(true)
-      const allItems = []
-      let successCount = 0
-
-      for (const feed of feeds) {
-        try {
-          console.log(`Fetching ${feed.name}...`)
-          const xmlText = await fetchWithProxy(feed.url)
-          const items = parseRSS(xmlText)
-          items.forEach(item => {
-            item.source = feed.name
-          })
-          allItems.push(...items)
-          successCount++
-          console.log(`Successfully fetched ${items.length} items from ${feed.name}`)
-        } catch (e) {
-          console.error(`Failed to fetch ${feed.name}:`, e.message)
-          // Continue with other feeds instead of failing completely
-        }
-      }
-
-      if (successCount === 0) {
-        throw new Error('All news feeds failed to load')
-      }
-
-      // Sort by date, newest first
-      allItems.sort((a, b) => b.timestamp - a.timestamp)
-      setNews(allItems.slice(0, 50)) // Keep top 50 items
+      const items = await BaseFeedService.fetchFeeds(feeds, { maxItems: 50 })
+      setNews(items)
       setError(null)
-      console.log(`Total news items loaded: ${allItems.length} from ${successCount}/${feeds.length} feeds`)
+      console.log(`Total news items loaded: ${items.length}`)
     } catch (e) {
       console.error('News fetch error:', e)
       setError(`Failed to load news: ${e.message}`)
-      setNews([]) // Clear news on complete failure
+      setNews([])
     } finally {
       setLoading(false)
     }
   }
 
-  const getTimeAgo = (date) => {
-    const seconds = Math.floor((new Date() - date) / 1000)
-    const intervals = {
-      y: 31536000,
-      mo: 2592000,
-      w: 604800,
-      d: 86400,
-      h: 3600,
-      m: 60
-    }
-
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-      const interval = Math.floor(seconds / secondsInUnit)
-      if (interval >= 1) {
-        return `${interval}${unit}`
-      }
-    }
-    return 'now'
-  }
+  const getTimeAgo = (date) => BaseFeedService.getTimeAgo(date)
 
   // Get unique sources count
   const uniqueSources = [...new Set(news.map(item => item.source))].length

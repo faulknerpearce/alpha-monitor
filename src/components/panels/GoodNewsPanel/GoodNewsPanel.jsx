@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { GoodNewsFeedService } from '@services/feeds'
 import './GoodNewsPanel.css'
-
-const GOOD_NEWS_FEEDS = [
-    { name: 'Good News Network', url: 'https://www.goodnewsnetwork.org/feed/' },
-    { name: 'Positive News', url: 'https://www.positive.news/feed/' },
-    { name: 'Reasons to be Cheerful', url: 'https://reasonstobecheerful.world/feed/' },
-]
 
 // Positive stats
 const POSITIVE_STATS = [
@@ -26,32 +20,18 @@ const GoodNewsPanel = () => {
     }, [])
 
     const fetchNews = async () => {
-        setLoading(true)
-        const allItems = []
-
-        for (const feed of GOOD_NEWS_FEEDS) {
-            try {
-                const xmlText = await fetchWithProxy(feed.url)
-                const items = parseRSS(xmlText)
-                items.slice(0, 5).forEach(item => {
-                    allItems.push({ ...item, source: feed.name })
-                })
-            } catch (e) {
-                console.error(`Failed to fetch ${feed.name}:`, e)
-            }
+        try {
+            setLoading(true)
+            const items = await GoodNewsFeedService.fetchGoodNews(12)
+            setNews(items)
+        } catch (e) {
+            console.error('Good news fetch error:', e)
+        } finally {
+            setLoading(false)
         }
-
-        allItems.sort((a, b) => b.date - a.date)
-        setNews(allItems.slice(0, 12))
-        setLoading(false)
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => GoodNewsFeedService.getTimeAgo(date)
 
     if (loading && news.length === 0) {
         return <div className="loading-msg">Loading good news...</div>

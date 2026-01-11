@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { LayoffsFeedService } from '@services/feeds'
 import './LayoffsPanel.css'
-
-const LAYOFFS_RSS = 'https://news.google.com/rss/search?q=tech+layoffs+jobs&hl=en-US&gl=US&ceid=US:en'
 
 // Real recent major layoffs (2024/2025)
 const RECENT_LAYOFFS = [
@@ -35,15 +33,15 @@ const LayoffsPanel = () => {
     }, [])
 
     const fetchNews = async () => {
-        setLoading(true)
         try {
-            const xmlText = await fetchWithProxy(LAYOFFS_RSS)
-            const items = parseRSS(xmlText)
-            setNews(items.slice(0, 10))
+            setLoading(true)
+            const items = await LayoffsFeedService.fetchLayoffsNews(10)
+            setNews(items)
         } catch (e) {
             console.error('Failed to fetch layoff news:', e)
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     const formatCount = (count) => {
@@ -51,12 +49,7 @@ const LayoffsPanel = () => {
         return count.toString()
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => LayoffsFeedService.getTimeAgo(date)
 
     return (
         <div className="layoffs-panel">

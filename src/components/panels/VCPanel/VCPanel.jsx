@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { VCFeedService } from '@services/feeds'
 import './VCPanel.css'
 
 // Expanded VC investment data - in production would come from Crunchbase/PitchBook API
@@ -20,12 +20,6 @@ const MOCK_VC_DATA = [
     { firm: 'NEA', deployed: 520, deals: 22, focus: 'Healthcare', activity: 'medium', aum: '25B' },
     { firm: 'Coatue', deployed: 680, deals: 24, focus: 'Tech/Crypto', activity: 'medium', aum: '45B' },
     { firm: 'Paradigm', deployed: 450, deals: 18, focus: 'Crypto/Web3', activity: 'high', aum: '10B' },
-]
-
-const VC_FEEDS = [
-    { name: 'StrictlyVC', url: 'https://www.strictlyvc.com/feed/' },
-    { name: 'Term Sheet', url: 'https://fortune.com/section/term-sheet/feed/' },
-    { name: 'PitchBook', url: 'https://pitchbook.com/news/feed' },
 ]
 
 const VCPanel = () => {
@@ -49,20 +43,14 @@ const VCPanel = () => {
         setTotalDeployed(MOCK_VC_DATA.reduce((sum, v) => sum + v.deployed, 0))
         setTotalDeals(MOCK_VC_DATA.reduce((sum, v) => sum + v.deals, 0))
 
-        // Try to fetch VC news
-        const newsItems = []
-        for (const feed of VC_FEEDS) {
-            try {
-                const xmlText = await fetchWithProxy(feed.url)
-                const items = parseRSS(xmlText)
-                items.slice(0, 3).forEach(item => {
-                    newsItems.push({ ...item, source: feed.name })
-                })
-            } catch (e) {
-                console.error(`Failed to fetch ${feed.name}:`, e)
-            }
+        // Fetch VC news
+        try {
+            const newsItems = await VCFeedService.fetchVCNews(6)
+            setVcNews(newsItems)
+        } catch (e) {
+            console.error('Failed to fetch VC news:', e)
         }
-        setVcNews(newsItems.slice(0, 6))
+        
         setLoading(false)
     }
 
@@ -73,12 +61,7 @@ const VCPanel = () => {
 
     const getActivityClass = (activity) => `activity-${activity}`
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => VCFeedService.getTimeAgo(date)
 
     if (loading) {
         return <div className="loading-msg">Loading VC activity...</div>

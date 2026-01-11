@@ -1,24 +1,9 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { AIRaceFeedService } from '@services/feeds'
 import './AIRacePanel.css'
 
 // Key players in the AI race
-const AI_PLAYERS = [
-    { name: 'Nvidia', color: '#76b900' }, // Green
-    { name: 'OpenAI', color: '#10a37f' }, // Teal
-    { name: 'Google', color: '#4285f4' }, // Blue
-    { name: 'Microsoft', color: '#f25022' }, // Red-orange
-    { name: 'Anthropic', color: '#d97757' }, // Clay
-    { name: 'Meta', color: '#0668e1' }, // Blue
-    { name: 'xAI', color: '#ffffff' }, // White
-    { name: 'Mistral', color: '#facc15' }, // Yellow
-]
-
-const RSS_FEEDS = [
-    { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/' },
-    { name: 'VentureBeat AI', url: 'https://venturebeat.com/category/ai/feed/' },
-    { name: 'The Verge AI', url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml' },
-]
+const AI_PLAYERS = AIRaceFeedService.AI_PLAYERS
 
 const AIRacePanel = () => {
     const [news, setNews] = useState([])
@@ -31,39 +16,18 @@ const AIRacePanel = () => {
     }, [])
 
     const fetchNews = async () => {
-        setLoading(true)
-        let allItems = []
-
-        for (const feed of RSS_FEEDS) {
-            try {
-                const xmlText = await fetchWithProxy(feed.url)
-                const items = parseRSS(xmlText)
-                items.forEach(item => {
-                    item.source = feed.name.replace(' AI', '')
-                    allItems.push(item)
-                })
-            } catch (e) {
-                console.error(`Failed to fetch ${feed.name}:`, e)
-            }
+        try {
+            setLoading(true)
+            const items = await AIRaceFeedService.fetchAINews(10)
+            setNews(items)
+        } catch (e) {
+            console.error('AI news fetch error:', e)
+        } finally {
+            setLoading(false)
         }
-
-        // Filter for AI terms/players
-        const keywords = ['AI', 'GPT', 'LLM', ...AI_PLAYERS.map(p => p.name)]
-        allItems = allItems.filter(item =>
-            keywords.some(k => item.title.toLowerCase().includes(k.toLowerCase()))
-        )
-
-        allItems.sort((a, b) => b.date - a.date)
-        setNews(allItems.slice(0, 10))
-        setLoading(false)
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => AIRaceFeedService.getTimeAgo(date)
 
     return (
         <div className="ai-panel">
