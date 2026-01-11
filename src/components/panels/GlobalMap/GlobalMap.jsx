@@ -7,7 +7,7 @@ import {
 } from '@config/regions.js'
 import { NEWS_FEEDS } from '@services/feeds'
 import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
-import { useDynamicRegions } from '@hooks/useDynamicRegions.js'
+import { useDynamicRegions } from '@services/useDynamicRegions.js'
 import './GlobalMap.css'
 
 const GlobalMap = () => {
