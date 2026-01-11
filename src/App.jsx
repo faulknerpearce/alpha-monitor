@@ -3,7 +3,7 @@ import Header from '@components/Header/Header'
 import Dashboard from '@components/Dashboard/Dashboard'
 import SettingsModal from '@components/SettingsModal/SettingsModal'
 import MonitorForm from '@components/MonitorForm/MonitorForm'
-import { usePanelSettings } from '@hooks/usePanelSettings'
+import { usePanelSettings } from '@services/usePanelSettings'
 import './App.css'
 
 function App() {
