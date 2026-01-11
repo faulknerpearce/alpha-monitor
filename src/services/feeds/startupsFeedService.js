@@ -17,7 +17,8 @@ export class StartupsFeedService extends BaseFeedService {
   }
 
   static async fetchStartupNews(maxItems = 10) {
-    const allItems = await this.fetchFeeds(FEED_CONFIG.startups)
+    // Fetch more items initially to ensure we have enough after filtering
+    const allItems = await this.fetchFeeds(FEED_CONFIG.startups, { maxItems: maxItems * 3 })
     
     // Filter and enhance items with funding information
     const fundingItems = allItems

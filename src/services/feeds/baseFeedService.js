@@ -9,7 +9,7 @@ export class BaseFeedService {
    * Fetch and parse multiple RSS feeds
    * @param {Array} feeds - Array of feed objects with name and url
    * @param {Object} options - Options for fetching
-   * @param {number} options.maxItems - Maximum items to return per feed
+   * @param {number} options.maxItems - Maximum total items to return across all feeds
    * @returns {Promise<Array>} Array of parsed items with source information
    */
   static async fetchFeeds(feeds, options = {}) {
