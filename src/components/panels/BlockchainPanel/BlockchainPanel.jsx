@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
-import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
+import { fetchWithProxy } from '@utils/fetchUtils.js'
+import { BlockchainFeedService } from '@services/feeds'
 import './BlockchainPanel.css'
-
-const CRYPTO_FEEDS = [
-    { name: 'CoinDesk', url: 'https://www.coindesk.com/arc/outboundfeeds/rss/' },
-    { name: 'Cointelegraph', url: 'https://cointelegraph.com/rss' },
-    { name: 'The Block', url: 'https://www.theblock.co/rss.xml' },
-]
 
 // Mock on-chain data
 const MOCK_CHAIN_DATA = {
@@ -86,25 +81,8 @@ const BlockchainPanel = () => {
     const fetchCryptoNews = async () => {
         try {
             setLoading(true)
-            const allItems = []
-            let successCount = 0
-
-            for (const feed of CRYPTO_FEEDS) {
-                try {
-                    const xmlText = await fetchWithProxy(feed.url)
-                    const items = parseRSS(xmlText)
-                    items.forEach(item => {
-                        item.source = feed.name
-                    })
-                    allItems.push(...items)
-                    successCount++
-                } catch (e) {
-                    console.error(`Failed to fetch ${feed.name}:`, e)
-                }
-            }
-
-            allItems.sort((a, b) => b.date - a.date)
-            setNews(allItems.slice(0, 15))
+            const items = await BlockchainFeedService.fetchCryptoNews(15)
+            setNews(items)
         } catch (e) {
             console.error('Crypto news fetch error:', e)
         } finally {
@@ -112,12 +90,7 @@ const BlockchainPanel = () => {
         }
     }
 
-    const getTimeAgo = (date) => {
-        const seconds = Math.floor((new Date() - date) / 1000)
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-        return `${Math.floor(seconds / 86400)}d`
-    }
+    const getTimeAgo = (date) => BlockchainFeedService.getTimeAgo(date)
 
     if (loading && news.length === 0) {
         return <div className="loading-msg">Loading blockchain data...</div>

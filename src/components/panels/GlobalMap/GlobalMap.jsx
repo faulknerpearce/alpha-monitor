@@ -5,7 +5,7 @@ import {
   US_CITIES, SHIPPING_CHOKEPOINTS, MILITARY_BASES,
   NUCLEAR_FACILITIES, UNDERSEA_CABLES, CYBER_REGIONS
 } from '@config/regions.js'
-import { NEWS_FEEDS } from '@config/feeds.js'
+import { NEWS_FEEDS } from '@services/feeds'
 import { fetchWithProxy, parseRSS } from '@utils/fetchUtils.js'
 import { useDynamicRegions } from '@hooks/useDynamicRegions.js'
 import './GlobalMap.css'
