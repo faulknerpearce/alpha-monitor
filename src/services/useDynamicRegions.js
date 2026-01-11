@@ -19,6 +19,13 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
   })
   const [loading, setLoading] = useState(false)
 
+  // Urgency keywords that increase severity (defined once)
+  const urgencyKeywords = [
+    'crisis', 'emergency', 'attack', 'strike', 'bomb', 'explosion',
+    'casualties', 'killed', 'wounded', 'urgent', 'breaking',
+    'escalation', 'conflict', 'war', 'military action', 'invasion'
+  ]
+
   /**
    * Enhanced severity calculation based on multiple factors:
    * - Keyword match frequency (news volume)
@@ -35,13 +42,6 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
     let recentMatchCount = 0
     let urgencyScore = 0
     const matchedArticles = []
-
-    // Urgency keywords that increase severity
-    const urgencyKeywords = [
-      'crisis', 'emergency', 'attack', 'strike', 'bomb', 'explosion',
-      'casualties', 'killed', 'wounded', 'urgent', 'breaking',
-      'escalation', 'conflict', 'war', 'military action', 'invasion'
-    ]
 
     allNews.forEach(article => {
       const articleDate = new Date(article.pubDate)
@@ -97,24 +97,6 @@ export const useDynamicRegions = (refreshInterval = 10 * 60 * 1000) => {
       timestamp: now,
       matchedArticles: matchedArticles.slice(0, 5) // Keep top 5 matched articles
     }
-  }
-
-  /**
-   * Categorize events based on keywords
-   */
-  const categorizeEvent = (keywords, text) => {
-    const militaryKeywords = ['military', 'troops', 'army', 'navy', 'air force', 'missile', 'strike', 'attack', 'defense']
-    const politicalKeywords = ['government', 'president', 'congress', 'senate', 'parliament', 'election', 'policy', 'diplomat']
-    const economicKeywords = ['economy', 'trade', 'sanctions', 'market', 'oil', 'energy', 'inflation', 'gdp']
-    const humanitarianKeywords = ['humanitarian', 'refugee', 'displaced', 'aid', 'crisis', 'famine', 'disaster']
-
-    const categories = []
-    if (militaryKeywords.some(k => text.includes(k))) categories.push('military')
-    if (politicalKeywords.some(k => text.includes(k))) categories.push('political')
-    if (economicKeywords.some(k => text.includes(k))) categories.push('economic')
-    if (humanitarianKeywords.some(k => text.includes(k))) categories.push('humanitarian')
-
-    return categories.length > 0 ? categories : ['general']
   }
 
   const refreshData = useCallback(async () => {
