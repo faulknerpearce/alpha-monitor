@@ -13,6 +13,7 @@ import './GlobalMap.css'
 const GlobalMap = () => {
   const svgRef = useRef(null)
   const containerRef = useRef(null)
+  const rotationRef = useRef([0, 0]) // Ref to track rotation for drag callbacks
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [mapView, setMapView] = useState('global') // 'global' or 'us'
@@ -27,6 +28,7 @@ const GlobalMap = () => {
   // Zoom state
   const [zoomLevel, setZoomLevel] = useState(1)
   const [translation, setTranslation] = useState([0, 0])
+  const [rotation, setRotation] = useState([0, 0]) // [longitude, latitude] rotation for globe
 
   // Layer visibility state
   const [layerVisibility, setLayerVisibility] = useState({
@@ -137,7 +139,7 @@ const GlobalMap = () => {
       setError('Failed to render map')
     }
     // Only re-render when essential dependencies change - lastUpdated timestamp handles dynamic data updates
-  }, [worldData, usData, mapView, zoomLevel, translation, layerVisibility, lastUpdated])
+  }, [worldData, usData, mapView, zoomLevel, translation, rotation, layerVisibility, lastUpdated])
 
   const loadMapData = async () => {
     try {
@@ -204,10 +206,21 @@ const GlobalMap = () => {
       // Create projection
       let projection
       if (mapView === 'global') {
-        projection = d3.geoNaturalEarth1()
-          .scale((width / (2 * Math.PI)) * zoomLevel)
-          .translate([width / 2 + translation[0], height / 2 + translation[1]])
-          .center([180, 0])
+        // Dynamic projection based on zoom level
+        if (zoomLevel <= 2) {
+          // Use orthographic projection for spherical globe appearance when zoomed out
+          projection = d3.geoOrthographic()
+            .scale((width / 2) * zoomLevel * 0.8)
+            .translate([width / 2, height / 2])
+            .center([0, 0])
+            .rotate(rotation)
+        } else {
+          // Use natural earth projection for flatter appearance when zoomed in
+          projection = d3.geoNaturalEarth1()
+            .scale((width / (2 * Math.PI)) * zoomLevel)
+            .translate([width / 2 + translation[0], height / 2 + translation[1]])
+            .center([180, 0])
+        }
       } else {
         projection = d3.geoAlbersUsa()
           .scale(width * zoomLevel * 1.2)
@@ -266,15 +279,17 @@ const GlobalMap = () => {
             g.append('rect')
               .attr('x', -6).attr('y', -6)
               .attr('width', 12).attr('height', 12)
-              .attr('fill', '#00aaff')
+              .attr('fill', '#00ff00')
               .attr('stroke', '#ffffff')
               .attr('stroke-width', 1)
 
             g.append('text')
               .attr('x', 0)
-              .attr('y', 20)
+              .attr('y', -15)
               .attr('text-anchor', 'middle')
-              .attr('fill', '#00aaff')
+              .attr('fill', '#00ff00')
+              .attr('stroke', '#ffffff')
+              .attr('stroke-width', '0.5px')
               .attr('font-size', '10px')
               .text(point.name)
           })
@@ -367,7 +382,7 @@ const GlobalMap = () => {
             group.append('circle')
               .attr('class', 'us-city-dot')
               .attr('r', city.type === 'capital' ? 6 : city.type === 'major' ? 5 : city.type === 'military' ? 5 : 4)
-              .attr('fill', city.type === 'capital' ? '#ffcc00' : city.type === 'military' ? '#ff6600' : '#00aaff')
+              .attr('fill', city.type === 'capital' ? '#ffcc00' : city.type === 'military' ? '#ff6600' : '#00ff00')
 
             group.append('text')
               .attr('class', 'us-city-label')
@@ -441,7 +456,7 @@ const GlobalMap = () => {
             g.append('rect')
               .attr('x', -6).attr('y', -6)
               .attr('width', 12).attr('height', 12)
-              .attr('fill', '#00aaff')
+              .attr('fill', '#00ff00')
               .attr('stroke', '#ffffff')
               .attr('stroke-width', 1)
           })
@@ -631,17 +646,49 @@ const GlobalMap = () => {
         })
       }
 
-      // Add pan/zoom interaction
-      const zoom = d3.zoom()
-        .scaleExtent([1, 8])
-        .on('zoom', (event) => {
-          const newScale = event.transform.k
-          const newTranslation = [event.transform.x, event.transform.y]
-          setZoomLevel(newScale)
-          setTranslation(newTranslation)
-        })
+      // Add globe rotation drag behavior (only for orthographic projection)
+      if (mapView === 'global' && zoomLevel <= 2) {
+        const drag = d3.drag()
+          .on('start', function () {
+            d3.select(this).style('cursor', 'grabbing')
+          })
+          .on('drag', function (event) {
+            const sensitivity = 0.5
+            const currentRotation = rotationRef.current
+            const newRotation = [
+              currentRotation[0] + event.dx * sensitivity,
+              Math.max(-90, Math.min(90, currentRotation[1] - event.dy * sensitivity))
+            ]
+            rotationRef.current = newRotation
+            setRotation(newRotation)
+          })
+          .on('end', function () {
+            d3.select(this).style('cursor', 'grab')
+          })
 
-      svg.call(zoom)
+        svg.call(drag)
+        svg.style('cursor', 'grab')
+      } else {
+        // Add pan/zoom interaction for flat map
+        const zoom = d3.zoom()
+          .scaleExtent([1, 8])
+          .on('zoom', (event) => {
+            const newScale = event.transform.k
+            const newTranslation = [event.transform.x, event.transform.y]
+            setZoomLevel(newScale)
+            setTranslation(newTranslation)
+          })
+
+        svg.call(zoom)
+      }
+
+      // Always allow zooming via scroll
+      svg.on('wheel.zoom', function (event) {
+        event.preventDefault()
+        const delta = event.deltaY > 0 ? 0.9 : 1.1
+        const newZoom = Math.max(1, Math.min(8, zoomLevel * delta))
+        setZoomLevel(newZoom)
+      })
     } catch (error) {
       console.error('Error rendering map:', error)
       setError('Failed to render map: ' + error.message)
@@ -659,6 +706,8 @@ const GlobalMap = () => {
   const handleZoomReset = () => {
     setZoomLevel(1)
     setTranslation([0, 0])
+    setRotation([0, 0])
+    rotationRef.current = [0, 0]
   }
 
   const toggleLayer = (layer) => {
