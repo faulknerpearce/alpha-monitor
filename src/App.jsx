@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import Header from '@components/Header/Header'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Navbar from '@components/Navbar/Navbar'
 import Dashboard from '@components/Dashboard/Dashboard'
+import MapPage from '@components/MapPage/MapPage'
 import SettingsModal from '@components/SettingsModal/SettingsModal'
 import MonitorForm from '@components/MonitorForm/MonitorForm'
 import { usePanelSettings } from '@services/usePanelSettings'
@@ -19,26 +21,31 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <Header 
-        onRefresh={handleRefresh}
-        isRefreshing={isRefreshing}
-        onOpenSettings={() => setSettingsOpen(true)}
-        onOpenMonitors={() => setMonitorFormOpen(true)}
-      />
-      
-      <Dashboard panelSettings={panelSettings} />
-      
-      <SettingsModal 
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      />
-      
-      <MonitorForm
-        isOpen={monitorFormOpen}
-        onClose={() => setMonitorFormOpen(false)}
-      />
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <Navbar
+          onRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
+          onOpenSettings={() => setSettingsOpen(true)}
+          onOpenMonitors={() => setMonitorFormOpen(true)}
+        />
+
+        <Routes>
+          <Route path="/" element={<Dashboard panelSettings={panelSettings} />} />
+          <Route path="/map" element={<MapPage />} />
+        </Routes>
+
+        <SettingsModal
+          isOpen={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+        />
+
+        <MonitorForm
+          isOpen={monitorFormOpen}
+          onClose={() => setMonitorFormOpen(false)}
+        />
+      </div>
+    </BrowserRouter>
   )
 }
 
