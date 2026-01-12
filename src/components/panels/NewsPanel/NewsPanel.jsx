@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BaseFeedService } from '@services/feeds'
+import { BaseFeedService } from '@services'
 import './NewsPanel.css'
 
 const NewsPanel = ({ feeds, title }) => {

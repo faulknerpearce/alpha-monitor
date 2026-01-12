@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { VCFeedService } from '@services/feeds'
+import { VCFeedService } from '@services'
 import './VCPanel.css'
 
 // Expanded VC investment data - in production would come from Crunchbase/PitchBook API

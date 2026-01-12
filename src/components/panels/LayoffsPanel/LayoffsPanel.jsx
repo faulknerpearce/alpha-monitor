@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LayoffsFeedService } from '@services/feeds'
+import { LayoffsFeedService } from '@services'
 import './LayoffsPanel.css'
 
 // Real recent major layoffs (2024/2025)

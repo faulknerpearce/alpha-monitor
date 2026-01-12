@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { WarWatchFeedService } from '@services/feeds'
+import { WarWatchFeedService } from '@services'
 import './WarWatchPanel.css'
 
 // Active conflict zones

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { StartupsFeedService } from '@services/feeds'
+import { StartupsFeedService } from '@services'
 import './StartupsPanel.css'
 
 // Crunchbase-style data - in production this would come from an API

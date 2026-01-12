@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchWithProxy } from '@utils/fetchUtils.js'
-import { BlockchainFeedService } from '@services/feeds'
+import { BlockchainFeedService } from '@services'
 import './BlockchainPanel.css'
 
 // Mock on-chain data

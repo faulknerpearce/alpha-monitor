@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AIRaceFeedService } from '@services/feeds'
+import { AIRaceFeedService } from '@services'
 import './AIRacePanel.css'
 
 // Key players in the AI race

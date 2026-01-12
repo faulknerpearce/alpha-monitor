@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GoodNewsFeedService } from '@services/feeds'
+import { GoodNewsFeedService } from '@services'
 import './GoodNewsPanel.css'
 
 // Positive stats
