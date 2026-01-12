@@ -5,10 +5,6 @@
     flex-direction: column;
 }
 
-.map-section {
-    width: 100%;
-}
-
 .ticker-section {
     width: 100%;
     margin: 0;
@@ -33,13 +29,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.panel-placeholder {
-    padding: 2rem;
-    text-align: center;
-    color: var(--text-secondary);
-    font-style: italic;
 }
 
 @media (max-width: 768px) {
