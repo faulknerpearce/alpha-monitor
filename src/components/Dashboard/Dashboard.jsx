@@ -3,7 +3,6 @@ import Panel from '@components/Panel/Panel'
 import ErrorBoundary from '@components/ErrorBoundary/ErrorBoundary'
 import { PANELS } from '@config/panels'
 import { NEWS_FEEDS } from '@services/feeds'
-import GlobalMap from '@components/panels/GlobalMap/GlobalMap'
 import NewsPanel from '@components/panels/NewsPanel/NewsPanel'
 import StartupsPanel from '@components/panels/StartupsPanel/StartupsPanel'
 import VCPanel from '@components/panels/VCPanel/VCPanel'
@@ -22,10 +21,11 @@ const Dashboard = ({ panelSettings }) => {
   const [panelOrder, setPanelOrder] = useState(() => {
     try {
       const saved = localStorage.getItem('situationMonitorPanelOrder')
-      return saved ? JSON.parse(saved) : Object.keys(PANELS)
+      const defaultOrder = Object.keys(PANELS).filter(id => id !== 'map')
+      return saved ? JSON.parse(saved).filter(id => id !== 'map') : defaultOrder
     } catch (error) {
       console.error('Error loading panel order from localStorage:', error)
-      return Object.keys(PANELS)
+      return Object.keys(PANELS).filter(id => id !== 'map')
     }
   })
 
@@ -59,12 +59,9 @@ const Dashboard = ({ panelSettings }) => {
 
   const enabledPanels = panelOrder.filter(id => panelSettings[id] !== false)
 
-  // Separate map from other panels, exclude markets/heatmap (now in ticker strip)
-  const mapPanel = enabledPanels.find(id => id === 'map')
-
-  // Filter panels by active category
+  // Filter panels by active category, exclude markets/heatmap (now in ticker strip)
   const filteredPanels = enabledPanels.filter(id => {
-    if (id === 'map' || id === 'markets' || id === 'heatmap') return false
+    if (id === 'markets' || id === 'heatmap') return false
     const panelConfig = PANELS[id]
     if (!panelConfig) return false
     if (activeCategory === 'all') return true
@@ -73,8 +70,6 @@ const Dashboard = ({ panelSettings }) => {
 
   const getPanelContent = (panelId) => {
     switch (panelId) {
-      case 'map':
-        return <GlobalMap />
       case 'politics':
         return <NewsPanel feeds={NEWS_FEEDS.politics} title="World / Geopolitical" />
       case 'tech':
@@ -108,27 +103,6 @@ const Dashboard = ({ panelSettings }) => {
 
   return (
     <main className="dashboard">
-      {/* Full-width map at the top */}
-      {mapPanel && (
-        <div className="map-section">
-          <Panel
-            key={mapPanel}
-            id={mapPanel}
-            title={PANELS[mapPanel].name}
-            draggable={PANELS[mapPanel].draggable}
-            isWide={true}
-            onDragStart={() => handleDragStart(mapPanel)}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver}
-            onDrop={() => handleDrop(mapPanel)}
-          >
-            <ErrorBoundary>
-              {getPanelContent(mapPanel)}
-            </ErrorBoundary>
-          </Panel>
-        </div>
-      )}
-
       {/* Ticker strip for markets and sectors */}
       <div className="ticker-section">
         <ErrorBoundary>
