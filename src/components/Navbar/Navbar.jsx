@@ -31,7 +31,7 @@ const Navbar = ({ onRefresh, isRefreshing, onOpenSettings, onOpenMonitors }) => 
     return (
         <nav className="navbar">
             <div className="navbar-left">
-                <h1 className="title">SITUATION MONITOR</h1>
+                <h1 className="title">ALPHA MONITOR</h1>
                 <div className="status-container">
                     <span className={`status ${isRefreshing ? 'loading' : ''}`}>
                         {!isRefreshing && <span className="live-dot"></span>}

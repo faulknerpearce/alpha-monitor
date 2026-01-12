@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import Panel from '@components/Panel/Panel'
+import Panel from '@components/panels/Panel/Panel'
 import ErrorBoundary from '@components/ErrorBoundary/ErrorBoundary'
 import { PANELS } from '@config/panels'
 import { NEWS_FEEDS } from '@services/feeds_dashboard'

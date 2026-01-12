@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from '@components/Navbar/Navbar'
 import Dashboard from '@components/Dashboard/Dashboard'
-import MapPage from '@components/MapPage/MapPage'
+import GlobalMap from '@components/GlobalMap/GlobalMap'
 import SettingsModal from '@components/SettingsModal/SettingsModal'
 import MonitorForm from '@components/MonitorForm/MonitorForm'
 import { usePanelSettings } from '@services/usePanelSettings'
@@ -32,7 +32,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Dashboard panelSettings={panelSettings} />} />
-          <Route path="/map" element={<MapPage />} />
+          <Route path="/map" element={<GlobalMap />} />
         </Routes>
 
         <SettingsModal
