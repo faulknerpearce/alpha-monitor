@@ -11,6 +11,118 @@ import { useDynamicRegions } from '@services/useDynamicRegions.js'
 import './GlobalMap.css'
 
 const GlobalMap = () => {
+    // Helper for safe date formatting
+  const formatNewsDate = (dateStr) => {
+    try {
+      const date = new Date(dateStr)
+      if (isNaN(date.getTime())) return 'Just Now'
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    } catch (e) {
+      return 'Just Now'
+    }
+  }
+
+  // Map regions/keywords to market assets
+  const MARKET_IMPACT_MAP = {
+    'taiwan': {
+      assets: [
+        { ticker: 'TSM', name: 'TSMC', change: '-1.2%' },
+        { ticker: 'SOXX', name: 'Semiconductors', change: '-0.8%' },
+        { ticker: 'AAPL', name: 'Apple', change: '+0.5%' }
+      ],
+      commodities: ['Semiconductors']
+    },
+    'semiconductor': {
+        assets: [
+            { ticker: 'SOXX', name: 'iShares Semi', change: '-0.5%' },
+            { ticker: 'NVDA', name: 'Nvidia', change: '+1.2%' }
+        ]
+    },
+    'ukraine': {
+      assets: [
+        { ticker: 'WEAT', name: 'Wheat ETF', change: '+2.1%' },
+        { ticker: 'UNG', name: 'Natural Gas', change: '+1.5%' },
+        { ticker: 'RKI', name: 'Defense ETF', change: '+0.9%' }
+      ],
+      commodities: ['Wheat', 'Natural Gas']
+    },
+    'russia': {
+        assets: [
+            { ticker: 'RSX', name: 'Russia ETF', change: '-5.0%' },
+            { ticker: 'LUKOY', name: 'Lukoil', change: '-2.1%' }
+        ]
+    },
+    'israel': {
+      assets: [
+        { ticker: 'ITA', name: 'Aerospace & Def', change: '+1.1%' },
+        { ticker: 'ZIM', name: 'ZIM Shipping', change: '+3.4%' }
+      ],
+      commodities: ['Oil', 'Defense Tech']
+    },
+    'gaza': {
+        assets: [
+            { ticker: 'ITA', name: 'US Defense', change: '+0.8%' },
+            { ticker: 'CL=F', name: 'Crude Oil', change: '+1.2%' }
+        ]
+    },
+    'suez': {
+      assets: [
+        { ticker: 'ZIM', name: 'ZIM Shipping', change: '+4.2%' },
+        { ticker: 'CL=F', name: 'Crude Oil', change: '+1.5%' },
+        { ticker: 'NAT', name: 'Nordic Tankers', change: '+2.8%' }
+      ],
+      commodities: ['Oil', 'LNG', 'Shipping']
+    },
+    'hormuz': {
+        assets: [
+            { ticker: 'CL=F', name: 'Brent Crude', change: '+2.5%' },
+            { ticker: 'XLE', name: 'Energy Select', change: '+1.8%' }
+        ]
+    },
+    'china': {
+        assets: [
+            { ticker: 'FXI', name: 'China Large-Cap', change: '-0.5%' },
+            { ticker: 'KWEB', name: 'China Internet', change: '-1.2%' }
+        ]
+    },
+    'iran': {
+        assets: [
+            { ticker: 'CL=F', name: 'Crude Oil', change: '+1.5%' },
+            { ticker: 'XOM', name: 'Exxon Mobil', change: '+0.8%' }
+        ]
+    }
+  }
+
+  const getRelatedAssets = (hotspot) => {
+    if (!hotspot) return []
+    const text = (hotspot.name + ' ' + (hotspot.description || '') + ' ' + (hotspot.region || '')).toLowerCase()
+    
+    // Check for explicit region matches
+    for (const [key, data] of Object.entries(MARKET_IMPACT_MAP)) {
+        if (text.includes(key)) {
+            return data.assets
+        }
+    }
+    
+    // Default fallback based on type
+    if (hotspot.type === 'conflict') return [{ ticker: 'ITA', name: 'Defense ETF', change: '+0.5%' }, { ticker: 'XAR', name: 'Aerospace', change: '+0.7%' }]
+    if (hotspot.type === 'chokepoint') return [{ ticker: 'ZIM', name: 'ZIM Shipping', change: '+1.2%' }, { ticker: 'CL=F', name: 'Crude Oil', change: '+0.3%' }]
+    
+    return []
+  }
+
+  const getRelatedNews = (hotspot) => {
+      if (!hotspot || !allNews.length) return []
+      const keywords = (hotspot.keywords || []).concat([hotspot.name.toLowerCase()])
+      if (hotspot.region) keywords.push(hotspot.region.toLowerCase())
+      
+      return allNews.filter(item => {
+          const content = (item.title + ' ' + (item.description || '')).toLowerCase()
+          return keywords.some(k => content.includes(k))
+      }).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+      .slice(0, 5)
+  }
+
   const svgRef = useRef(null)
   const containerRef = useRef(null)
   const rotationRef = useRef([0, 0]) // Ref to track rotation for drag callbacks
@@ -130,10 +242,17 @@ const GlobalMap = () => {
         .filter(r => r.status === 'fulfilled')
         .flatMap(r => r.value)
 
-      setAllNews([...flattened, ...googleNews])
-      console.log('All news fetched:', [...flattened, ...googleNews].length, 'items')
+      const mergedNews = [...flattened, ...googleNews]
+      
+      // Strict sort by date descending
+      mergedNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+
+      setAllNews(mergedNews)
+      console.log('All news fetched & sorted:', mergedNews.length, 'items')
     } catch (e) {
       console.error('Error fetching map news:', e)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -909,9 +1028,9 @@ const GlobalMap = () => {
             <span className={`stat-value ${alertLevel.toLowerCase()}`}>{alertLevel}</span>
           </div>
           <div className="stat-divider"></div>
-          <div className="stat-item">
+          <div className="stat-item" style={{ cursor: 'pointer' }} onClick={() => { fetchMapNews(); setLoading(true); }} title="Click to refresh intel">
             <span className="stat-label">INTEL UPDATES</span>
-            <span className="stat-value">{allNews.length}</span>
+            <span className="stat-value">{allNews.length > 0 ? allNews.length : '—'}</span>
           </div>
         </div>
 
@@ -1151,75 +1270,58 @@ const GlobalMap = () => {
               <strong>Region:</strong> {selectedHotspot.region}
             </div>
           )}
-          {selectedHotspot.traffic && (
-            <div className="hotspot-popup-status">
-              <strong>Traffic:</strong> {selectedHotspot.traffic}
+          
+          {/* ASSETS AT RISK SECTION */}
+          {getRelatedAssets(selectedHotspot).length > 0 && (
+            <div className="hotspot-popup-assets-section">
+                <div className="hotspot-popup-section-title">ASSETS AT RISK</div>
+                <div className="hotspot-popup-assets-grid">
+                    {getRelatedAssets(selectedHotspot).map((asset, i) => (
+                        <div key={i} className="hotspot-asset-card">
+                            <div className="asset-ticker">{asset.ticker}</div>
+                            <div className="asset-name">{asset.name}</div>
+                            <div className={`asset-change ${asset.change.startsWith('+') ? 'positive' : 'negative'}`}>
+                                {asset.change}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
           )}
-          {selectedHotspot.sectors && (
-            <div className="hotspot-popup-sectors">
-              <strong>Sectors:</strong> {selectedHotspot.sectors.join(', ')}
-            </div>
-          )}
-          {selectedHotspot.group && (
-            <div className="hotspot-popup-category">
-              <strong>Group:</strong> {selectedHotspot.group} {selectedHotspot.aka && `(${selectedHotspot.aka})`}
-            </div>
-          )}
-          {selectedHotspot.sponsor && (
-            <div className="hotspot-popup-status">
-              <strong>Sponsor:</strong> {selectedHotspot.sponsor}
-            </div>
-          )}
-          {selectedHotspot.targets && (
-            <div className="hotspot-popup-targets">
-              <strong>Targets:</strong> {selectedHotspot.targets.join(', ')}
-            </div>
-          )}
-          {selectedHotspot.parties && (
-            <div className="hotspot-popup-parties">
-              <strong>Parties:</strong> {selectedHotspot.parties.join(', ')}
-            </div>
-          )}
-          {selectedHotspot.intensity && (
-            <div className="hotspot-popup-status">
-              <strong>Intensity:</strong> {typeof selectedHotspot.intensity === 'string' ? selectedHotspot.intensity.toUpperCase() : selectedHotspot.intensity}
-            </div>
-          )}
-          {selectedHotspot.casualties && (
-            <div className="hotspot-popup-status">
-              <strong>Casualties:</strong> {selectedHotspot.casualties}
-            </div>
-          )}
-          {selectedHotspot.displaced && (
-            <div className="hotspot-popup-status">
-              <strong>Displaced:</strong> {selectedHotspot.displaced}
-            </div>
-          )}
-          {selectedHotspot.population && (
-            <div className="hotspot-popup-status">
-              <strong>Population:</strong> {selectedHotspot.population}
-            </div>
-          )}
+
           <div className="hotspot-popup-desc">
             {selectedHotspot.description || `Situation in ${selectedHotspot.name}. Monitoring for developments.`}
           </div>
-          {selectedHotspot.status && (
-            <div className="hotspot-popup-status">Status: {selectedHotspot.status}</div>
-          )}
-          {selectedHotspot.news && selectedHotspot.news.length > 0 && (
+
+          {/* LIVE INTEL SECTION */}
+          {getRelatedNews(selectedHotspot).length > 0 ? (
             <div className="hotspot-popup-headlines">
-              <div className="hotspot-popup-headlines-title">LATEST INTEL</div>
-              {selectedHotspot.news.map((item, i) => (
+              <div className="hotspot-popup-headlines-title">LIVE INTEL ({getRelatedNews(selectedHotspot).length})</div>
+              {getRelatedNews(selectedHotspot).map((item, i) => (
                 <div key={i} className="hotspot-popup-headline">
                   <a href={item.link} target="_blank" rel="noopener noreferrer">
                     {item.title}
                   </a>
-                  <div className="hotspot-popup-source">{item.source} • {new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                  <div className="hotspot-popup-source">{item.source} • {formatNewsDate(item.pubDate)}</div>
                 </div>
               ))}
             </div>
+          ) : (
+             allNews.length > 0 && (
+                <div className="hotspot-popup-headlines">
+                  <div className="hotspot-popup-headlines-title">LATEST INTEL</div>
+                  {allNews.slice(0, 3).map((item, i) => (
+                    <div key={i} className="hotspot-popup-headline">
+                      <a href={item.link} target="_blank" rel="noopener noreferrer">
+                        {item.title}
+                      </a>
+                      <div className="hotspot-popup-source">{item.source} • {formatNewsDate(item.pubDate)}</div>
+                    </div>
+                  ))}
+                </div>
+             )
           )}
+
           {selectedHotspot.keywords && (
             <div className="hotspot-popup-keywords">
               <strong>Keywords:</strong> {selectedHotspot.keywords.join(', ')}

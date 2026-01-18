@@ -444,12 +444,115 @@
 }
 
 .hotspot-popup-agencies strong,
+.hotspot-popup-agencies strong {
+  color: var(--text-primary);
+  margin-right: 0.25rem;
+}
+
 .hotspot-popup-sectors strong,
 .hotspot-popup-targets strong,
 .hotspot-popup-parties strong,
 .hotspot-popup-keywords strong {
   color: var(--text-primary);
-  margin-right: 0.25rem;
+  font-weight: 600;
+}
+
+/* Sidebar Section Titles */
+.hotspot-popup-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin: 1.5rem 0 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+  padding-bottom: 0.25rem;
+}
+
+/* Assets at Risk */
+.hotspot-popup-assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.hotspot-asset-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.hotspot-asset-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.asset-ticker {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.asset-name {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asset-change {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.asset-change.positive { color: #00ff88; }
+.asset-change.negative { color: #ff3333; }
+
+/* Live Intel Headlines */
+.hotspot-popup-headlines-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.hotspot-popup-headline {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hotspot-popup-headline:last-child {
+  border-bottom: none;
+}
+
+.hotspot-popup-headline a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: block;
+  margin-bottom: 0.3rem;
+  transition: color 0.2s;
+}
+
+.hotspot-popup-headline a:hover {
+  color: var(--accent);
+}
+
+.hotspot-popup-source {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
 .hotspot-popup-category,

@@ -6,7 +6,7 @@ const MapPage = () => {
     return (
         <div className="map-page">
             <GlobalMap />
-            <TickerStrip />
+            <TickerStrip mode="geo" />
         </div>
     )
 }
