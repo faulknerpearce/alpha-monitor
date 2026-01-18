@@ -25,6 +25,11 @@ const GlobalMap = () => {
   // Use dynamic regions hook
   const { hotspots, intelHotspots, usHotspots, conflictZones, lastUpdated } = useDynamicRegions()
 
+  // Calculate quick stats
+  const activeConflicts = conflictZones ? conflictZones.length : 0
+  const totalIntel = (intelHotspots ? intelHotspots.length : 0) + (hotspots ? hotspots.length : 0)
+  const alertLevel = activeConflicts > 3 ? 'HIGH' : activeConflicts > 0 ? 'ELEVATED' : 'MODERATE'
+
   // Zoom state
   const [zoomLevel, setZoomLevel] = useState(1)
   const [translation, setTranslation] = useState([0, 0])
@@ -892,6 +897,24 @@ const GlobalMap = () => {
   return (
     <div className="global-map-container" ref={containerRef}>
       <div className="map-controls map-controls-right">
+        {/* Quick Stats Bar */}
+        <div className="map-stats-bar">
+          <div className="stat-item">
+            <span className="stat-label">ACTIVE CONFLICTS</span>
+            <span className="stat-value warning">{activeConflicts}</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-label">ALERT LEVEL</span>
+            <span className={`stat-value ${alertLevel.toLowerCase()}`}>{alertLevel}</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-label">INTEL UPDATES</span>
+            <span className="stat-value">{allNews.length}</span>
+          </div>
+        </div>
+
         <div className="map-view-toggle">
           <button
             className={mapView === 'global' ? 'active' : ''}
