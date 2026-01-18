@@ -30,6 +30,10 @@ const GlobalMap = () => {
   const [translation, setTranslation] = useState([0, 0])
   const [rotation, setRotation] = useState([0, 0]) // [longitude, latitude] rotation for globe
 
+  // Auto-rotation state
+  const [isAutoRotating, setIsAutoRotating] = useState(true)
+  const [isUserInteracting, setIsUserInteracting] = useState(false)
+
   // Layer visibility state
   const [layerVisibility, setLayerVisibility] = useState({
     hotspots: false,
@@ -59,6 +63,24 @@ const GlobalMap = () => {
       usCities: mapView === 'us'
     }))
   }, [mapView])
+
+  // Auto-rotation effect - slow ambient spin when idle
+  useEffect(() => {
+    if (!isAutoRotating || isUserInteracting || mapView !== 'global' || zoomLevel > 2) {
+      return
+    }
+
+    const rotationSpeed = 0.15 // degrees per frame
+    const interval = setInterval(() => {
+      setRotation(prev => {
+        const newRotation = [prev[0] + rotationSpeed, prev[1]]
+        rotationRef.current = newRotation
+        return newRotation
+      })
+    }, 50)
+
+    return () => clearInterval(interval)
+  }, [isAutoRotating, isUserInteracting, mapView, zoomLevel])
 
   const fetchMapNews = async () => {
     try {
@@ -192,7 +214,7 @@ const GlobalMap = () => {
 
       const container = containerRef.current
       const width = container.offsetWidth || 800
-      const height = 400
+      const height = container.offsetHeight || window.innerHeight - 60 // Full height minus navbar
 
       // Clear existing content
       d3.select(svgRef.current).selectAll('*').remove()
@@ -207,10 +229,11 @@ const GlobalMap = () => {
       let projection
       if (mapView === 'global') {
         // Dynamic projection based on zoom level
+        const minDimension = Math.min(width, height)
         if (zoomLevel <= 2) {
           // Use orthographic projection for spherical globe appearance when zoomed out
           projection = d3.geoOrthographic()
-            .scale((width / 2) * zoomLevel * 0.8)
+            .scale((minDimension / 2.2) * zoomLevel)
             .translate([width / 2, height / 2])
             .center([0, 0])
             .rotate(rotation)
@@ -234,6 +257,55 @@ const GlobalMap = () => {
         .attr('width', width)
         .attr('height', height)
         .attr('fill', 'var(--map-bg)')
+
+      // Add globe effects (glow/atmosphere)
+      if (mapView === 'global' && zoomLevel <= 2) {
+        const defs = svg.append('defs')
+
+        // Glow filter
+        const filter = defs.append('filter')
+          .attr('id', 'glow')
+          .attr('x', '-50%')
+          .attr('y', '-50%')
+          .attr('width', '200%')
+          .attr('height', '200%')
+
+        filter.append('feGaussianBlur')
+          .attr('stdDeviation', '10')
+          .attr('result', 'coloredBlur')
+
+        const merge = filter.append('feMerge')
+        merge.append('feMergeNode').attr('in', 'coloredBlur')
+        merge.append('feMergeNode').attr('in', 'SourceGraphic')
+
+        // Gradient for sphere
+        const gradient = defs.append('radialGradient')
+          .attr('id', 'sphereGradient')
+          .attr('cx', '50%')
+          .attr('cy', '50%')
+          .attr('r', '50%')
+
+        gradient.append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', '#1a202c') // Darker center
+          .attr('stop-opacity', 0.8)
+
+        gradient.append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', '#0d1219') // Almost black edge
+          .attr('stop-opacity', 1)
+
+        // Render the sphere base (Ocean)
+        svg.append('path')
+          .datum({ type: 'Sphere' })
+          .attr('d', path)
+          .attr('fill', 'url(#sphereGradient)')
+          .attr('stroke', 'var(--accent)')
+          .attr('stroke-width', 1.5)
+          .attr('stroke-opacity', 0.5)
+          .style('filter', 'url(#glow)')
+          .style('cursor', 'grab')
+      }
 
       if (mapView === 'global') {
         // Grid pattern for global
@@ -652,6 +724,7 @@ const GlobalMap = () => {
         const drag = d3.drag()
           .on('start', function () {
             d3.select(this).style('cursor', 'grabbing')
+            setIsUserInteracting(true) // Pause auto-rotation
           })
           .on('drag', function (event) {
             const sensitivity = 0.5
@@ -665,6 +738,8 @@ const GlobalMap = () => {
           })
           .on('end', function () {
             d3.select(this).style('cursor', 'grab')
+            // Resume auto-rotation after 3 seconds of inactivity
+            setTimeout(() => setIsUserInteracting(false), 3000)
           })
 
         svg.call(drag)
