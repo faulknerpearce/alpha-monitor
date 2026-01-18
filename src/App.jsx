@@ -4,7 +4,7 @@ import Navbar from '@components/Navbar/Navbar'
 import Dashboard from '@components/Dashboard/Dashboard'
 import MapPage from '@components/MapPage/MapPage'
 import SettingsModal from '@components/SettingsModal/SettingsModal'
-import MonitorForm from '@components/MonitorForm/MonitorForm'
+import CommandModal from '@components/CommandModal/CommandModal'
 import { usePanelSettings } from '@services/usePanelSettings'
 import './App.css'
 
@@ -12,8 +12,9 @@ import { ThemeProvider } from './context/ThemeContext'
 
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [monitorFormOpen, setMonitorFormOpen] = useState(false)
+  const [commandOpen, setCommandOpen] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [currentMode, setCurrentMode] = useState(null) // null = show all panels
   const { panelSettings } = usePanelSettings()
 
   const handleRefresh = async () => {
@@ -30,11 +31,17 @@ function App() {
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
             onOpenSettings={() => setSettingsOpen(true)}
-            onOpenMonitors={() => setMonitorFormOpen(true)}
+            onOpenCommand={() => setCommandOpen(true)}
+            currentMode={currentMode}
           />
 
           <Routes>
-            <Route path="/" element={<Dashboard panelSettings={panelSettings} />} />
+            <Route path="/" element={
+              <Dashboard 
+                panelSettings={panelSettings} 
+                currentMode={currentMode}
+              />
+            } />
             <Route path="/map" element={<MapPage />} />
           </Routes>
 
@@ -43,9 +50,11 @@ function App() {
             onClose={() => setSettingsOpen(false)}
           />
 
-          <MonitorForm
-            isOpen={monitorFormOpen}
-            onClose={() => setMonitorFormOpen(false)}
+          <CommandModal
+            isOpen={commandOpen}
+            onClose={() => setCommandOpen(false)}
+            currentMode={currentMode}
+            onModeChange={setCurrentMode}
           />
         </div>
       </BrowserRouter>
@@ -54,3 +63,4 @@ function App() {
 }
 
 export default App
+

@@ -13,10 +13,11 @@ import AIRacePanel from '@components/panels/AIRacePanel/AIRacePanel'
 import LayoffsPanel from '@components/panels/LayoffsPanel/LayoffsPanel'
 import CategoryTabs from '@components/CategoryTabs/CategoryTabs'
 import TickerStrip from '@components/TickerStrip/TickerStrip'
+import { COMMAND_MODES } from '@components/CommandModal/CommandModal'
 
 import './Dashboard.css'
 
-const Dashboard = ({ panelSettings }) => {
+const Dashboard = ({ panelSettings, currentMode }) => {
   const [draggedPanel, setDraggedPanel] = useState(null)
   const [activeCategory, setActiveCategory] = useState('all')
   const [panelOrder, setPanelOrder] = useState(() => {
@@ -60,11 +61,20 @@ const Dashboard = ({ panelSettings }) => {
 
   const enabledPanels = panelOrder.filter(id => panelSettings[id] !== false)
 
-  // Filter panels by active category, exclude markets/heatmap (now in ticker strip)
+  // Get panels for current command mode
+  const modePanels = currentMode && COMMAND_MODES[currentMode]
+    ? COMMAND_MODES[currentMode].panels
+    : null
+
+  // Filter panels by command mode first, then by category
   const filteredPanels = enabledPanels.filter(id => {
     if (id === 'markets' || id === 'heatmap') return false
     const panelConfig = PANELS[id]
     if (!panelConfig) return false
+    
+    // If in a command mode, only show mode-specific panels
+    if (modePanels && !modePanels.includes(id)) return false
+    
     if (activeCategory === 'all') return true
     return panelConfig.category === activeCategory
   })
