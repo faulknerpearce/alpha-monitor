@@ -10,31 +10,35 @@ input, button, textarea, select {
 
 :root {
     /* Core colors */
-    --bg-dark: #000000;
-    --bg-panel: rgba(10, 10, 10, 0.6);
-    --bg-panel-hover: rgba(20, 20, 20, 0.8);
-    --border-color: rgba(255, 255, 255, 0.08);
+    --bg-dark: #030508;
+    --bg-panel: rgba(8, 12, 18, 0.75);
+    --bg-panel-hover: rgba(15, 22, 32, 0.85);
+    --border-color: rgba(0, 229, 255, 0.12);
 
     /* Text */
-    --text-primary: #ffffff;
-    --text-secondary: #9ca3af;
-    --text-dim: #6b7280;
+    --text-primary: #e8f0f8;
+    --text-secondary: #7a8a9a;
+    --text-dim: #4a5a6a;
 
     /* Fonts */
     --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
 
     /* Accent colors */
-    --accent: #ffffff;
-    --accent-hover: #e5e5e5;
+    --accent: #00e5ff;
+    --accent-hover: #00b8cc;
 
     /* Status colors */
-    --green: #10b981;
-    --green-dim: rgba(16, 185, 129, 0.15);
-    --red: #ef4444;
-    --red-dim: rgba(239, 68, 68, 0.15);
-    --yellow: #f59e0b;
-    --yellow-dim: rgba(245, 158, 11, 0.15);
+    --green: #00ff88;
+    --green-dim: rgba(0, 255, 136, 0.15);
+    --red: #ff2d55;
+    --red-dim: rgba(255, 45, 85, 0.15);
+    --yellow: #ffcc00;
+    --yellow-dim: rgba(255, 204, 0, 0.15);
+    --orange: #ff6b35;
+    --orange-dim: rgba(255, 107, 53, 0.15);
+    --purple: #a855f7;
+    --purple-dim: rgba(168, 85, 247, 0.15);
 
     /* Glassmorphism & Depth */
     --glass-bg: rgba(10, 10, 10, 0.4);
