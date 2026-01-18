@@ -16,6 +16,9 @@ import TickerStrip from '@components/TickerStrip/TickerStrip'
 
 import './Dashboard.css'
 
+// Hero panels are featured at the top with larger size
+const HERO_PANELS = ['politics', 'finance']
+
 const Dashboard = ({ panelSettings }) => {
   const [draggedPanel, setDraggedPanel] = useState(null)
   const [activeCategory, setActiveCategory] = useState('all')
@@ -60,9 +63,13 @@ const Dashboard = ({ panelSettings }) => {
 
   const enabledPanels = panelOrder.filter(id => panelSettings[id] !== false)
 
-  // Filter panels by active category, exclude markets/heatmap (now in ticker strip)
+  // Separate hero panels from regular panels
+  const heroPanelIds = HERO_PANELS.filter(id => enabledPanels.includes(id))
+  
+  // Filter panels by active category, exclude hero panels, markets/heatmap
   const filteredPanels = enabledPanels.filter(id => {
     if (id === 'markets' || id === 'heatmap') return false
+    if (HERO_PANELS.includes(id)) return false // Exclude hero panels from grid
     const panelConfig = PANELS[id]
     if (!panelConfig) return false
     if (activeCategory === 'all') return true
@@ -104,8 +111,6 @@ const Dashboard = ({ panelSettings }) => {
 
   return (
     <main className="dashboard">
-
-
       {/* Ticker strip for markets and sectors */}
       <div className="ticker-section">
         <ErrorBoundary>
@@ -113,13 +118,57 @@ const Dashboard = ({ panelSettings }) => {
         </ErrorBoundary>
       </div>
 
+      {/* Hero Section - Featured Panel + Events Sidebar */}
+      <section className="hero-section">
+        {/* Featured Panel */}
+        <div className="hero-featured">
+          <Panel
+            id="politics"
+            title={PANELS.politics?.name || 'World / Geopolitical'}
+            draggable={false}
+          >
+            <ErrorBoundary>
+              {getPanelContent('politics')}
+            </ErrorBoundary>
+          </Panel>
+        </div>
+
+        {/* Events Sidebar */}
+        <aside className="events-sidebar">
+          <h3 className="events-title">Key Developments</h3>
+          <ul className="events-list">
+            <li className="event-item urgent">
+              <span className="event-badge">LIVE</span>
+              <span className="event-text">Fed Rate Decision</span>
+              <span className="event-time">2:00 PM ET</span>
+            </li>
+            <li className="event-item">
+              <span className="event-badge upcoming">SOON</span>
+              <span className="event-text">Earnings: NVDA, AAPL</span>
+              <span className="event-time">4:00 PM ET</span>
+            </li>
+            <li className="event-item">
+              <span className="event-badge">ONGOING</span>
+              <span className="event-text">Davos Economic Forum</span>
+              <span className="event-time">Day 3</span>
+            </li>
+            <li className="event-item">
+              <span className="event-badge upcoming">TOMORROW</span>
+              <span className="event-text">ECB Policy Meeting</span>
+              <span className="event-time">8:00 AM ET</span>
+            </li>
+          </ul>
+          <a href="#" className="events-link">View Full Calendar</a>
+        </aside>
+      </section>
+
       {/* Category Tabs */}
       <CategoryTabs
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
 
-      {/* Filtered panels grid */}
+      {/* Filtered panels grid - 3 columns */}
       <div className="news-grid">
         {filteredPanels.map(panelId => {
           const config = PANELS[panelId]
@@ -149,3 +198,4 @@ const Dashboard = ({ panelSettings }) => {
 }
 
 export default Dashboard
+
