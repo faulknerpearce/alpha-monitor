@@ -1,9 +1,9 @@
 .map-page {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Take remaining space */
-  height: auto; /* removing 100vh */
+  flex: 1;
+  height: auto;
   width: 100vw;
-  background-color: #f5f5f5;
+  background-color: var(--bg-dark);
   overflow: hidden;
 }

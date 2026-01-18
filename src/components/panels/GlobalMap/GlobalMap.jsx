@@ -840,74 +840,147 @@ const GlobalMap = () => {
       </div>
       <div className="map-controls map-controls-left">
         <div className="map-layer-toggles">
-          <div className="layer-toggle-group">
+          {/* Layer Presets */}
+          <div className="layer-preset-group">
             <button
-              className={`layer-toggle ${layerVisibility.hotspots ? 'active' : ''}`}
-              onClick={() => toggleLayer('hotspots')}
-              title="Toggle Hotspots"
+              className={`layer-preset ${!layerVisibility.shippingChokepoints && !layerVisibility.conflictZones && !layerVisibility.militaryBases ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: false,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Intel focus - Intelligence hotspots only"
             >
-              HOT
+              ◈ INTEL
             </button>
+            <button
+              className={`layer-preset ${layerVisibility.conflictZones && layerVisibility.intelHotspots ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: true,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: true,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Geopolitical focus - Conflicts and hotspots"
+            >
+              ✕ CONFLICT
+            </button>
+            <button
+              className={`layer-preset ${layerVisibility.shippingChokepoints && layerVisibility.underseaCables ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: false,
+                shippingChokepoints: true,
+                conflictZones: false,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: true,
+                cyberRegions: false
+              }))}
+              title="Trade focus - Shipping routes and infrastructure"
+            >
+              ⚓ TRADE
+            </button>
+            <button
+              className={`layer-preset ${layerVisibility.militaryBases && layerVisibility.nuclearFacilities ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: true,
+                militaryBases: true,
+                nuclearFacilities: true,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Defense focus - Military and nuclear facilities"
+            >
+              ▲ DEFENSE
+            </button>
+          </div>
+          
+          {/* Individual Layer Toggles */}
+          <div className="layer-toggle-group">
             <button
               className={`layer-toggle ${layerVisibility.intelHotspots ? 'active' : ''}`}
               onClick={() => toggleLayer('intelHotspots')}
-              title="Toggle Intelligence Hotspots"
+              title="Intelligence Hotspots"
             >
-              INTEL
+              Intel
+            </button>
+            <button
+              className={`layer-toggle ${layerVisibility.hotspots ? 'active' : ''}`}
+              onClick={() => toggleLayer('hotspots')}
+              title="Watch Zones"
+            >
+              Watch
             </button>
             {mapView === 'us' && (
               <button
                 className={`layer-toggle ${layerVisibility.usCities ? 'active' : ''}`}
                 onClick={() => toggleLayer('usCities')}
-                title="Toggle US Cities"
+                title="Major Cities"
               >
-                CITIES
+                Cities
               </button>
             )}
           </div>
           {mapView === 'global' && (
             <div className="layer-toggle-group">
               <button
-                className={`layer-toggle ${layerVisibility.shippingChokepoints ? 'active' : ''}`}
-                onClick={() => toggleLayer('shippingChokepoints')}
-                title="Toggle Shipping Chokepoints"
-              >
-                SHIP
-              </button>
-              <button
                 className={`layer-toggle ${layerVisibility.conflictZones ? 'active' : ''}`}
                 onClick={() => toggleLayer('conflictZones')}
-                title="Toggle Conflict Zones"
+                title="Active Conflicts"
               >
-                WAR
+                Conflict
+              </button>
+              <button
+                className={`layer-toggle ${layerVisibility.shippingChokepoints ? 'active' : ''}`}
+                onClick={() => toggleLayer('shippingChokepoints')}
+                title="Shipping Chokepoints"
+              >
+                Shipping
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.militaryBases ? 'active' : ''}`}
                 onClick={() => toggleLayer('militaryBases')}
-                title="Toggle Military Bases"
+                title="Military Installations"
               >
-                BASE
+                Military
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.nuclearFacilities ? 'active' : ''}`}
                 onClick={() => toggleLayer('nuclearFacilities')}
-                title="Toggle Nuclear Facilities"
+                title="Nuclear Facilities"
               >
-                NUKE
+                Nuclear
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.underseaCables ? 'active' : ''}`}
                 onClick={() => toggleLayer('underseaCables')}
-                title="Toggle Undersea Cables"
+                title="Undersea Cable Infrastructure"
               >
-                CABLE
+                Infra
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.cyberRegions ? 'active' : ''}`}
                 onClick={() => toggleLayer('cyberRegions')}
-                title="Toggle Cyber Regions"
+                title="Cyber Threat Regions"
               >
-                CYBER
+                Cyber
               </button>
             </div>
           )}
