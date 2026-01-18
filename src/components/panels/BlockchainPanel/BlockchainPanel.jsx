@@ -6,7 +6,7 @@ import './BlockchainPanel.css'
 // Mock on-chain data
 const MOCK_CHAIN_DATA = {
     btcHashrate: '512 EH/s',
-    ethGas: '28 gwei',
+    ethGas: '15 gwei',
     defiTvl: '$48.2B',
     nftVolume: '$12.4M',
 }
@@ -29,7 +29,7 @@ const BlockchainPanel = () => {
 
     const fetchChainData = async () => {
         try {
-            const data = {}
+            const data = { ...MOCK_CHAIN_DATA }
 
             // BTC Hashrate from BTC.com API
             try {

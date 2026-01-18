@@ -13,6 +13,7 @@ import AIRacePanel from '@components/panels/AIRacePanel/AIRacePanel'
 import LayoffsPanel from '@components/panels/LayoffsPanel/LayoffsPanel'
 import CategoryTabs from '@components/CategoryTabs/CategoryTabs'
 import TickerStrip from '@components/TickerStrip/TickerStrip'
+
 import './Dashboard.css'
 
 const Dashboard = ({ panelSettings }) => {
@@ -103,6 +104,8 @@ const Dashboard = ({ panelSettings }) => {
 
   return (
     <main className="dashboard">
+
+
       {/* Ticker strip for markets and sectors */}
       <div className="ticker-section">
         <ErrorBoundary>
@@ -146,4 +149,3 @@ const Dashboard = ({ panelSettings }) => {
 }
 
 export default Dashboard
-

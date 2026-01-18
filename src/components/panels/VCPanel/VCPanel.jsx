@@ -2,32 +2,28 @@ import { useEffect, useState } from 'react'
 import { VCFeedService } from '@services/feeds'
 import './VCPanel.css'
 
-// Expanded VC investment data - in production would come from Crunchbase/PitchBook API
-const MOCK_VC_DATA = [
-    { firm: 'Andreessen Horowitz', deployed: 2400, deals: 45, focus: 'AI/Crypto', activity: 'high', aum: '35B' },
-    { firm: 'Sequoia Capital', deployed: 1800, deals: 38, focus: 'Enterprise', activity: 'high', aum: '85B' },
-    { firm: 'Founders Fund', deployed: 1200, deals: 22, focus: 'Deep Tech', activity: 'medium', aum: '11B' },
-    { firm: 'Tiger Global', deployed: 950, deals: 28, focus: 'Growth', activity: 'medium', aum: '75B' },
-    { firm: 'Khosla Ventures', deployed: 680, deals: 18, focus: 'Climate/AI', activity: 'high', aum: '15B' },
-    { firm: 'Lightspeed', deployed: 620, deals: 25, focus: 'Consumer', activity: 'medium', aum: '25B' },
-    { firm: 'Accel', deployed: 580, deals: 21, focus: 'SaaS', activity: 'medium', aum: '50B' },
-    { firm: 'Greylock', deployed: 420, deals: 15, focus: 'Enterprise', activity: 'low', aum: '5B' },
-    { firm: 'General Catalyst', deployed: 750, deals: 32, focus: 'AI/Healthcare', activity: 'high', aum: '25B' },
-    { firm: 'Index Ventures', deployed: 540, deals: 19, focus: 'Fintech', activity: 'medium', aum: '16B' },
-    { firm: 'Benchmark', deployed: 380, deals: 12, focus: 'Consumer', activity: 'low', aum: '3B' },
-    { firm: 'Bessemer', deployed: 620, deals: 28, focus: 'Cloud/SaaS', activity: 'medium', aum: '18B' },
-    { firm: 'Insight Partners', deployed: 890, deals: 35, focus: 'Growth', activity: 'high', aum: '90B' },
-    { firm: 'NEA', deployed: 520, deals: 22, focus: 'Healthcare', activity: 'medium', aum: '25B' },
-    { firm: 'Coatue', deployed: 680, deals: 24, focus: 'Tech/Crypto', activity: 'medium', aum: '45B' },
-    { firm: 'Paradigm', deployed: 450, deals: 18, focus: 'Crypto/Web3', activity: 'high', aum: '10B' },
+// Recent major VC fund raises (2025/2026)
+const RECENT_FUNDS = [
+    { firm: 'Andreessen Horowitz', fund: 'Crypto Fund V', amount: 4500, date: 'Jan 2026' },
+    { firm: 'Sequoia Capital', fund: 'Growth Fund X', amount: 3200, date: 'Jan 2026' },
+    { firm: 'Founders Fund', fund: 'Fund IX', amount: 1800, date: 'Dec 2025' },
+    { firm: 'Insight Partners', fund: 'Fund XIII', amount: 12500, date: 'Dec 2025' },
+    { firm: 'Lightspeed', fund: 'Global Opportunity II', amount: 6200, date: 'Nov 2025' },
+    { firm: 'Paradigm', fund: 'Paradigm Two', amount: 2500, date: 'Nov 2025' },
+    { firm: 'Accel', fund: 'Global Growth VII', amount: 4000, date: 'Oct 2025' },
+    { firm: 'Index Ventures', fund: 'Growth VI', amount: 2800, date: 'Oct 2025' },
+    { firm: 'Khosla Ventures', fund: 'Main Fund IX', amount: 1800, date: 'Sep 2025' },
+    { firm: 'Greycroft', fund: 'Core Fund VII', amount: 950, date: 'Aug 2025' },
 ]
 
+const VC_STATS = {
+    totalRaised: 40250, // Total capital raised by VCs
+    funds: 42, // Number of funds closed
+}
+
 const VCPanel = () => {
-    const [vcData, setVcData] = useState([])
     const [vcNews, setVcNews] = useState([])
     const [loading, setLoading] = useState(true)
-    const [totalDeployed, setTotalDeployed] = useState(0)
-    const [totalDeals, setTotalDeals] = useState(0)
 
     useEffect(() => {
         loadData()
@@ -37,21 +33,14 @@ const VCPanel = () => {
 
     const loadData = async () => {
         setLoading(true)
-
-        // Load mock VC data
-        setVcData(MOCK_VC_DATA)
-        setTotalDeployed(MOCK_VC_DATA.reduce((sum, v) => sum + v.deployed, 0))
-        setTotalDeals(MOCK_VC_DATA.reduce((sum, v) => sum + v.deals, 0))
-
-        // Fetch VC news
         try {
-            const newsItems = await VCFeedService.fetchVCNews(6)
+            const newsItems = await VCFeedService.fetchVCNews(10)
             setVcNews(newsItems)
         } catch (e) {
             console.error('Failed to fetch VC news:', e)
+        } finally {
+            setLoading(false)
         }
-        
-        setLoading(false)
     }
 
     const formatAmount = (amount) => {
@@ -59,70 +48,52 @@ const VCPanel = () => {
         return `$${amount}M`
     }
 
-    const getActivityClass = (activity) => `activity-${activity}`
-
     const getTimeAgo = (date) => VCFeedService.getTimeAgo(date)
-
-    if (loading) {
-        return <div className="loading-msg">Loading VC activity...</div>
-    }
 
     return (
         <div className="vc-panel">
-            <div className="vc-summary">
-                <div className="summary-stat">
-                    <span className="stat-label">Total Deployed</span>
-                    <span className="stat-value purple">{formatAmount(totalDeployed)}</span>
+            <div className="vc-header-stats">
+                <div className="stat-item">
+                    <span className="stat-label">Capital Raised</span>
+                    <span className="stat-value purple">{formatAmount(VC_STATS.totalRaised)}</span>
                 </div>
-                <div className="summary-stat">
-                    <span className="stat-label">Deals</span>
-                    <span className="stat-value">{totalDeals}</span>
-                </div>
-                <div className="summary-stat">
-                    <span className="stat-label">Firms</span>
-                    <span className="stat-value">{vcData.length}</span>
+                <div className="stat-item">
+                    <span className="stat-label">Funds Closed</span>
+                    <span className="stat-value">{VC_STATS.funds}</span>
                 </div>
             </div>
 
-            {vcNews.length > 0 && (
-                <div className="vc-news">
-                    <div className="vc-news-header">Latest VC News</div>
-                    {vcNews.map((news, idx) => (
-                        <a key={idx} href={news.link} target="_blank" rel="noopener noreferrer" className="vc-news-item">
-                            <span className="vc-news-source">{news.source}</span>
-                            <span className="vc-news-title">{news.title}</span>
-                            <span className="vc-news-time">{getTimeAgo(news.date)}</span>
-                        </a>
-                    ))}
-                </div>
-            )}
-
-            <div className="vc-list">
-                {vcData.map((vc, idx) => (
-                    <div key={idx} className="vc-item">
-                        <div className="vc-main">
-                            <div className="vc-info">
-                                <span className="vc-name">{vc.firm}</span>
-                                <span className="vc-aum">{vc.aum} AUM</span>
-                                <span className="vc-focus">{vc.focus}</span>
-                            </div>
-                            <div className={`vc-activity ${getActivityClass(vc.activity)}`}>
-                                <span className="activity-dot"></span>
-                                {vc.activity}
-                            </div>
+            <div className="vc-section-title">RECENT FUNDS (2025-26)</div>
+            <div className="vc-list-container">
+                {RECENT_FUNDS.map((item, idx) => (
+                    <div key={idx} className="vc-list-row">
+                        <div className="vc-row-main">
+                            <span className="vc-row-name">{item.firm}</span>
+                            <span className="vc-row-round">{item.fund}</span>
                         </div>
-                        <div className="vc-stats">
-                            <div className="vc-stat">
-                                <span className="vc-stat-value">{formatAmount(vc.deployed)}</span>
-                                <span className="vc-stat-label">deployed</span>
-                            </div>
-                            <div className="vc-stat">
-                                <span className="vc-stat-value">{vc.deals}</span>
-                                <span className="vc-stat-label">deals</span>
-                            </div>
+                        <div className="vc-row-meta">
+                            <span className="vc-row-date">{item.date}</span>
+                            <span className="vc-row-amount green">+{formatAmount(item.amount)}</span>
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="vc-section-title">NEWS WIRE</div>
+            <div className="vc-news-container">
+                {loading && vcNews.length === 0 ? (
+                    <div className="loading-msg">Loading VC news...</div>
+                ) : (
+                    vcNews.map((news, idx) => (
+                        <a key={idx} href={news.link} target="_blank" rel="noopener noreferrer" className="vc-news-item">
+                            <div className="vc-news-header">
+                                <span className="vc-news-source">{news.source}</span>
+                                <span className="vc-news-time">{getTimeAgo(news.date)}</span>
+                            </div>
+                            <span className="vc-news-title">{news.title}</span>
+                        </a>
+                    ))
+                )}
             </div>
         </div>
     )

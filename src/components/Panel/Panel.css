@@ -1,57 +1,61 @@
 .panel {
-    background: rgba(10, 10, 10, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     overflow: hidden;
-    transition: all 0.25s ease;
-    cursor: default;
+    display: flex;
+    flex-direction: column;
+    height: 420px; /* Fixed height - no overlap */
+}
+
+.panel:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .panel.wide {
     grid-column: span 2;
 }
 
-.panel:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
 .panel.collapsed .panel-content {
     display: none;
 }
 
+/* Panel Header */
 .panel-header {
-    padding: 0.6rem 0.9rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     cursor: pointer;
     user-select: none;
-    transition: background 0.2s ease;
+    flex-shrink: 0;
 }
 
 .panel-header:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .panel-header-left {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .drag-handle {
     cursor: grab;
     color: var(--text-dim);
-    font-size: 0.85rem;
-    opacity: 0.5;
-    transition: opacity 0.2s ease;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    transition: opacity 0.2s;
 }
 
 .panel:hover .drag-handle {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .drag-handle:active {
@@ -60,8 +64,8 @@
 
 .panel-toggle {
     color: var(--text-dim);
-    font-size: 0.6rem;
-    transition: transform 0.2s ease;
+    font-size: 0.55rem;
+    transition: transform 0.2s;
 }
 
 .panel.collapsed .panel-toggle {
@@ -71,50 +75,38 @@
 .panel-title {
     font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .panel-count {
     color: var(--text-dim);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    font-weight: 400;
 }
 
+/* Panel Content - Fills remaining space */
 .panel-content {
     padding: 0;
-    max-height: 450px;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* Animation for panel appearance */
-.panel {
-    animation: panelFadeIn 0.4s ease-out;
-}
-
-@keyframes panelFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* Mobile */
 @media (max-width: 768px) {
+    .panel {
+        height: 350px;
+        border-radius: 6px;
+    }
+
     .panel.wide {
         grid-column: span 1;
     }
 
-    .panel {
-        border-radius: 6px;
-    }
-
     .panel-header {
-        padding: 0.5rem 0.75rem;
+        padding: 0.6rem 0.8rem;
     }
 
     .panel-title {

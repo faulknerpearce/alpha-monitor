@@ -1,7 +1,8 @@
 .global-map-container {
   position: relative;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0a1419 0%, #020a08 100%);
+  flex: 1;
+  min-height: 0;
+  background: var(--map-bg);
   border-radius: 0;
   overflow: hidden;
 }
@@ -9,7 +10,7 @@
 .global-map-container svg {
   display: block;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   cursor: grab;
 }
 
@@ -459,9 +460,7 @@
   transition: transform 0.2s;
 }
 
-.intel-hotspot:hover {
-  /* Removed scale to prevent shaking */
-}
+
 
 .intel-hotspot rect {
   transition: all 0.2s;

@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+input, button, textarea, select {
+    font-family: inherit;
+}
+
 :root {
     /* Core colors */
     --bg-dark: #000000;
@@ -18,7 +22,7 @@
 
     /* Fonts */
     --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
 
     /* Accent colors */
     --accent: #ffffff;
