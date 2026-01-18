@@ -34,10 +34,16 @@
     cursor: pointer;
     user-select: none;
     flex-shrink: 0;
+    outline: none;
 }
 
 .panel-header:hover {
     background: rgba(255, 255, 255, 0.02);
+}
+
+.panel-header:focus-visible {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 .panel-header-left {
