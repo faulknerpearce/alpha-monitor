@@ -13,13 +13,14 @@ import AIRacePanel from '@components/panels/AIRacePanel/AIRacePanel'
 import LayoffsPanel from '@components/panels/LayoffsPanel/LayoffsPanel'
 import CategoryTabs from '@components/CategoryTabs/CategoryTabs'
 import TickerStrip from '@components/TickerStrip/TickerStrip'
+import { COMMAND_MODES } from '@components/CommandModal/CommandModal'
 
 import './Dashboard.css'
 
 // Hero panels are featured at the top with larger size
 const HERO_PANELS = ['politics', 'finance']
 
-const Dashboard = ({ panelSettings }) => {
+const Dashboard = ({ panelSettings, currentMode }) => {
   const [draggedPanel, setDraggedPanel] = useState(null)
   const [activeCategory, setActiveCategory] = useState('all')
   const [panelOrder, setPanelOrder] = useState(() => {
@@ -65,13 +66,22 @@ const Dashboard = ({ panelSettings }) => {
 
   // Separate hero panels from regular panels
   const heroPanelIds = HERO_PANELS.filter(id => enabledPanels.includes(id))
-  
-  // Filter panels by active category, exclude hero panels, markets/heatmap
+
+  // Get panels for current command mode
+  const modePanels = currentMode && COMMAND_MODES[currentMode]
+    ? COMMAND_MODES[currentMode].panels
+    : null
+
+  // Filter panels by command mode first, then by category
   const filteredPanels = enabledPanels.filter(id => {
     if (id === 'markets' || id === 'heatmap') return false
     if (HERO_PANELS.includes(id)) return false // Exclude hero panels from grid
     const panelConfig = PANELS[id]
     if (!panelConfig) return false
+    
+    // If in a command mode, only show mode-specific panels
+    if (modePanels && !modePanels.includes(id)) return false
+    
     if (activeCategory === 'all') return true
     return panelConfig.category === activeCategory
   })

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import './Navbar.css'
 
-const Navbar = ({ onRefresh, isRefreshing, onOpenSettings, onOpenMonitors }) => {
+const Navbar = ({ onRefresh, isRefreshing, onOpenSettings, onOpenCommand, currentMode }) => {
     const location = useLocation()
     const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -67,11 +67,12 @@ const Navbar = ({ onRefresh, isRefreshing, onOpenSettings, onOpenMonitors }) => 
                     REFRESH
                 </button>
                 <button
-                    className="monitors-btn"
-                    onClick={onOpenMonitors}
-                    aria-label="Open monitor configuration"
+                    className="command-btn"
+                    onClick={onOpenCommand}
+                    aria-label="Open command mode selector"
                 >
-                    MONITORS
+                    {currentMode && <span className="command-mode-badge">{currentMode.toUpperCase()}</span>}
+                    COMMAND
                 </button>
                 <button
                     className="settings-btn"
