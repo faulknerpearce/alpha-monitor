@@ -1,26 +1,28 @@
 export const THEMES = {
   default: {
-    name: 'Cyberpunk (Default)',
+    name: 'Situation Room',
     colors: {
-      '--bg-dark': '#000000',
-      '--bg-panel': 'rgba(10, 10, 10, 0.6)',
-      '--bg-panel-hover': 'rgba(20, 20, 20, 0.8)',
-      '--border-color': 'rgba(255, 255, 255, 0.08)',
-      '--text-primary': '#ffffff',
-      '--text-secondary': '#9ca3af',
-      '--text-dim': '#6b7280',
-      '--accent': '#ffffff',
-      '--accent-hover': '#e5e5e5',
-      '--green': '#10b981',
-      '--red': '#ef4444',
-      '--yellow': '#f59e0b',
-      '--glass-bg': 'rgba(10, 10, 10, 0.4)',
+      '--bg-dark': '#030508',
+      '--bg-panel': 'rgba(8, 12, 18, 0.75)',
+      '--bg-panel-hover': 'rgba(15, 22, 32, 0.85)',
+      '--border-color': 'rgba(0, 229, 255, 0.12)',
+      '--text-primary': '#e8f0f8',
+      '--text-secondary': '#7a8a9a',
+      '--text-dim': '#4a5a6a',
+      '--accent': '#00e5ff',
+      '--accent-hover': '#00b8cc',
+      '--green': '#00ff88',
+      '--red': '#ff2d55',
+      '--yellow': '#ffcc00',
+      '--orange': '#ff6b35',
+      '--purple': '#a855f7',
+      '--glass-bg': 'rgba(8, 12, 18, 0.5)',
       /* Map Colors */
-      '--map-bg': '#020a08',
-      '--map-land': '#0a2018',
-      '--map-stroke': '#0f5040',
-      '--map-hover': '#1a4030',
-      '--map-grid': '#0a2a20'
+      '--map-bg': '#020406',
+      '--map-land': '#0a1520',
+      '--map-stroke': '#00e5ff',
+      '--map-hover': '#00ff88',
+      '--map-grid': '#0a2030'
     }
   },
   dracula: {
@@ -237,6 +239,54 @@ export const THEMES = {
       '--map-stroke': '#5c6370',
       '--map-hover': '#61afef',
       '--map-grid': '#282c34'
+    }
+  },
+  bloodMoon: {
+    name: 'Blood Moon',
+    colors: {
+      '--bg-dark': '#0a0506',
+      '--bg-panel': 'rgba(20, 8, 10, 0.75)',
+      '--bg-panel-hover': 'rgba(35, 12, 16, 0.85)',
+      '--border-color': 'rgba(220, 38, 38, 0.2)',
+      '--text-primary': '#f5e6e8',
+      '--text-secondary': '#a08088',
+      '--text-dim': '#605058',
+      '--accent': '#dc2626',
+      '--accent-hover': '#b91c1c',
+      '--green': '#4ade80',
+      '--red': '#ff3b3b',
+      '--yellow': '#fbbf24',
+      '--glass-bg': 'rgba(20, 8, 10, 0.5)',
+      /* Map Colors */
+      '--map-bg': '#080304',
+      '--map-land': '#2a0a10',
+      '--map-stroke': '#dc2626',
+      '--map-hover': '#ff3b3b',
+      '--map-grid': '#1a0508'
+    }
+  },
+  aurora: {
+    name: 'Aurora Borealis',
+    colors: {
+      '--bg-dark': '#020812',
+      '--bg-panel': 'rgba(4, 20, 40, 0.75)',
+      '--bg-panel-hover': 'rgba(8, 35, 65, 0.85)',
+      '--border-color': 'rgba(34, 211, 238, 0.15)',
+      '--text-primary': '#e0f7fa',
+      '--text-secondary': '#80cbc4',
+      '--text-dim': '#4db6ac',
+      '--accent': '#22d3ee',
+      '--accent-hover': '#06b6d4',
+      '--green': '#4ade80',
+      '--red': '#f43f5e',
+      '--yellow': '#fde047',
+      '--glass-bg': 'rgba(4, 20, 40, 0.5)',
+      /* Map Colors */
+      '--map-bg': '#010408',
+      '--map-land': '#0a2540',
+      '--map-stroke': '#22d3ee',
+      '--map-hover': '#4ade80',
+      '--map-grid': '#051525'
     }
   }
 }
