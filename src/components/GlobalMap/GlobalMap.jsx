@@ -176,7 +176,7 @@ const GlobalMap = () => {
       svg.append('rect')
         .attr('width', width)
         .attr('height', height)
-        .attr('fill', '#020a08')
+        .attr('fill', 'var(--map-bg)')
 
       if (mapView === 'global') {
         // Grid pattern for global
@@ -191,7 +191,7 @@ const GlobalMap = () => {
         smallGrid.append('path')
           .attr('d', 'M 20 0 L 0 0 0 20')
           .attr('fill', 'none')
-          .attr('stroke', '#0a2a20')
+          .attr('stroke', 'var(--map-grid)')
           .attr('stroke-width', 0.5)
 
         const grid = defs.append('pattern')
@@ -250,7 +250,7 @@ const GlobalMap = () => {
           .datum(graticule)
           .attr('d', path)
           .attr('fill', 'none')
-          .attr('stroke', '#0f4035')
+          .attr('stroke', 'var(--map-grid)')
           .attr('stroke-width', 0.5)
           .attr('opacity', 0.5)
 
@@ -264,18 +264,19 @@ const GlobalMap = () => {
           .enter()
           .append('path')
           .attr('d', path)
-          .attr('fill', '#0a2018')
-          .attr('stroke', '#0f5040')
+          .attr('d', path)
+          .attr('fill', 'var(--map-land)')
+          .attr('stroke', 'var(--map-stroke)')
           .attr('stroke-width', 0.5)
           .style('cursor', 'pointer')
           .on('click', (event, d) => handleCountryClick(d))
           .on('mouseenter', function (event, d) {
             d3.select(this)
-              .attr('fill', '#1a4030')
-              .attr('stroke', '#2a8070')
+              .attr('fill', 'var(--map-hover)')
+              .attr('stroke', 'var(--accent)')
           })
           .on('mouseleave', function (event, d) {
-            d3.select(this).attr('fill', '#0a2018').attr('stroke', '#0f5040')
+            d3.select(this).attr('fill', 'var(--map-land)').attr('stroke', 'var(--map-stroke)')
           })
       }
 
@@ -290,16 +291,16 @@ const GlobalMap = () => {
           .enter()
           .append('path')
           .attr('d', path)
-          .attr('fill', '#0a2018')
-          .attr('stroke', '#0f5040')
+          .attr('fill', 'var(--map-land)')
+          .attr('stroke', 'var(--map-stroke)')
           .attr('stroke-width', 0.5)
           .on('mouseenter', function (event, d) {
             d3.select(this)
-              .attr('fill', '#1a4030')
-              .attr('stroke', '#2a8070')
+              .attr('fill', 'var(--map-hover)')
+              .attr('stroke', 'var(--accent)')
           })
           .on('mouseleave', function (event, d) {
-            d3.select(this).attr('fill', '#0a2018').attr('stroke', '#0f5040')
+            d3.select(this).attr('fill', 'var(--map-land)').attr('stroke', 'var(--map-stroke)')
           })
 
         // Render US cities from config

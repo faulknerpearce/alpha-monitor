@@ -80,9 +80,12 @@ export const FEED_CONFIG = {
   ],
   
   vc: [
+    { name: 'TechCrunch VC', url: 'https://techcrunch.com/category/venture/feed/' },
     { name: 'StrictlyVC', url: 'https://www.strictlyvc.com/feed/' },
-    { name: 'Term Sheet', url: 'https://fortune.com/section/term-sheet/feed/' },
-    { name: 'PitchBook', url: 'https://pitchbook.com/news/feed' }
+    { name: 'VentureBeat', url: 'https://venturebeat.com/category/deals/feed/' },
+    { name: 'Crunchbase', url: 'https://news.crunchbase.com/feed/' },
+    { name: 'Sifted', url: 'https://sifted.eu/feed' },
+    { name: 'Forbes VC', url: 'https://www.forbes.com/venture-capital/feed/' }
   ],
   
   warWatch: [

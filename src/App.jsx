@@ -8,6 +8,8 @@ import MonitorForm from '@components/MonitorForm/MonitorForm'
 import { usePanelSettings } from '@services/usePanelSettings'
 import './App.css'
 
+import { ThemeProvider } from './context/ThemeContext'
+
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [monitorFormOpen, setMonitorFormOpen] = useState(false)
@@ -21,31 +23,33 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Navbar
-          onRefresh={handleRefresh}
-          isRefreshing={isRefreshing}
-          onOpenSettings={() => setSettingsOpen(true)}
-          onOpenMonitors={() => setMonitorFormOpen(true)}
-        />
+    <ThemeProvider>
+      <BrowserRouter>
+        <div className="app">
+          <Navbar
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+            onOpenSettings={() => setSettingsOpen(true)}
+            onOpenMonitors={() => setMonitorFormOpen(true)}
+          />
 
         <Routes>
           <Route path="/" element={<Dashboard panelSettings={panelSettings} />} />
           <Route path="/map" element={<GlobalMap />} />
         </Routes>
 
-        <SettingsModal
-          isOpen={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-        />
+          <SettingsModal
+            isOpen={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+          />
 
-        <MonitorForm
-          isOpen={monitorFormOpen}
-          onClose={() => setMonitorFormOpen(false)}
-        />
-      </div>
-    </BrowserRouter>
+          <MonitorForm
+            isOpen={monitorFormOpen}
+            onClose={() => setMonitorFormOpen(false)}
+          />
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 
