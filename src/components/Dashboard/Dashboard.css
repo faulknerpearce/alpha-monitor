@@ -20,7 +20,7 @@
 }
 
 .hero-featured .panel {
-    height: 420px;
+    height: 320px;
 }
 
 /* Events Sidebar */
@@ -146,7 +146,7 @@
     }
     
     .hero-featured .panel {
-        height: 350px;
+        height: 280px;
     }
     
     .events-sidebar {

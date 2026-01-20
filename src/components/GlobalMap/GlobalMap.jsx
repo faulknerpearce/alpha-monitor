@@ -8,6 +8,7 @@ import {
 import { MapFeedService } from '@services/feeds_map'
 import { useDynamicRegions } from '@services/useDynamicRegions.js'
 import HotspotModal from './HotspotModal/HotspotModal'
+import TickerStrip from '@components/TickerStrip/TickerStrip'
 import './GlobalMap.css'
 
 const GlobalMap = () => {
@@ -25,10 +26,19 @@ const GlobalMap = () => {
   // Use dynamic regions hook
   const { hotspots, intelHotspots, usHotspots, conflictZones, lastUpdated } = useDynamicRegions()
 
+  // Calculate quick stats
+  const activeConflicts = conflictZones ? conflictZones.length : 0
+  const totalIntel = (intelHotspots ? intelHotspots.length : 0) + (hotspots ? Object.keys(hotspots).length : 0)
+  const alertLevel = activeConflicts > 3 ? 'HIGH' : activeConflicts > 0 ? 'ELEVATED' : 'MODERATE'
+
   // Zoom state
   const [zoomLevel, setZoomLevel] = useState(1)
   const [translation, setTranslation] = useState([0, 0])
   const [rotation, setRotation] = useState([0, 0]) // [longitude, latitude] rotation for globe
+
+  // Auto-rotation state
+  const [isAutoRotating, setIsAutoRotating] = useState(true)
+  const [isUserInteracting, setIsUserInteracting] = useState(false)
 
   // Layer visibility state
   const [layerVisibility, setLayerVisibility] = useState({
@@ -59,6 +69,24 @@ const GlobalMap = () => {
       usCities: mapView === 'us'
     }))
   }, [mapView])
+
+  // Auto-rotation effect - slow ambient spin when idle
+  useEffect(() => {
+    if (!isAutoRotating || isUserInteracting || mapView !== 'global' || zoomLevel > 2) {
+      return
+    }
+
+    const rotationSpeed = 0.15 // degrees per frame
+    const interval = setInterval(() => {
+      setRotation(prev => {
+        const newRotation = [prev[0] + rotationSpeed, prev[1]]
+        rotationRef.current = newRotation
+        return newRotation
+      })
+    }, 50)
+
+    return () => clearInterval(interval)
+  }, [isAutoRotating, isUserInteracting, mapView, zoomLevel])
 
   const fetchMapNews = async () => {
     try {
@@ -135,7 +163,7 @@ const GlobalMap = () => {
 
       const container = containerRef.current
       const width = container.offsetWidth || 800
-      const height = 400
+      const height = container.offsetHeight || window.innerHeight - 60 // Full height
 
       // Clear existing content
       d3.select(svgRef.current).selectAll('*').remove()
@@ -148,12 +176,13 @@ const GlobalMap = () => {
 
       // Create projection
       let projection
+      const minDimension = Math.min(width, height)
       if (mapView === 'global') {
         // Dynamic projection based on zoom level
         if (zoomLevel <= 2) {
           // Use orthographic projection for spherical globe appearance when zoomed out
           projection = d3.geoOrthographic()
-            .scale((width / 2) * zoomLevel * 0.8)
+            .scale((minDimension / 2.2) * zoomLevel)
             .translate([width / 2, height / 2])
             .center([0, 0])
             .rotate(rotation)
@@ -181,6 +210,52 @@ const GlobalMap = () => {
       if (mapView === 'global') {
         // Grid pattern for global
         const defs = svg.append('defs')
+
+        // Glow filter for globe edge
+        const filter = defs.append('filter')
+          .attr('id', 'glow')
+          .attr('x', '-50%')
+          .attr('y', '-50%')
+          .attr('width', '200%')
+          .attr('height', '200%')
+
+        filter.append('feGaussianBlur')
+          .attr('stdDeviation', '10')
+          .attr('result', 'coloredBlur')
+
+        const merge = filter.append('feMerge')
+        merge.append('feMergeNode').attr('in', 'coloredBlur')
+        merge.append('feMergeNode').attr('in', 'SourceGraphic')
+
+        // Gradient for sphere 3D depth
+        const gradient = defs.append('radialGradient')
+          .attr('id', 'sphereGradient')
+          .attr('cx', '50%')
+          .attr('cy', '50%')
+          .attr('r', '50%')
+
+        gradient.append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', '#1a202c')
+          .attr('stop-opacity', 0.8)
+
+        gradient.append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', '#0d1219')
+          .attr('stop-opacity', 1)
+
+        // Render sphere base (Ocean) with glow
+        if (zoomLevel <= 2) {
+          svg.append('path')
+            .datum({ type: 'Sphere' })
+            .attr('d', path)
+            .attr('fill', 'url(#sphereGradient)')
+            .attr('stroke', 'var(--accent)')
+            .attr('stroke-width', 1.5)
+            .attr('stroke-opacity', 0.5)
+            .style('filter', 'url(#glow)')
+            .style('cursor', 'grab')
+        }
 
         const smallGrid = defs.append('pattern')
           .attr('id', 'smallGrid')
@@ -759,6 +834,38 @@ const GlobalMap = () => {
 
   return (
     <div className="global-map-container" ref={containerRef}>
+      {/* Quick Stats Bar */}
+      <div className="map-quick-stats">
+        <div className="stat-item">
+          <span className="stat-label">ACTIVE CONFLICTS</span>
+          <span className={`stat-value ${activeConflicts > 2 ? 'critical' : ''}`}>{activeConflicts}</span>
+        </div>
+        <div className="stat-divider"></div>
+        <div className="stat-item">
+          <span className="stat-label">GLOBAL ALERT</span>
+          <span className={`stat-value alert-${alertLevel.toLowerCase()}`}>{alertLevel}</span>
+        </div>
+        <div className="stat-divider"></div>
+        <div 
+          className="stat-item" 
+          style={{ cursor: 'pointer' }} 
+          onClick={() => fetchMapNews()} 
+          title="Click to refresh intel"
+        >
+          <span className="stat-label">INTEL UPDATES</span>
+          <span className="stat-value">{allNews.length > 0 ? allNews.length : '—'}</span>
+        </div>
+        <div className="stat-divider"></div>
+        <div className="stat-item">
+          <button 
+            className={`auto-rotate-btn ${isAutoRotating ? 'active' : ''}`}
+            onClick={() => setIsAutoRotating(!isAutoRotating)}
+            title={isAutoRotating ? 'Stop rotation' : 'Start rotation'}
+          >
+            {isAutoRotating ? 'ROTATING' : 'PAUSED'}
+          </button>
+        </div>
+      </div>
       <div className="map-controls map-controls-right">
         <div className="map-view-toggle">
           <button
@@ -783,74 +890,147 @@ const GlobalMap = () => {
       </div>
       <div className="map-controls map-controls-left">
         <div className="map-layer-toggles">
-          <div className="layer-toggle-group">
+          {/* Layer Presets */}
+          <div className="layer-preset-group">
             <button
-              className={`layer-toggle ${layerVisibility.hotspots ? 'active' : ''}`}
-              onClick={() => toggleLayer('hotspots')}
-              title="Toggle Hotspots"
+              className={`layer-preset ${!layerVisibility.shippingChokepoints && !layerVisibility.conflictZones && !layerVisibility.militaryBases ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: false,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Intel focus - Intelligence hotspots only"
             >
-              HOT
+              ◈ INTEL
             </button>
+            <button
+              className={`layer-preset ${layerVisibility.conflictZones && layerVisibility.intelHotspots ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: true,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: true,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Geopolitical focus - Conflicts and hotspots"
+            >
+              ✕ CONFLICT
+            </button>
+            <button
+              className={`layer-preset ${layerVisibility.shippingChokepoints && layerVisibility.underseaCables ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: false,
+                shippingChokepoints: true,
+                conflictZones: false,
+                militaryBases: false,
+                nuclearFacilities: false,
+                underseaCables: true,
+                cyberRegions: false
+              }))}
+              title="Trade focus - Shipping routes and infrastructure"
+            >
+              ⚓ TRADE
+            </button>
+            <button
+              className={`layer-preset ${layerVisibility.militaryBases && layerVisibility.nuclearFacilities ? 'active' : ''}`}
+              onClick={() => setLayerVisibility(prev => ({
+                ...prev,
+                hotspots: false,
+                intelHotspots: true,
+                shippingChokepoints: false,
+                conflictZones: true,
+                militaryBases: true,
+                nuclearFacilities: true,
+                underseaCables: false,
+                cyberRegions: false
+              }))}
+              title="Defense focus - Military and nuclear facilities"
+            >
+              ▲ DEFENSE
+            </button>
+          </div>
+          
+          {/* Individual Layer Toggles */}
+          <div className="layer-toggle-group">
             <button
               className={`layer-toggle ${layerVisibility.intelHotspots ? 'active' : ''}`}
               onClick={() => toggleLayer('intelHotspots')}
-              title="Toggle Intelligence Hotspots"
+              title="Intelligence Hotspots"
             >
-              INTEL
+              Intel
+            </button>
+            <button
+              className={`layer-toggle ${layerVisibility.hotspots ? 'active' : ''}`}
+              onClick={() => toggleLayer('hotspots')}
+              title="Watch Zones"
+            >
+              Watch
             </button>
             {mapView === 'us' && (
               <button
                 className={`layer-toggle ${layerVisibility.usCities ? 'active' : ''}`}
                 onClick={() => toggleLayer('usCities')}
-                title="Toggle US Cities"
+                title="Major Cities"
               >
-                CITIES
+                Cities
               </button>
             )}
           </div>
           {mapView === 'global' && (
             <div className="layer-toggle-group">
               <button
-                className={`layer-toggle ${layerVisibility.shippingChokepoints ? 'active' : ''}`}
-                onClick={() => toggleLayer('shippingChokepoints')}
-                title="Toggle Shipping Chokepoints"
-              >
-                SHIP
-              </button>
-              <button
                 className={`layer-toggle ${layerVisibility.conflictZones ? 'active' : ''}`}
                 onClick={() => toggleLayer('conflictZones')}
-                title="Toggle Conflict Zones"
+                title="Active Conflicts"
               >
-                WAR
+                Conflict
+              </button>
+              <button
+                className={`layer-toggle ${layerVisibility.shippingChokepoints ? 'active' : ''}`}
+                onClick={() => toggleLayer('shippingChokepoints')}
+                title="Shipping Routes"
+              >
+                Shipping
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.militaryBases ? 'active' : ''}`}
                 onClick={() => toggleLayer('militaryBases')}
-                title="Toggle Military Bases"
+                title="Military Bases"
               >
-                BASE
+                Military
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.nuclearFacilities ? 'active' : ''}`}
                 onClick={() => toggleLayer('nuclearFacilities')}
-                title="Toggle Nuclear Facilities"
+                title="Nuclear Facilities"
               >
-                NUKE
+                Nuclear
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.underseaCables ? 'active' : ''}`}
                 onClick={() => toggleLayer('underseaCables')}
-                title="Toggle Undersea Cables"
+                title="Undersea Cables"
               >
-                CABLE
+                Infra
               </button>
               <button
                 className={`layer-toggle ${layerVisibility.cyberRegions ? 'active' : ''}`}
                 onClick={() => toggleLayer('cyberRegions')}
-                title="Toggle Cyber Regions"
+                title="Cyber Regions"
               >
-                CYBER
+                Cyber
               </button>
             </div>
           )}
@@ -871,6 +1051,7 @@ const GlobalMap = () => {
       </div>
       <svg ref={svgRef}></svg>
       <HotspotModal selectedHotspot={selectedHotspot} onClose={closePopup} />
+      <TickerStrip mode="geo" />
     </div>
   )
 }

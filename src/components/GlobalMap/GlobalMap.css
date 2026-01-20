@@ -7,6 +7,95 @@
   overflow: hidden;
 }
 
+/* Quick Stats Bar */
+.map-quick-stats {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 20;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border-color);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.stat-value.critical {
+  color: var(--red);
+  animation: pulse-critical 1s ease-in-out infinite;
+}
+
+.stat-value.alert-high {
+  color: var(--red);
+}
+
+.stat-value.alert-elevated {
+  color: var(--yellow);
+}
+
+.stat-value.alert-moderate {
+  color: var(--green);
+}
+
+@keyframes pulse-critical {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.auto-rotate-btn {
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auto-rotate-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.auto-rotate-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-dark);
+}
+
 .global-map-container svg {
   display: block;
   width: 100%;
@@ -50,7 +139,7 @@
 
 .map-controls {
   position: absolute;
-  top: 1rem;
+  top: 4rem; /* Below quick stats bar */
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -152,6 +241,41 @@
   border: 1px solid var(--border-color);
   border-radius: 0;
   padding: 0.25rem;
+}
+
+/* Layer Preset Buttons */
+.layer-preset-group {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(10, 14, 20, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.layer-preset {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.layer-preset:hover {
+  background: rgba(99, 179, 237, 0.1);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.layer-preset.active {
+  background: var(--accent);
+  color: var(--bg-dark);
+  border-color: var(--accent);
 }
 
 .layer-toggle {

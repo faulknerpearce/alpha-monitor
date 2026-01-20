@@ -7,7 +7,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 420px; /* Fixed height - no overlap */
+    height: 340px; /* Fixed height - no overlap */
     
     /* Entrance animation */
     opacity: 0;
@@ -140,7 +140,7 @@
 /* Mobile */
 @media (max-width: 768px) {
     .panel {
-        height: 350px;
+        height: 300px;
         border-radius: 6px;
     }
 
