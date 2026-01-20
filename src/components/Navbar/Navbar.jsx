@@ -62,18 +62,21 @@ const Navbar = ({ onRefresh, isRefreshing, onOpenSettings, onOpenMonitors }) => 
                     className="refresh-btn"
                     onClick={onRefresh}
                     disabled={isRefreshing}
+                    aria-label={isRefreshing ? 'Refreshing data' : 'Refresh all data'}
                 >
                     REFRESH
                 </button>
                 <button
                     className="monitors-btn"
                     onClick={onOpenMonitors}
+                    aria-label="Open monitor configuration"
                 >
                     MONITORS
                 </button>
                 <button
                     className="settings-btn"
                     onClick={onOpenSettings}
+                    aria-label="Open application settings"
                 >
                     SETTINGS
                 </button>
