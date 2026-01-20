@@ -84,12 +84,16 @@ export const parseRSS = (xmlText) => {
     const pubDate = item.querySelector('pubDate, published, updated')?.textContent || ''
     const description = item.querySelector('description, summary, content')?.textContent || ''
 
+    const dateObj = new Date(pubDate || Date.now())
+    const isValidDate = !isNaN(dateObj.getTime())
+
     return {
       title: title.trim(),
       link: link.trim(),
-      date: new Date(pubDate),
+      pubDate: pubDate, // Return original string
+      date: isValidDate ? dateObj : new Date(),
       description: description.trim(),
-      timestamp: new Date(pubDate).getTime()
+      pubDateStr: isValidDate ? dateObj.toISOString() : new Date().toISOString()
     }
   }).filter(item => item.title && item.link)
 }
